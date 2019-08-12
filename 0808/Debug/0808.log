@@ -1,6 +1,0 @@
-﻿  avoidGameMain.cpp
-d:\neople\neople\0808\avoidgamemain.cpp(54): warning C4996: 'kbhit': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _kbhit. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\conio.h(459): note: 'kbhit' 선언을 참조하십시오.
-d:\neople\neople\0808\avoidgamemain.cpp(56): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\conio.h(453): note: 'getch' 선언을 참조하십시오.
-  0808.vcxproj -> D:\Neople\neople\Debug\0808.exe
