@@ -15,8 +15,18 @@ private:
 public:
 	void Init(Map* _pMap);
 	bool OperateInput();
+	bool Updata();
 	void CheckFood();
 	bool CheckDead();
+
+	enum Arrows
+	{
+		Up,
+		Down,
+		Left,
+		Right
+	};
+	int arrow;
 
 public:
 	Player();

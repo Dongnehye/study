@@ -8,6 +8,7 @@ void Player::Init(Map * _pMap)
 	pMap = _pMap;
 	pMap->SetPlayer(playerX, playerY);
 	Tail.push_back(*this);
+	arrow = Right;
 }
 
 bool Player::OperateInput()
@@ -18,50 +19,75 @@ bool Player::OperateInput()
 	{
 		ch = getch();
 
-		if (ch == 'w' && !pMap->isTileWall(playerX, playerY - 1))
+		if (ch == 'w' )
 		{
-			--playerY;
+			arrow = Up;
 		}
-		else if (ch == 's' && !pMap->isTileWall(playerX, playerY + 1))
+		else if (ch == 's')
 		{
-			++playerY;
+			arrow = Down;
 		}
-		else if (ch == 'a' && !pMap->isTileWall(playerX - 1, playerY))
+		else if (ch == 'a')
 		{
-			--playerX;
+			arrow = Left;
 		}
-		else if (ch == 'd' && !pMap->isTileWall(playerX + 1, playerY))
+		else if (ch == 'd')
 		{
-			++playerX;
+			arrow = Right;
 		}
 		else
 		{
 			return false;
 		}
+	}
+	return true;
+}
 
-		for (auto iter = Tail.begin(); iter != Tail.end(); ++iter)
+bool Player::Updata()
+{
+	if (arrow == Up)
+	{
+		--playerY;
+	}
+	else if (arrow == Down)
+	{
+		++playerY;
+	}
+	else if (arrow == Left)
+	{
+		--playerX;
+	}
+	else if (arrow == Right)
+	{
+		++playerX;
+	}
+
+	for (auto iter = Tail.begin(); iter != Tail.end(); ++iter)
+	{
+		pMap->SetEMPTYPlayer(iter->playerX, iter->playerY);
+	}
+
+	for (auto iter = Tail.end() - 1; iter != Tail.begin(); --iter)
+	{
+		if (iter != Tail.begin())
 		{
-			pMap->SetEMPTYPlayer(iter->playerX, iter->playerY);
+			auto temp = iter;
+			--temp;
+			iter->SetPlayerPos(temp->playerX, temp->playerY);
 		}
+	}
 
-		for (auto iter = Tail.end() - 1; iter != Tail.begin(); --iter)
-		{
-			if (iter != Tail.begin())
-			{
-				auto temp = iter;
-				--temp;
-				iter->SetPlayerPos(temp->playerX, temp->playerY);
-			}
-		}
+	Tail.front().SetPlayerPos(playerX, playerY);
 
-		Tail.front().SetPlayerPos(playerX, playerY);
+	if (CheckDead())
+	{
+		return false;
+	}
+	CheckFood();
 
-		CheckFood();
-
-		for (auto iter = Tail.begin(); iter != Tail.end(); ++iter)
-		{
-			pMap->SetPlayer(iter->playerX, iter->playerY);
-		}
+	for (auto iter = Tail.begin(); iter != Tail.end(); ++iter)
+	{
+		pMap->SetPlayer(iter->playerX, iter->playerY);
 	}
 	return true;
 }
@@ -76,6 +102,11 @@ void Player::CheckFood()
 }
 bool Player::CheckDead()
 {
+	if (pMap->isTileWall(playerX, playerY))
+	{
+		return true;
+	}
+
 	for (auto iter = Tail.begin() + 1; iter != Tail.end(); ++iter)
 	{
 		if (Tail.begin()->playerX == iter->playerX && Tail.begin()->playerY == iter->playerY)
