@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0809", "0809\0809.vcxproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "0812", "0812\0812.vcxproj", "{0E20FF68-76A8-4D02-B770-3C5AC5AF9FC9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Go", "Go\Go\Go.vcxproj", "{CB974DEB-E361-4D04-A292-41B7F82C98E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{0E20FF68-76A8-4D02-B770-3C5AC5AF9FC9}.Release|x64.Build.0 = Release|x64
 		{0E20FF68-76A8-4D02-B770-3C5AC5AF9FC9}.Release|x86.ActiveCfg = Release|Win32
 		{0E20FF68-76A8-4D02-B770-3C5AC5AF9FC9}.Release|x86.Build.0 = Release|Win32
+		{CB974DEB-E361-4D04-A292-41B7F82C98E3}.Debug|x64.ActiveCfg = Debug|x64
+		{CB974DEB-E361-4D04-A292-41B7F82C98E3}.Debug|x64.Build.0 = Debug|x64
+		{CB974DEB-E361-4D04-A292-41B7F82C98E3}.Debug|x86.ActiveCfg = Debug|Win32
+		{CB974DEB-E361-4D04-A292-41B7F82C98E3}.Debug|x86.Build.0 = Debug|Win32
+		{CB974DEB-E361-4D04-A292-41B7F82C98E3}.Release|x64.ActiveCfg = Release|x64
+		{CB974DEB-E361-4D04-A292-41B7F82C98E3}.Release|x64.Build.0 = Release|x64
+		{CB974DEB-E361-4D04-A292-41B7F82C98E3}.Release|x86.ActiveCfg = Release|Win32
+		{CB974DEB-E361-4D04-A292-41B7F82C98E3}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
