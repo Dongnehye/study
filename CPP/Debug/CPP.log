@@ -1,8 +1,25 @@
-﻿  StudentManager.cpp
-c:\users\administrator\source\repos\0808memory\cpp\studentmanager.cpp(23): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: 'fopen' 선언을 참조하십시오.
-c:\users\administrator\source\repos\0808memory\cpp\studentmanager.cpp(27): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note: 'fscanf' 선언을 참조하십시오.
-c:\users\administrator\source\repos\0808memory\cpp\studentmanager.cpp(76): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: 'fopen' 선언을 참조하십시오.
-  CPP.vcxproj -> C:\Users\Administrator\source\repos\0808Memory\Debug\CPP.exe
+﻿  CPPMain.cpp
+  ScienceStudent.cpp
+d:\neople\study\cpp\sciencestudent.cpp(24): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  LiberalStudent.cpp
+d:\neople\study\cpp\liberalstudent.cpp(15): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1197): note: 'fscanf' 선언을 참조하십시오.
+d:\neople\study\cpp\liberalstudent.cpp(25): warning C4244: 'return': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\neople\study\cpp\liberalstudent.cpp(30): warning C4244: '초기화 중': 'int'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Student.cpp
+d:\neople\study\cpp\student.cpp(43): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1197): note: 'fscanf' 선언을 참조하십시오.
+  StudentManager.cpp
+d:\neople\study\cpp\studentmanager.cpp(30): error C2259: 'Student': 추상 클래스를 인스턴스화할 수 없습니다.
+  d:\neople\study\cpp\studentmanager.cpp(30): note: 다음 멤버가 원인입니다.
+  d:\neople\study\cpp\studentmanager.cpp(30): note: 'void Student::PrintLine(void)': abstract입니다.
+  d:\neople\study\cpp\student.h(21): note: 'Student::PrintLine' 선언을 참조하십시오.
+  d:\neople\study\cpp\studentmanager.cpp(30): note: 'float Student::GetSum(void)': abstract입니다.
+  d:\neople\study\cpp\student.h(24): note: 'Student::GetSum' 선언을 참조하십시오.
+d:\neople\study\cpp\studentmanager.cpp(23): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(208): note: 'fopen' 선언을 참조하십시오.
+d:\neople\study\cpp\studentmanager.cpp(27): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(1197): note: 'fscanf' 선언을 참조하십시오.
+d:\neople\study\cpp\studentmanager.cpp(87): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17763.0\ucrt\stdio.h(208): note: 'fopen' 선언을 참조하십시오.
+  코드를 생성하고 있습니다...
