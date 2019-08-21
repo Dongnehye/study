@@ -1,0 +1,11 @@
+#pragma once
+#include "People.h"
+#include "AElevator.h"
+#include "ElevatorManager.h"
+#include <iostream>
+#include <time.h>
+#include <vector>
+#include <memory>
+#include <list>
+#include <conio.h>
+#include <Windows.h>
