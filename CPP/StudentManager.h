@@ -15,7 +15,7 @@ enum track
 class StudentManager
 {
 private:
-	vector<Student*> st;
+	vector<shared_ptr<Student>> ptr;
 public:
 
 	void LoadFile();

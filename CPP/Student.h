@@ -13,15 +13,14 @@ protected:
 	int kor;
 	int eng;
 	int math;
-
 public:
 	int track;
 	virtual void LoadStudent(FILE* pFile);
 	virtual void SaveStudent(FILE* pFile);
-	virtual void PrintLine() = 0;
+	virtual void PrintLine();
 	virtual void InputLine(const int iCurStudent);
 	void PrintLinePre();
-	virtual float GetSum() = 0;
+	virtual float GetSum();
 
 	Student();
 	virtual ~Student();

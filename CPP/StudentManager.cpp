@@ -4,18 +4,12 @@ using namespace std;
 
 StudentManager::StudentManager()
 {
-	st.reserve(1024);
+	ptr.reserve(1024);
 }
 
 
 StudentManager::~StudentManager()
 {
-	for (auto iter = st.begin(); iter != st.end(); ++iter)
-	{
-		delete *iter;
-	}
-
-	st.clear();
 }
 
 void StudentManager::LoadFile()
@@ -27,19 +21,22 @@ void StudentManager::LoadFile()
 		fscanf(pFile, "%d\n", &iCount);
 		for (int i = 0; i < iCount; i++)
 		{
-			Student * pNew = new Student();
+			shared_ptr<Student> pNew = make_shared<Student>();
 			pNew->LoadStudent(pFile);
+
 			if (pNew->track == liberal)
 			{
-				Student * pLiberaNew = new LiberalStudent();
-				pLiberaNew = dynamic_cast<LiberalStudent*>(pNew);
+				shared_ptr<Student> pLiberaNew = make_shared < LiberalStudent>();
 				pLiberaNew->LoadStudent(pFile);
+				pNew = pLiberaNew;
 			}
-			//else (pNew->track == sciences)
-			//{
-
-			//}
-			st.push_back(pNew);
+			else if (pNew->track == sciences)
+			{
+				shared_ptr<Student> pScienceNew = make_shared < ScienceStudent>();
+				pScienceNew->LoadStudent(pFile);
+				pNew = pScienceNew;
+			}
+			ptr.push_back(pNew);
 		}
 		fclose(pFile);
 	}
@@ -50,7 +47,8 @@ void StudentManager::PrintMenu()
 	cout << "1.입력" << endl;
 	cout << "2.출력" << endl;
 	cout << "3.저장" << endl;
-	cout << "4.종료" << endl;
+	cout << "4.정렬" << endl;
+	cout << "5.종료" << endl;
 }
 
 
@@ -59,24 +57,24 @@ void StudentManager::InputStudent()
 	int input = 0;
 	cout << "문과1 이과2" << endl;
 
-	Student * pNew = nullptr;
+	shared_ptr<Student> pNew = nullptr;
 	if (input == 1)
 	{
-		Student * pNew = new LiberalStudent();
+		pNew = make_shared<LiberalStudent>();
 	}
 	else if (input == 2)
 	{
-		//Student * pNew = new ScienceStudent();
+		pNew = make_shared<ScienceStudent>();
 	}
-	pNew->InputLine(st.size());
-	st.push_back(pNew);
+	pNew->InputLine(ptr.size());
+	ptr.push_back(pNew);
 }
 
 void StudentManager::OutputStudent()
 {
 	cout << "번호\t이름\t국어\t영어\t수학\t총점\t평균" << endl;
 	//vector<Student*>::iterator
-	for (auto iter = st.begin();  iter != st.end(); ++iter)
+	for (auto iter = ptr.begin();  iter != ptr.end(); ++iter)
 	{
 		(*iter)->PrintLine();
 	}
@@ -85,8 +83,8 @@ void StudentManager::OutputStudent()
 void StudentManager::SaveFile()
 {
 	FILE* pFile = fopen("save.txt", "w");
-	fprintf(pFile, "%d\n", st.size());
-	for (auto iter = st.begin(); iter != st.end(); ++iter)
+	fprintf(pFile, "%d\n", ptr.size());
+	for (auto iter = ptr.begin(); iter != ptr.end(); ++iter)
 	{
 		(*iter)->SaveStudent(pFile);
 	}

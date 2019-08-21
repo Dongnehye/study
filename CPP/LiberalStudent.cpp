@@ -13,7 +13,6 @@ void LiberalStudent::LoadStudent(FILE* pFile)
 {
 	Student::LoadStudent(pFile);
 	fscanf(pFile, "%d\n", &history);
-
 }
 void LiberalStudent::SaveStudent(FILE* pFile) 
 {

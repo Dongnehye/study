@@ -33,6 +33,10 @@ int main()
 		{
 			break;
 		}
+		else if (input == 5)
+		{
+			break;
+		}
 	}
 
 	return 0;

@@ -13,10 +13,19 @@ ScienceStudent::~ScienceStudent()
 
 void ScienceStudent::LoadStudent(FILE * pFile)
 {
+	Student::LoadStudent(pFile);
+	fscanf(pFile, "%d\n", &science);
 }
 
 void ScienceStudent::SaveStudent(FILE * pFile)
 {
+	Student::SaveStudent(pFile);
+	fprintf(pFile, " %d\n", science);
+}
+
+float ScienceStudent::GetSum()
+{
+	return kor + eng + math;
 }
 
 void ScienceStudent::PrintLine()
@@ -31,4 +40,7 @@ void ScienceStudent::PrintLine()
 
 void ScienceStudent::InputLine(const int iCurStudent)
 {
+	Student::InputLine(iCurStudent);
+	cout << "°úÇÐ" << endl;
+	cin >> science;
 }

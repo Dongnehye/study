@@ -6,7 +6,6 @@ Student::Student()
 {
 }
 
-
 Student::~Student()
 {
 }
@@ -22,8 +21,6 @@ void Student::InputLine(const int iCurStudent)
 	cin >> eng;
 	cout << "수학" << endl;
 	cin >> math;
-	cout << "문과or이과(0,1)" << endl;
-	cin >> math;
 }
 void Student::PrintLinePre()
 {
@@ -32,9 +29,20 @@ void Student::PrintLinePre()
 		math << "\t";
 
 }
+float Student::GetSum()
+{
+	return 0.0f;
+}
 void Student::PrintLine()
 {
+	PrintLinePre();
 
+	float fSum = kor + eng + math;
+	float fAvg = fSum / 3;
+	cout << no << "\t" << szName << "\t" <<
+		kor << "\t" << eng << "\t" <<
+		math << "\t" <<
+		fSum << "\t" << fAvg << endl;
 }
 
 void Student::LoadStudent(FILE* pFile)
