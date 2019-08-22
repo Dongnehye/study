@@ -1,11 +1,10 @@
 #pragma once
-#include "People.h"
-#include "AElevator.h"
-#include "ElevatorManager.h"
-#include <iostream>
-#include <time.h>
-#include <vector>
-#include <memory>
-#include <list>
-#include <conio.h>
-#include <Windows.h>
+#define MAXSIZE 4
+#define MAXFLOORSIZE 20
+#define FPS 30
+
+enum Arrow
+{
+	Aup,
+	Adown
+};

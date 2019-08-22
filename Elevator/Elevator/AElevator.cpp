@@ -1,6 +1,32 @@
 #include "AElevator.h"
+#include "Commonheader.h"
 
 
+void AElevator::SetIsCommand()
+{
+	if (active)
+	{
+		if (floorNumber == GoalFloor)
+		{
+			IsCommand = false;
+			SetArrow(Adown);
+			OutGoalFloor();
+		}
+	}
+}
+
+void AElevator::OutGoalFloor()
+{
+	int _GoalFloor = 0;
+	int temp = 0;
+	for (auto iter = EListPeoplePtr.begin(); iter != EListPeoplePtr.end(); ++iter)
+	{
+		temp = (*iter)->GetWantFloor();
+		if (_GoalFloor < temp)
+			_GoalFloor = temp;
+	}
+	GoalFloor = _GoalFloor;
+}
 
 AElevator::AElevator()
 {
@@ -8,6 +34,11 @@ AElevator::AElevator()
 	safeWeight = 600;
 	peopleNumber = 10;
 	floorNumber = 1;
+
+	GoalFloor = 1;
+	arrow = Aup;
+	active = false;
+	IsCommand = true;
 }
 
 
@@ -18,27 +49,114 @@ AElevator::~AElevator()
 void AElevator::Updata()
 {
 	// dropPeople;
-	checkFloor(floorNumber);
+	DropPeople(floorNumber);
+	CheckFloor();
 
+	// Move.
+	Move();
+
+	SetIsCommand();
 
 }
 
-void AElevator::AddPeople(shared_ptr<People> people)
+void AElevator::Init(ElevatorManager * _pElevatorManager)
+{
+	pElevatorManager = _pElevatorManager;
+}
+
+void AElevator::AddPeople(People * people)
 {
 	EListPeoplePtr.push_back(people);
 }
 
-void AElevator::checkFloor(int floorNumber)
+void AElevator::DropPeople(int floorNumber)
 {
-	for (auto iter = EListPeoplePtr.begin(); iter != EListPeoplePtr.end(); ++iter)
-	{
-		if (floorNumber == (*iter)->GetFloor())
-		{
+	auto iter = EListPeoplePtr.begin();
+	auto iterEnd = EListPeoplePtr.end();
 
+	while (iter != iterEnd)
+	{
+		if (floorNumber == (*iter)->GetWantFloor())
+		{
+			iter = EListPeoplePtr.erase(iter);
+		}
+		if (iter != iterEnd)
+			++iter;
+		else
+			break;
+	}
+}
+
+void AElevator::Move()
+{
+	if (floorNumber != GoalFloor)
+	{
+		if (arrow == Aup && floorNumber < MAXFLOOR)
+		{
+			++floorNumber;
+		}
+		else if (arrow == Adown && floorNumber > 1)
+		{
+			--floorNumber;
 		}
 	}
 }
 
-void AElevator::DropPeople()
+void AElevator::SetActive(bool _isActive)
 {
+	active = _isActive;
+}
+
+bool AElevator::GetActive() const
+{
+	return active;
+}
+
+void AElevator::CheckFloor()
+{
+	auto iter = pElevatorManager->EMListPeoplePtr.begin();
+	auto iterEnd = pElevatorManager->EMListPeoplePtr.end();
+
+	while (iter != iterEnd)
+	{
+		if ((*iter)->GetFloor() == floorNumber && (*iter)->GetArrow() == arrow)
+		{
+			EListPeoplePtr.push_back(*iter);
+			iter = pElevatorManager->DropPeople(iter);
+		}
+		if (iter != iterEnd)
+			++iter;
+		else
+			break;
+	}
+}
+
+void AElevator::SetArrow(int _arrow)
+{
+	arrow = _arrow;
+}
+
+int AElevator::GetArrow() const
+{
+	return arrow;
+}
+
+void AElevator::SetGoalFloor(int _GoalFloor)
+{
+	GoalFloor = _GoalFloor;
+}
+
+bool AElevator::GetIsCommand()
+{
+	return IsCommand;
+}
+
+int AElevator::GetFloor() const
+{
+	return floorNumber;
+}
+
+int AElevator::GetPeopleCount() const
+{
+	return EListPeoplePtr.size();
 }

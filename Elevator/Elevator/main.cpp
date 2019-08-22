@@ -1,32 +1,46 @@
-#include "Commonheader.h"
+#include <iostream>
+#include <time.h>
+#include <vector>
+#include <memory>
+#include <list>
+#include <conio.h>
+#include <Windows.h>
+
+#include "People.h"
+#include "AElevator.h"
+#include "ElevatorManager.h"
 
 #define MAXSIZE 4
-#define FPS 30
+#define FPS 10
 
 int main()
 { 
 	char ch = NULL;
-	ElevatorManager elevatorManager;
+	srand(time(NULL));
+	ElevatorManager Em;
 	//init
-	elevatorManager.Init(MAXSIZE);
+	Em.Init(MAXSIZE);
 	while (true)
 	{
+		system("cls");
 		//updata
 		if (kbhit())
 		{
 			ch = getch();
 			if (ch = 'z')
 			{
-				//manaul
+				Em.SetIsAuto(true);
 			}
 			else if (ch = 'x')
 			{
-				//auto
+				Em.SetIsAuto(false);
 			}
 		}
-		elevatorManager.Updata();
+		Em.Updata();
 
 		//draw
+		Em.Draw();
+
 		Sleep(1000 / FPS);
 	}
 

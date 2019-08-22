@@ -1,27 +1,46 @@
 #pragma once
+#include <vector>
+#include <list>
+#include <memory>
+#include "People.h"
+#include "AElevator.h"
 #include "Commonheader.h"
-using namespace std;
 
 
+class People;
+class AElevator;
 class ElevatorManager
 {
+private:
+	bool IsAuto;
+	int CountFloor[MAXFLOORSIZE];
+
 public:
-	vector<shared_ptr<AElevator>> VecElevatorPtr;
-	list<shared_ptr<People>> EMListPeoplePtr;
+	std::vector<AElevator*> VecElevatorPtr;
+	std::list<People*> EMListPeoplePtr;
 
 public:
 	ElevatorManager();
 	~ElevatorManager();
+
+	int mGoalFloor;
 
 	void Init(int elevatorMaxSize);
 	void Updata();
 	void Draw();
 
 	void CreateElevator(int size);
-	void AddElevator(shared_ptr<AElevator> col);
+	void AddElevator(AElevator * col);
+	
+	void CountAddFloor();
+	void InitCountFloor();
 
 	// auto, manual
 	void CreatePeople();
+	std::list<People*>::iterator DropPeople(std::list<People*>::iterator iter);
 
+	void SetIsAuto(bool _IsAuto);
 
+	void SetGoalFloor();
+	void ElevatorActive();
 };
