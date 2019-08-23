@@ -68,3 +68,10 @@ int People::GetArrow() const
 {
 	return arrow;
 }
+
+void People::SetInit(int _floor, int _wantfloor)
+{
+	Floor = _floor;
+	wantFloor = _wantfloor;
+	SetArrow();
+}

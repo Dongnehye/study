@@ -23,7 +23,8 @@ public:
 	ElevatorManager();
 	~ElevatorManager();
 
-	int mGoalFloor;
+	int mGoalTopFloor;
+	int mGoalBottonFloor;
 
 	void Init(int elevatorMaxSize);
 	void Updata();
@@ -37,10 +38,13 @@ public:
 
 	// auto, manual
 	void CreatePeople();
+	void CreateManualPeople();
 	std::list<People*>::iterator DropPeople(std::list<People*>::iterator iter);
 
 	void SetIsAuto(bool _IsAuto);
 
 	void SetGoalFloor();
 	void ElevatorActive();
+
+	int nearingFloor(std::list<AElevator*>::iterator argc_iter);
 };

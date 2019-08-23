@@ -15,23 +15,22 @@ class AElevator
 	int number;
 	int safeWeight;
 	int peopleNumber;
-
-	int floorNumber;
 	int GoalFloor;
+	int floorNumber;
 	int arrow;
 	bool active;
-	bool IsCommand;
+
 	list<People*> EListPeoplePtr;
 
 	ElevatorManager * pElevatorManager;
 	void SetIsCommand();
-	void OutGoalFloor();
+	bool OutGoalFloor();
 
 public:
 	AElevator();
 	~AElevator();
 	void Updata();
-
+	bool IsCommand;
 	void Init(ElevatorManager * _pElevatorManager);
 	void AddPeople(People * people);
 
@@ -49,6 +48,8 @@ public:
 
 	void SetArrow(int _arrow);
 	int GetArrow() const;
+
+	int GetGoalFloor() const;
 
 	void SetGoalFloor(int _GoalFloor);
 	bool GetIsCommand();

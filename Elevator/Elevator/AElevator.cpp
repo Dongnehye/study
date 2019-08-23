@@ -6,26 +6,57 @@ void AElevator::SetIsCommand()
 {
 	if (active)
 	{
-		if (floorNumber == GoalFloor)
+		if (floorNumber < GoalFloor)
 		{
-			IsCommand = false;
-			SetArrow(Adown);
-			OutGoalFloor();
+			SetArrow(Aup);
 		}
+		else if (floorNumber > GoalFloor)
+		{
+			SetArrow(Adown);
+		}
+
 	}
 }
 
-void AElevator::OutGoalFloor()
+bool AElevator::OutGoalFloor()
 {
 	int _GoalFloor = 0;
 	int temp = 0;
-	for (auto iter = EListPeoplePtr.begin(); iter != EListPeoplePtr.end(); ++iter)
+
+	if (arrow == Aup)
 	{
-		temp = (*iter)->GetWantFloor();
-		if (_GoalFloor < temp)
-			_GoalFloor = temp;
+		_GoalFloor = 0;
 	}
-	GoalFloor = _GoalFloor;
+	if (arrow == Adown)
+	{
+		_GoalFloor = 20;
+	}
+
+	if (floorNumber == GoalFloor)
+	{
+		for (auto iter = EListPeoplePtr.begin(); iter != EListPeoplePtr.end(); ++iter)
+		{
+			temp = (*iter)->GetWantFloor();
+			if (arrow == Aup)
+			{
+				if (_GoalFloor < temp)
+					_GoalFloor = temp;
+			}
+			if (arrow == Adown)
+			{
+				if (_GoalFloor > temp)
+					_GoalFloor = temp;
+			}
+		}
+		if (EListPeoplePtr.size() != 0)
+		{
+			GoalFloor = _GoalFloor;
+			IsCommand = false;
+		}
+		else
+			return false;
+	}
+	return true;
 }
 
 AElevator::AElevator()
@@ -41,7 +72,6 @@ AElevator::AElevator()
 	IsCommand = true;
 }
 
-
 AElevator::~AElevator()
 {
 }
@@ -50,13 +80,18 @@ void AElevator::Updata()
 {
 	// dropPeople;
 	DropPeople(floorNumber);
-	CheckFloor();
-
-	// Move.
-	Move();
+	
+	if (!OutGoalFloor())
+	{
+		SetActive(false);
+		IsCommand = true;
+	}
 
 	SetIsCommand();
-
+	CheckFloor();
+	// Move.
+	if(active)
+		Move();
 }
 
 void AElevator::Init(ElevatorManager * _pElevatorManager)
@@ -119,15 +154,30 @@ void AElevator::CheckFloor()
 
 	while (iter != iterEnd)
 	{
-		if ((*iter)->GetFloor() == floorNumber && (*iter)->GetArrow() == arrow)
+		if (active)
 		{
-			EListPeoplePtr.push_back(*iter);
-			iter = pElevatorManager->DropPeople(iter);
+			if ((*iter)->GetFloor() == floorNumber && (*iter)->GetArrow() == arrow)
+			{
+				EListPeoplePtr.push_back(*iter);
+				iter = pElevatorManager->DropPeople(iter);
+			}
+			if (iter != iterEnd)
+				++iter;
+			else
+				break;
 		}
-		if (iter != iterEnd)
-			++iter;
 		else
-			break;
+		{
+			if ((*iter)->GetFloor() == floorNumber)
+			{
+				EListPeoplePtr.push_back(*iter);
+				iter = pElevatorManager->DropPeople(iter);
+			}
+			if (iter != iterEnd)
+				++iter;
+			else
+				break;
+		}
 	}
 }
 
@@ -139,6 +189,11 @@ void AElevator::SetArrow(int _arrow)
 int AElevator::GetArrow() const
 {
 	return arrow;
+}
+
+int AElevator::GetGoalFloor() const
+{
+	return GoalFloor;
 }
 
 void AElevator::SetGoalFloor(int _GoalFloor)

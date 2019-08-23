@@ -11,12 +11,12 @@
 #include "ElevatorManager.h"
 
 #define MAXSIZE 4
-#define FPS 10
+#define FPS 30
 
 int main()
 { 
 	char ch = NULL;
-	srand(time(NULL));
+	srand((unsigned)time(NULL));
 	ElevatorManager Em;
 	//init
 	Em.Init(MAXSIZE);
@@ -27,14 +27,16 @@ int main()
 		if (kbhit())
 		{
 			ch = getch();
-			if (ch = 'z')
+			if (ch == 'z')
 			{
 				Em.SetIsAuto(true);
 			}
-			else if (ch = 'x')
+			else if (ch == 'x')
 			{
 				Em.SetIsAuto(false);
+				Em.CreateManualPeople();
 			}
+			//ch = getch();
 		}
 		Em.Updata();
 
@@ -43,9 +45,5 @@ int main()
 
 		Sleep(1000 / FPS);
 	}
-
-
-
-
 	return 0;
 }
