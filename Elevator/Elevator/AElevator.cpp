@@ -59,7 +59,7 @@ bool AElevator::SetGoalFloor()
 
 AElevator::AElevator()
 {
-	number = 0;
+	WaitCountdown = WAITCOUNTDOWN;
 	safeWeight = 600;
 	peopleNumber = 10;
 	floorNumber = 1;
@@ -68,6 +68,7 @@ AElevator::AElevator()
 	arrow = Aup;
 	active = false;
 	IsCommand = true;
+	isCountDown = false;
 }
 
 AElevator::~AElevator()
@@ -78,20 +79,25 @@ AElevator::~AElevator()
 
 void AElevator::Updata()
 {
-	// dropPeople;
-	DropPeople(floorNumber);
-	
-	if (!SetGoalFloor())
+	if (Countdown())
 	{
-		SetActive(false);
-		IsCommand = true;
+		// dropPeople;
+		DropPeople(floorNumber);
+
+		if (!SetGoalFloor())
+		{
+			SetActive(false);
+			IsCommand = true;
+		}
+		SetIsCommand();
+		CheckFloor();
+		SetCountdownZero();
+		// Move.
+
+		if (active)
+			Move();
 	}
 
-	SetIsCommand();
-	CheckFloor();
-	// Move.
-	if(active)
-		Move();
 }
 
 void AElevator::Init(ElevatorManager * _pElevatorManager)
@@ -131,6 +137,7 @@ void AElevator::DropPeople(int floorNumber)
 		if (floorNumber == (*iter)->GetWantFloor())
 		{
 			iter = EListPeoplePtr.erase(iter);
+			isCountDown = true;
 		}
 		if (iter != iterEnd)
 			++iter;
@@ -179,6 +186,7 @@ void AElevator::CheckFloor()
 				{
 					EListPeoplePtr.push_back(*iter);
 					iter = pElevatorManager->DropPeople(iter);
+					isCountDown = true;
 				}
 			}
 			if (iter != iterEnd)
@@ -194,6 +202,7 @@ void AElevator::CheckFloor()
 				{
 					EListPeoplePtr.push_back(*iter);
 					iter = pElevatorManager->DropPeople(iter);
+					isCountDown = true;
 				}
 			}
 			if (iter != iterEnd)
@@ -227,6 +236,26 @@ void AElevator::SetGoalFloor(int _GoalFloor)
 bool AElevator::GetIsCommand()
 {
 	return IsCommand;
+}
+
+bool AElevator::Countdown()
+{
+	if (WaitCountdown >= WAITCOUNTDOWN)
+	{
+		isCountDown = false;
+		return true;
+	}
+	else
+	{
+		WaitCountdown += 1;
+		return false;
+	}
+}
+
+void AElevator::SetCountdownZero()
+{
+	if(isCountDown)
+		WaitCountdown = 0;
 }
 
 int AElevator::GetFloor() const

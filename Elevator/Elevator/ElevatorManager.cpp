@@ -211,13 +211,13 @@ void ElevatorManager::ElevatorActive()
 			piter->IsCommand = false;
 			break;
 		}
-		else if (piter->GetActive() == true && piter->GetIsCommand())
+		else if (piter->GetActive() == true)
 		{
 			if(piter->GetArrow() == Aup)
 				piter->SetGoalFloor(mGoalTopFloor);
 			else if (piter->GetArrow() == Adown)
 				piter->SetGoalFloor(mGoalBottonFloor);
-			break;			
+			//break;			
 		}
 	}
 }

@@ -16,13 +16,13 @@ People::~People()
 
 bool People::Init()
 {
-	Floor = (rand() % 20 )+ 1;
-	weight = (rand() % 100) + 40;
+	Floor = (rand() % MAXFLOORSIZE) + MINFLOOR;
+	weight = (rand() % MAXWEIGHT) + MINWEIGHT;
 	wait = false;
 
 	while (true)
 	{
-		wantFloor = (rand() % 20) + 1;
+		wantFloor = (rand() % MAXFLOORSIZE) + MINFLOOR;
 		if (wantFloor != Floor)
 			break;
 	}
@@ -33,7 +33,7 @@ bool People::Init(int _Floor, int _wantFloor)
 {
 	Floor = _Floor;
 	wantFloor = _wantFloor;
-	weight = (rand() % 100) + 40;
+	weight = (rand() % MAXWEIGHT) + MINWEIGHT;
 
 	return false;
 }

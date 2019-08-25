@@ -6,18 +6,17 @@
 
 using namespace std;
 
-
 class ElevatorManager;
 class AElevator
 {
-	int number;
 	int safeWeight;
 	int peopleNumber;
 	int GoalFloor;
 	int floorNumber;
 	int arrow;
+	int WaitCountdown;
 	bool active;
-
+	bool isCountDown;
 	list<People*> EListPeoplePtr;
 
 	ElevatorManager * pElevatorManager;
@@ -54,4 +53,7 @@ public:
 
 	void SetGoalFloor(int _GoalFloor);
 	bool GetIsCommand();
+
+	bool Countdown();
+	void SetCountdownZero();
 };
