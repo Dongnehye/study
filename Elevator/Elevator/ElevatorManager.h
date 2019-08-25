@@ -33,8 +33,8 @@ public:
 	void CreateElevator(int size);
 	void AddElevator(AElevator * col);
 	
-	void CountAddFloor();
 	void InitCountFloor();
+	void CountAddFloor();
 
 	// auto, manual
 	void CreatePeople();
@@ -45,6 +45,4 @@ public:
 
 	void SetGoalFloor();
 	void ElevatorActive();
-
-	int nearingFloor(std::list<AElevator*>::iterator argc_iter);
 };

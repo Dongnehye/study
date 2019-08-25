@@ -20,7 +20,6 @@ ElevatorManager::~ElevatorManager()
 void ElevatorManager::Init(int elevatorMaxSize)
 {
 	CreateElevator(elevatorMaxSize);
-	//VecElevatorPtr[0]->SetActive(true);
 }
 
 void ElevatorManager::Updata()
@@ -40,17 +39,20 @@ void ElevatorManager::Updata()
 	{
 		(*iter)->Updata();
 	}
-	//VecElevatorPtr[0]->Updata();
 
 	CountAddFloor();
 }
 
 void ElevatorManager::CreateElevator(int size)
 {
-	for (int i = 0; i < size; ++i)
+	for (int i = 1; i <= size; ++i)
 	{
 		AElevator * New = new AElevator();
 		New->Init(this);
+		if (i > size / 2)
+		{
+			New->SetFloor(MAXFLOORSIZE);
+		}
 		AddElevator(New);
 	}
 
@@ -197,15 +199,11 @@ void ElevatorManager::ElevatorActive()
 		{
 			piter->SetActive(true);
 
-
-
 			if(piter->GetFloor() < mGoalTopFloor )
 				piter->SetGoalFloor(mGoalTopFloor);
 
 			else if(piter->GetFloor() > mGoalBottonFloor)
 				piter->SetGoalFloor(mGoalBottonFloor);
-
-			
 
 			piter->IsCommand = false;
 			break;
@@ -216,30 +214,7 @@ void ElevatorManager::ElevatorActive()
 				piter->SetGoalFloor(mGoalTopFloor);
 			else if (piter->GetArrow() == Adown)
 				piter->SetGoalFloor(mGoalBottonFloor);
-			//break;
-			
+			break;			
 		}
 	}
-}
-
-int ElevatorManager::nearingFloor(list<AElevator*>::iterator argc_iter)
-{
-	int fclose_num = 0;
-	int sclose_num = 0;
-	int floor_num = 0;
-	(*argc_iter)->GetFloor();
-	for (auto iter = EMListPeoplePtr.begin(); iter != EMListPeoplePtr.end(); ++iter)
-	{
-		if(fclose_num == 0)
-			fclose_num = abs((*iter)->GetFloor() - (*argc_iter)->GetFloor());
-		else
-		{
-			sclose_num = abs((*iter)->GetFloor() - (*argc_iter)->GetFloor());
-			if (fclose_num > sclose_num)
-				floor_num = (*iter)->GetFloor();
-			else
-				fclose_num = sclose_num;
-		}
-	}
-	return floor_num;
 }

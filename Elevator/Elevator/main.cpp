@@ -11,7 +11,7 @@
 #include "ElevatorManager.h"
 
 #define MAXSIZE 4
-#define FPS 30
+#define FPS 10
 
 int main()
 { 

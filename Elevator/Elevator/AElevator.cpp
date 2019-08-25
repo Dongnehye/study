@@ -14,7 +14,6 @@ void AElevator::SetIsCommand()
 		{
 			SetArrow(Adown);
 		}
-
 	}
 }
 
@@ -25,13 +24,12 @@ bool AElevator::OutGoalFloor()
 
 	if (arrow == Aup)
 	{
-		_GoalFloor = 0;
+		_GoalFloor = MINFLOOR - 1;
 	}
 	if (arrow == Adown)
 	{
-		_GoalFloor = 20;
+		_GoalFloor = MAXFLOOR;
 	}
-
 	if (floorNumber == GoalFloor)
 	{
 		for (auto iter = EListPeoplePtr.begin(); iter != EListPeoplePtr.end(); ++iter)
@@ -97,6 +95,11 @@ void AElevator::Updata()
 void AElevator::Init(ElevatorManager * _pElevatorManager)
 {
 	pElevatorManager = _pElevatorManager;
+}
+
+void AElevator::SetFloor(int _floorNumber)
+{
+	floorNumber = _floorNumber;
 }
 
 void AElevator::AddPeople(People * people)

@@ -5,6 +5,7 @@
 #include "ElevatorManager.h"
 
 #define MAXFLOOR 20
+#define MINFLOOR 1
 
 using namespace std;
 
@@ -32,6 +33,7 @@ public:
 	void Updata();
 	bool IsCommand;
 	void Init(ElevatorManager * _pElevatorManager);
+	void SetFloor(int _floorNumber);
 	void AddPeople(People * people);
 
 	void DropPeople(int floorNumber);
