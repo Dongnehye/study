@@ -1,2 +1,12 @@
-﻿  ElevatorManager.cpp
+﻿  AElevator.cpp
+  ElevatorManager.cpp
+  People.cpp
+  main.cpp
+d:\neople\study\elevator\elevator\main.cpp(14): warning C4005: 'FPS': 매크로 재정의
+  d:\neople\study\elevator\elevator\commonheader.h(4): note: 'FPS'의 이전 정의를 참조하십시오.
+d:\neople\study\elevator\elevator\main.cpp(27): warning C4996: 'kbhit': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _kbhit. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\conio.h(459): note: 'kbhit' 선언을 참조하십시오.
+d:\neople\study\elevator\elevator\main.cpp(29): warning C4996: 'getch': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _getch. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\conio.h(453): note: 'getch' 선언을 참조하십시오.
+  코드를 생성하고 있습니다...
   Elevator.vcxproj -> D:\Neople\study\Elevator\Debug\Elevator.exe

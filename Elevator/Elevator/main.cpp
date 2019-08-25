@@ -17,9 +17,9 @@ int main()
 { 
 	char ch = NULL;
 	srand((unsigned)time(NULL));
-	ElevatorManager Em;
+	ElevatorManager * Em = new ElevatorManager();
 	//init
-	Em.Init(MAXSIZE);
+	Em->Init(MAXSIZE);
 	while (true)
 	{
 		system("cls");
@@ -29,21 +29,27 @@ int main()
 			ch = getch();
 			if (ch == 'z')
 			{
-				Em.SetIsAuto(true);
+				Em->SetIsAuto(true);
 			}
 			else if (ch == 'x')
 			{
-				Em.SetIsAuto(false);
-				Em.CreateManualPeople();
+				Em->SetIsAuto(false);
+				Em->CreateManualPeople();
+			}
+			else if (ch == 'c')
+			{
+				break;
 			}
 			//ch = getch();
 		}
-		Em.Updata();
+		Em->Updata();
 
 		//draw
-		Em.Draw();
+		Em->Draw();
 
 		Sleep(1000 / FPS);
 	}
+	delete Em;
+
 	return 0;
 }

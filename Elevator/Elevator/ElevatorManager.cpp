@@ -2,6 +2,7 @@
 #include <iostream>
 #include <time.h>
 #include <math.h>
+#include <algorithm>
 
 ElevatorManager::ElevatorManager()
 {
@@ -13,6 +14,8 @@ ElevatorManager::ElevatorManager()
 
 ElevatorManager::~ElevatorManager()
 {
+	for_each(VecElevatorPtr.begin(), VecElevatorPtr.end(), [](auto iter) {delete iter; });
+	for_each(EMListPeoplePtr.begin(), EMListPeoplePtr.end(), [](auto iter) {delete iter; });
 	VecElevatorPtr.clear();
 	EMListPeoplePtr.clear();
 }
@@ -86,7 +89,7 @@ void ElevatorManager::Draw()
 		for (int j = 1; j < WITDH; ++j)
 		{
 			if (i == 0 && j == WITDH / 2 + 5)
-				cout << "Neople";
+				cout << "Neople" << "\t\t 'z'자동으로 시작, x 수동으로 사람입력, c 종료";
 			else if(i == 0)
 				cout << " ";
 			else if (i == 1 && j == WITDH - 1)
@@ -132,12 +135,8 @@ void ElevatorManager::Draw()
 
 void ElevatorManager::CreatePeople()
 {
-	//if ((rand() % 100) > PERCENTAGE)
-	//{
-	//}
-		People * peoplePtr = new People();
-		EMListPeoplePtr.push_back(peoplePtr);
-	
+	People * peoplePtr = new People();
+	EMListPeoplePtr.push_back(peoplePtr);
 }
 
 void ElevatorManager::CreateManualPeople()

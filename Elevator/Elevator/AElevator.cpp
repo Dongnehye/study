@@ -1,6 +1,6 @@
+#include <algorithm>
 #include "AElevator.h"
 #include "Commonheader.h"
-
 
 void AElevator::SetIsCommand()
 {
@@ -72,6 +72,8 @@ AElevator::AElevator()
 
 AElevator::~AElevator()
 {
+	for_each(EListPeoplePtr.begin(), EListPeoplePtr.end(), [](auto iter) {delete iter; });
+	EListPeoplePtr.clear();
 }
 
 void AElevator::Updata()
