@@ -2,7 +2,7 @@
 #include "AElevator.h"
 #include "Commonheader.h"
 
-void AElevator::SetIsCommand()
+void AElevator::Arrowtrigger()
 {
 	if (active)
 	{
@@ -89,15 +89,14 @@ void AElevator::Updata()
 			SetActive(false);
 			IsCommand = true;
 		}
-		SetIsCommand();
+		Arrowtrigger();
 		CheckFloor();
-		SetCountdownZero();
 		// Move.
 
 		if (active)
 			Move();
+		SetCountdownZero();
 	}
-
 }
 
 void AElevator::Init(ElevatorManager * _pElevatorManager)
@@ -240,7 +239,7 @@ bool AElevator::GetIsCommand()
 
 bool AElevator::Countdown()
 {
-	if (WaitCountdown >= WAITCOUNTDOWN)
+	if (WaitCountdown == WAITCOUNTDOWN)
 	{
 		isCountDown = false;
 		return true;

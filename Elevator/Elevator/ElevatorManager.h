@@ -44,5 +44,5 @@ public:
 	void SetIsAuto(bool _IsAuto);
 
 	void SetGoalFloor();
-	void ElevatorActive();
+	void SetElevatorGoalFloor();
 };

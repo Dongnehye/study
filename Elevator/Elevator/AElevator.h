@@ -20,14 +20,16 @@ class AElevator
 	list<People*> EListPeoplePtr;
 
 	ElevatorManager * pElevatorManager;
-	void SetIsCommand();
+	void Arrowtrigger();
 	bool SetGoalFloor();
 
 public:
 	AElevator();
 	~AElevator();
 	void Updata();
+
 	bool IsCommand;
+
 	void Init(ElevatorManager * _pElevatorManager);
 	void SetFloor(int _floorNumber);
 	void AddPeople(People * people);

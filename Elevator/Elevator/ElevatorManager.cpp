@@ -38,7 +38,7 @@ void ElevatorManager::Updata()
 
 	SetGoalFloor();
 
-	ElevatorActive();
+	SetElevatorGoalFloor();
 
 	for (auto iter = VecElevatorPtr.begin(); iter != VecElevatorPtr.end(); ++iter)
 	{
@@ -193,7 +193,7 @@ void ElevatorManager::SetGoalFloor()
 	mGoalBottonFloor = _GoalBottonFloor;
 }
 
-void ElevatorManager::ElevatorActive()
+void ElevatorManager::SetElevatorGoalFloor()
 {
 	for (auto iter = VecElevatorPtr.begin(); iter != VecElevatorPtr.end(); ++iter)
 	{
