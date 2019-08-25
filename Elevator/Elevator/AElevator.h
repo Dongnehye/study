@@ -4,9 +4,6 @@
 #include "People.h"
 #include "ElevatorManager.h"
 
-#define MAXFLOOR 20
-#define MINFLOOR 1
-
 using namespace std;
 
 
@@ -25,7 +22,7 @@ class AElevator
 
 	ElevatorManager * pElevatorManager;
 	void SetIsCommand();
-	bool OutGoalFloor();
+	bool SetGoalFloor();
 
 public:
 	AElevator();
@@ -35,6 +32,8 @@ public:
 	void Init(ElevatorManager * _pElevatorManager);
 	void SetFloor(int _floorNumber);
 	void AddPeople(People * people);
+
+	bool CheckSafeWeight(People * people);
 
 	void DropPeople(int floorNumber);
 

@@ -4,6 +4,8 @@
 #include <math.h>
 #include <algorithm>
 
+using namespace std;
+
 ElevatorManager::ElevatorManager()
 {
 	IsAuto = false;
@@ -84,25 +86,27 @@ void ElevatorManager::InitCountFloor()
 
 void ElevatorManager::Draw()
 {
+	int witdh = (3 * MAXSIZE) + 3;
+
 	for (int i = 0; i < HEIGHT; ++i)
 	{
-		for (int j = 1; j < WITDH; ++j)
+		for (int j = 1; j <= witdh; ++j)
 		{
-			if (i == 0 && j == WITDH / 2 + 5)
+			if (i == 0 && j == witdh / 2 + 5)
 				cout << "Neople" << "\t\t 'z'자동으로 시작, x 수동으로 사람입력, c 종료";
-			else if(i == 0)
+			else if (i == 0)
 				cout << " ";
-			else if (i == 1 && j == WITDH - 1)
+			else if (i == 1 && j == witdh)
 				cout << "옥상";
 			else if (i == 1)
 				cout << "▩";
-			else if (j == WITDH - 1)
+			else if (j == witdh)
 			{
 				cout << "Info : ";
 				cout << "People : ";
 				cout << CountFloor[HEIGHT - i - 1] << " ";
 			}
-			else if( j % 3 == 0 && VecElevatorPtr[(j / 3) - 1]->GetFloor() == (HEIGHT - i))
+			else if (j % 3 == 0 && VecElevatorPtr[(j / 3) - 1]->GetFloor() == (HEIGHT - i))
 			{
 				cout << "▣";
 			}
@@ -129,8 +133,8 @@ void ElevatorManager::Draw()
 		cout << (*iter)->GetGoalFloor() << endl;
 	}
 	
-	cout << "Goal : " << mGoalTopFloor << endl;
-	cout << "Goal : " << mGoalBottonFloor << endl;
+	cout << "MaxGoal : " << mGoalTopFloor << endl;
+	cout << "MinGoal : " << mGoalBottonFloor << endl;
 }
 
 void ElevatorManager::CreatePeople()

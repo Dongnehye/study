@@ -21,5 +21,6 @@ public:
 	int GetFloor() const;
 	int GetWantFloor() const;
 	int GetArrow() const;
+	int GetWeight() const;
 	void SetInit(int _floor, int wantfloor);
 };

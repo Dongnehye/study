@@ -9,8 +9,8 @@
 #include "People.h"
 #include "AElevator.h"
 #include "ElevatorManager.h"
+#include "Commonheader.h"
 
-#define MAXSIZE 4
 #define FPS 10
 
 int main()

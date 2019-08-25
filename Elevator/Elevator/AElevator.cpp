@@ -17,7 +17,7 @@ void AElevator::SetIsCommand()
 	}
 }
 
-bool AElevator::OutGoalFloor()
+bool AElevator::SetGoalFloor()
 {
 	int _GoalFloor = 0;
 	int temp = 0;
@@ -28,7 +28,7 @@ bool AElevator::OutGoalFloor()
 	}
 	if (arrow == Adown)
 	{
-		_GoalFloor = MAXFLOOR;
+		_GoalFloor = MAXFLOORSIZE;
 	}
 	if (floorNumber == GoalFloor)
 	{
@@ -81,7 +81,7 @@ void AElevator::Updata()
 	// dropPeople;
 	DropPeople(floorNumber);
 	
-	if (!OutGoalFloor())
+	if (!SetGoalFloor())
 	{
 		SetActive(false);
 		IsCommand = true;
@@ -109,6 +109,18 @@ void AElevator::AddPeople(People * people)
 	EListPeoplePtr.push_back(people);
 }
 
+bool AElevator::CheckSafeWeight(People * people)
+{
+	int totalWeight = 0;
+	for_each(EListPeoplePtr.begin(), EListPeoplePtr.end(), 
+		[&totalWeight](auto iter) { totalWeight += (*iter).GetWeight();});
+
+	if (totalWeight + people->GetWeight() < safeWeight)
+		return true;
+	else
+		return false;
+}
+
 void AElevator::DropPeople(int floorNumber)
 {
 	auto iter = EListPeoplePtr.begin();
@@ -131,7 +143,7 @@ void AElevator::Move()
 {
 	if (floorNumber != GoalFloor)
 	{
-		if (arrow == Aup && floorNumber < MAXFLOOR)
+		if (arrow == Aup && floorNumber < MAXFLOORSIZE)
 		{
 			++floorNumber;
 		}
@@ -163,8 +175,11 @@ void AElevator::CheckFloor()
 		{
 			if ((*iter)->GetFloor() == floorNumber && (*iter)->GetArrow() == arrow)
 			{
-				EListPeoplePtr.push_back(*iter);
-				iter = pElevatorManager->DropPeople(iter);
+				if (CheckSafeWeight(*iter))
+				{
+					EListPeoplePtr.push_back(*iter);
+					iter = pElevatorManager->DropPeople(iter);
+				}
 			}
 			if (iter != iterEnd)
 				++iter;
@@ -175,8 +190,11 @@ void AElevator::CheckFloor()
 		{
 			if ((*iter)->GetFloor() == floorNumber)
 			{
-				EListPeoplePtr.push_back(*iter);
-				iter = pElevatorManager->DropPeople(iter);
+				if (CheckSafeWeight(*iter))
+				{
+					EListPeoplePtr.push_back(*iter);
+					iter = pElevatorManager->DropPeople(iter);
+				}
 			}
 			if (iter != iterEnd)
 				++iter;

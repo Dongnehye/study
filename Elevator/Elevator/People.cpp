@@ -69,6 +69,11 @@ int People::GetArrow() const
 	return arrow;
 }
 
+int People::GetWeight() const
+{
+	return weight;
+}
+
 void People::SetInit(int _floor, int _wantfloor)
 {
 	Floor = _floor;
