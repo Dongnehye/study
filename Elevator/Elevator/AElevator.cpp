@@ -49,7 +49,6 @@ bool AElevator::SetGoalFloor()
 		if (EListPeoplePtr.size() != 0)
 		{
 			GoalFloor = _GoalFloor;
-			IsCommand = false;
 		}
 		else
 			return false;
@@ -60,14 +59,14 @@ bool AElevator::SetGoalFloor()
 AElevator::AElevator()
 {
 	WaitCountdown = WAITCOUNTDOWN;
-	safeWeight = 600;
-	peopleNumber = 10;
+	safeWeight = SAFEWEIGHT;
 	floorNumber = 1;
-
 	GoalFloor = 1;
 	arrow = Aup;
+
 	active = false;
 	IsCommand = true;
+
 	isCountDown = false;
 }
 
@@ -130,12 +129,15 @@ void AElevator::DropPeople(int floorNumber)
 {
 	auto iter = EListPeoplePtr.begin();
 	auto iterEnd = EListPeoplePtr.end();
+	People * ptr;
 
 	while (iter != iterEnd)
 	{
 		if (floorNumber == (*iter)->GetWantFloor())
 		{
+			ptr = *iter;
 			iter = EListPeoplePtr.erase(iter);
+			delete ptr;
 			isCountDown = true;
 		}
 		if (iter != iterEnd)
@@ -230,6 +232,11 @@ int AElevator::GetGoalFloor() const
 void AElevator::SetGoalFloor(int _GoalFloor)
 {
 	GoalFloor = _GoalFloor;
+}
+
+void AElevator::SetIsCommand(bool _IsCommand)
+{
+	IsCommand = _IsCommand;
 }
 
 bool AElevator::GetIsCommand()

@@ -11,8 +11,6 @@
 #include "ElevatorManager.h"
 #include "Commonheader.h"
 
-#define FPS 10
-
 int main()
 { 
 	char ch = NULL;

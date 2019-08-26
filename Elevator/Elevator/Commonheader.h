@@ -3,15 +3,16 @@
 #define MAXFLOORSIZE 20
 #define MINFLOOR 1
 #define MAXWEIGHT 80
-#define MINWEIGHT 40
-#define FPS 30
-#define HEIGHT 22
-#define WITDH 16
+#define MINWEIGHT 20
+#define FPS 5
 #define WAITCOUNTDOWN 4
+#define PECENTAGE 40
+#define MAXPECENTAGE 100
+
+#define SAFEWEIGHT 600
 
 enum Arrow
 {
 	Aup,
-	Adown,
-	Await
+	Adown
 };

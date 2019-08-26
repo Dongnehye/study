@@ -60,7 +60,6 @@ void ElevatorManager::CreateElevator(int size)
 		}
 		AddElevator(New);
 	}
-
 }
 
 void ElevatorManager::AddElevator(AElevator * col)
@@ -87,8 +86,9 @@ void ElevatorManager::InitCountFloor()
 void ElevatorManager::Draw()
 {
 	int witdh = (3 * MAXSIZE) + 3;
+	int height = MAXFLOORSIZE + 2;
 
-	for (int i = 0; i < HEIGHT; ++i)
+	for (int i = 0; i < height; ++i)
 	{
 		for (int j = 1; j <= witdh; ++j)
 		{
@@ -104,9 +104,9 @@ void ElevatorManager::Draw()
 			{
 				cout << "Info : ";
 				cout << "People : ";
-				cout << CountFloor[HEIGHT - i - 1] << " ";
+				cout << CountFloor[height - i - 1] << " ";
 			}
-			else if (j % 3 == 0 && VecElevatorPtr[(j / 3) - 1]->GetFloor() == (HEIGHT - i))
+			else if (j % 3 == 0 && VecElevatorPtr[(j / 3) - 1]->GetFloor() == (height - i))
 			{
 				cout << "¢Ã";
 			}
@@ -139,8 +139,11 @@ void ElevatorManager::Draw()
 
 void ElevatorManager::CreatePeople()
 {
-	People * peoplePtr = new People();
-	EMListPeoplePtr.push_back(peoplePtr);
+	if (rand() % MAXPECENTAGE < PECENTAGE)
+	{
+		People * peoplePtr = new People();
+		EMListPeoplePtr.push_back(peoplePtr);
+	}
 }
 
 void ElevatorManager::CreateManualPeople()
@@ -208,10 +211,10 @@ void ElevatorManager::SetElevatorGoalFloor()
 			else if(piter->GetFloor() > mGoalBottonFloor)
 				piter->SetGoalFloor(mGoalBottonFloor);
 
-			piter->IsCommand = false;
+			piter->SetIsCommand(false);
 			break;
 		}
-		else if (piter->GetActive() == true && piter->IsCommand)
+		else if (piter->GetActive() == true && piter->GetIsCommand())
 		{
 			if(piter->GetArrow() == Aup)
 				piter->SetGoalFloor(mGoalTopFloor);

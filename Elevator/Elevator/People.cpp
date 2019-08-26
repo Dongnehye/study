@@ -18,7 +18,6 @@ bool People::Init()
 {
 	Floor = (rand() % MAXFLOORSIZE) + MINFLOOR;
 	weight = (rand() % MAXWEIGHT) + MINWEIGHT;
-	wait = false;
 
 	while (true)
 	{

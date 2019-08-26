@@ -5,7 +5,6 @@ class People
 	int Floor;
 	int wantFloor;
 	int weight;
-	bool wait;
 
 	int arrow;
 public:
