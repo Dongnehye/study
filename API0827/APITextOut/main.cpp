@@ -62,6 +62,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	PAINTSTRUCT ps;
 	RECT rt = { 100,100,400,300 };
+	int l = 50;
+	int t = 100;
+	int r = 200;
+	int b = 180;
 	const TCHAR *str = TEXT("´ÔÀº °¬½À´Ï´Ù. ¾Æ¾Æ »ç¶ûÇÏ´Â ³ªÀÇ ´ÔÀº °¬½À´Ï´Ù. Çª¸¥ »êºûÀ» "
 	"±úÄ¡°í ´ÜÇ³³ª¹« ½£À» ÇâÇÏ¿© ³­ ÀÛÀº ±æÀ» °É¾î¼­ Â÷¸¶ ¶³Ä¡°í °¬½À´Ï´Ù."
 	"È²±ÝÀÇ ²É°°ÀÌ ±»°í ºû³ª´ø ¿¾ ¸Í¼¼´Â Â÷µðÂù Æ¼²øÀÌ µÇ¾î ÇÑ¼ûÀÇ ¹ÌÇ³¿¡ "
@@ -76,14 +80,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		hdc = BeginPaint(hWnd, &ps);
 		//SetPixel(hdc, 100, 100, RGB(255, 0, 0));
 		//DrawText(hdc, str, -1, &rt, DT_CENTER | DT_WORDBREAK);
-		//SetPixel(hdc, 10, 10, RGB(255, 0, 0));
-		//MoveToEx(hdc, 50, 50, NULL);
-		//Rectangle(hdc, 50, 100, 200, 180);
-		//Ellipse(hdc, 50, 100, 200, 180);
+		MoveToEx(hdc, l, t, NULL);
+		Rectangle(hdc, l, t, r, b);
+		Ellipse(hdc, l, t, r, b);
 
-		//MoveToEx(hdc, 150, 100, NULL);
-		//LineTo(hdc,100,180);
-		DrawCircls(hdc, 100, 100, 50, 50);
+		MoveToEx(hdc, (l + r)/2, t, NULL);
+		LineTo(hdc, r, (t + b)/2);
+		LineTo(hdc, (l + r) / 2, b);
+		LineTo(hdc, l, (t + b) / 2);
+		LineTo(hdc, (l + r) / 2, t);
+
+		//DrawCircls(hdc, 100, 100, 50, 50);
 		EndPaint(hWnd, &ps);
 		return 0;
 	}

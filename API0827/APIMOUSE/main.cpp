@@ -1,6 +1,14 @@
 #include <windows.h>
 #include <vector>
 
+struct paint
+{
+	int x1;
+	int x2;
+	int y1;
+	int y2;
+};
+
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -39,7 +47,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	return (int)Message.wParam;
 }
 
-vector<int> vec;
+vector<paint> vec;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam) // param 마우스 왼쪽 오른쪽 등의 부가정보를 가져온다.
 {
@@ -48,6 +56,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	static int y;
 	static BOOL bNowDraw = FALSE;
 	PAINTSTRUCT ps;
+	paint pa;
 
 	switch (iMessage)
 	{
@@ -61,9 +70,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		{
 			hdc = GetDC(hWnd);
 			MoveToEx(hdc, x, y, NULL);
+			pa.x1 = x;
+			pa.y1 = y;
 			x = LOWORD(lParam);
 			y = HIWORD(lParam);
+			pa.x2 = x;
+			pa.y2 = y;
 			LineTo(hdc, x, y);
+			vec.push_back(pa);
 			ReleaseDC(hWnd, hdc);
 		}
 		return 0;
@@ -71,7 +85,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		bNowDraw = FALSE;
 		return 0;
 	case WM_PAINT:
-
+		hdc = GetDC(hWnd);
+		for (auto Iter = vec.begin(); Iter != vec.end(); ++Iter)
+		{
+			MoveToEx(hdc, (*Iter).x1, (*Iter).y1, NULL);
+			LineTo(hdc, (*Iter).x2, (*Iter).y2);
+		}
+		ReleaseDC(hWnd, hdc);
 		return 0;
 	case WM_DESTROY:
 		PostQuitMessage(0);
