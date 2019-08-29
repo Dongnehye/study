@@ -16,7 +16,7 @@ Player::Player()
 	BeachRect = { 0,800, 1600,850 };
 	InputRect = { 610,620, 790,650 };
 	str[0] = 0;
-	Hp = 4;
+	Hp = 6;
 }
 
 
@@ -71,16 +71,17 @@ void Player::InputEnter(WPARAM wParam ,bool &_GameStart)
 void Player::Draw(HWND hWnd)
 {
 	HDC hdc = GetDC(hWnd);
-	char str1[128];
+	char hpBar[10];
 	//TextOut(hdc, 200, 200, str, lstrlen(str));
 	Rectangle(hdc, BeachRect.left, BeachRect.top, BeachRect.right, BeachRect.bottom);
 	Rectangle(hdc, TownRect.left, TownRect.top, TownRect.right, TownRect.bottom);
 	Rectangle(hdc, InputRect.left, InputRect.top, InputRect.right, InputRect.bottom);
 	DrawText(hdc, str ,-1,&InputRect, DT_LEFT | DT_VCENTER);
 	
-	sprintf(str1, "%d", Hp);
+	sprintf(hpBar, "%d", Hp);
 
-	TextOut(hdc, 200, 200, str1, lstrlen(str1));
+	TextOut(hdc, 660, 700, TEXT("HP : "), lstrlen("HP : "));
+	TextOut(hdc, 700, 700, hpBar, lstrlen(hpBar));
 
 	ReleaseDC(hWnd,hdc);
 }
