@@ -5,6 +5,7 @@
 #include "Block.h"
 #include "GameManager.h"
 #include "Player.h"
+#include "SaveLoader.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
@@ -12,14 +13,17 @@ LPCTSTR lpszClass = TEXT("MyTimer");
 
 GameManager * gm = new GameManager();
 Player * player = new Player();
+SaveLoader * saveLoader = new SaveLoader();
 
 void Update()
 {
 	gm->Update();
+	player->Update();
 }
 
 void Init()
 {
+	gm->Init(saveLoader);
 	player->Init(gm);
 }
 
@@ -79,14 +83,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		player->InputEnter(wParam);
 		InvalidateRect(hWnd, NULL, TRUE);
 		return 0;
-	//case WM_CHAR:
-	//	player->Input(wParam);
-	//	InvalidateRect(hWnd, NULL, TRUE);// 화면 갱신용. 메시지 큐에 마지막에 paint가 들어가는 경우.
-	//	return 0;
 	case WM_PAINT: // 출력 담당.
 		hdc = BeginPaint(hWnd, &ps);
-		gm->Draw(hWnd);
 		player->Draw(hWnd);
+		gm->Draw(hWnd);
 		EndPaint(hWnd, &ps);
 		return 0;
 	case WM_DESTROY:

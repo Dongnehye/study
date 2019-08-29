@@ -6,10 +6,13 @@ class Player
 {
 	int Hp;
 	char str[256];
+	char name[256];
 	GameManager * gm;
 
 	RECT TownRect;
 	RECT BeachRect;
+	RECT InputRect;
+	void GameOver();
 
 public:
 	Player();
@@ -18,4 +21,5 @@ public:
 	void Input(WPARAM wParam);
 	void InputEnter(WPARAM wParam);
 	void Draw(HWND hWnd);
+	void Update();
 };

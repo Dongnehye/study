@@ -2,11 +2,22 @@
 
 
 
+void Player::GameOver()
+{
+	if (Hp <= 0)
+	{
+		gm->GameOver(name);
+	}
+}
+
 Player::Player()
 {
-	TownRect = { 300,300, 700,700 };
-	BeachRect = { 300,300, 700,700 };
+	TownRect = { 600,600, 800,900 };
+	BeachRect = { 0,800, 1600,850 };
+	InputRect = { 610,620, 790,650 };
 	str[0] = 0;
+	strcpy(name,"╠Х╫баж");
+	Hp = 4;
 }
 
 
@@ -36,6 +47,7 @@ void Player::InputEnter(WPARAM wParam)
 	case VK_MENU:
 		break;
 	case VK_RETURN:
+		gm->CheckBlock(str);
 		strcpy(str, "");
 		break;
 	case VK_BACK:
@@ -55,6 +67,23 @@ void Player::InputEnter(WPARAM wParam)
 void Player::Draw(HWND hWnd)
 {
 	HDC hdc = GetDC(hWnd);
-	TextOut(hdc, 200, 200, str, lstrlen(str));
+	char str1[128];
+	//TextOut(hdc, 200, 200, str, lstrlen(str));
+	Rectangle(hdc, BeachRect.left, BeachRect.top, BeachRect.right, BeachRect.bottom);
+	Rectangle(hdc, TownRect.left, TownRect.top, TownRect.right, TownRect.bottom);
+	Rectangle(hdc, InputRect.left, InputRect.top, InputRect.right, InputRect.bottom);
+	DrawText(hdc, str ,-1,&InputRect, DT_LEFT | DT_VCENTER);
+	
+	sprintf(str1, "%d", Hp);
+
+	TextOut(hdc, 200, 200, str1, lstrlen(str1));
+
 	ReleaseDC(hWnd,hdc);
+}
+
+void Player::Update()
+{
+	if (gm->CheckCollisionBlock(TownRect, BeachRect))
+		Hp -= 1;
+	GameOver();
 }
