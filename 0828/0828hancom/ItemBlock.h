@@ -21,4 +21,5 @@ public:
 	virtual ~ItemBlock();
 	virtual void Init(SaveLoader * _saveLoader, GameManager * _gm);
 	virtual void BlockFunction();
+	virtual bool Item();
 };

@@ -7,7 +7,7 @@ void GameManager::CreateBlock()
 {
 	if (!GUIPause)
 	{
-		if (rand() % 100 < 10)
+		if (rand() % 100 < 60)
 		{
 			Block * pNew = new Block();
 			pNew->Init(saveLoader);
@@ -81,16 +81,12 @@ void GameManager::Init(SaveLoader * _saveLoader)
 
 void GameManager::Update()
 {
-	if (CheckGameOver())
-	{
-
-	}
-
 	CountItemColDown();
 	NextStage();
 	CreateBlock();
 	UpdateBlock();
 	SetStrScore();
+	SetStrRound();
 }
 
 bool GameManager::CheckBlock(char * str)
@@ -175,16 +171,25 @@ void GameManager::ClearBlcok()
 	listBlock.clear();
 }
 
-void GameManager::Draw(HWND hWnd)
+void GameManager::Draw(HWND hWnd,bool &GameStart)
 {
 	HDC hdc = GetDC(hWnd);
 	TextOut(hdc, 500, 0, strScore, strlen(strScore));
 	TextOut(hdc, 200, 0, strRound, strlen(strRound));
 
+	if(!GameStart)
+		TextOut(hdc, 700, 300, TEXT("Input Your Name"), strlen("Input Your Name"));
+
 	for (auto iter = listBlock.begin(); iter != listBlock.end(); ++iter)
 	{
-		if(!GUIStar)
+		if (!GUIStar)
+		{
+			if((*iter)->Item())
+				SetTextColor(hdc,RGB(0,0,255));
+			else
+				SetTextColor(hdc, RGB(0, 0, 0));
 			DrawText(hdc, (*iter)->str, -1, &(*iter)->MyRect, DT_CENTER | DT_WORDBREAK);
+		}
 		else
 			DrawText(hdc, TEXT("****"), -1, &(*iter)->MyRect, DT_CENTER | DT_WORDBREAK);
 	}

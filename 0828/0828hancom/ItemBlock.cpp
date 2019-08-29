@@ -40,3 +40,8 @@ void ItemBlock::BlockFunction()
 		break;
 	}
 }
+
+bool ItemBlock::Item()
+{
+	return true;
+}

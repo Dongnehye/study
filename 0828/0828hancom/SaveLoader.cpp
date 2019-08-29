@@ -1,5 +1,6 @@
 #include "SaveLoader.h"
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 bool SaveLoader::LoadStage(int round)
@@ -34,9 +35,13 @@ bool SaveLoader::LoadStage(int round)
 	return true;
 }
 
-bool SaveLoader::LoadLeaderBoard(int round)
+bool SaveLoader::LoadLeaderBoard()
 {
 	char LoadStr[256];
+	int round = 0;
+	int score = 0;
+	char StrNum[2];
+
 	string Str;
 	Str.reserve(256);
 
@@ -46,9 +51,14 @@ bool SaveLoader::LoadLeaderBoard(int round)
 	{
 		while (!feof(pFile))
 		{
-			fscanf(pFile, "%s\n", LoadStr);
+			Info New;
+			fscanf(pFile, "%s %d %d\n", LoadStr, &round, &score);
 			Str = LoadStr;
-			LeaderBoardData.push_back(Str);
+			New.name = Str;
+			New.round = round;
+			New.score = score;
+
+			LeaderBoardData.push_back(New);
 		}
 	}
 	else
@@ -62,15 +72,22 @@ bool SaveLoader::LoadLeaderBoard(int round)
 	return false;
 }
 
+void SaveLoader::SortLeaderBoard()
+{
+
+	sort(LeaderBoardData.begin(), LeaderBoardData.end(), [](const Info &Iter1, const Info &Iter2) { return Iter1.score > Iter2.score; });
+
+}
+
 bool SaveLoader::SaveData(char * name, int round, int score)
 {
-	FILE* pFile = fopen("save.txt", "w");
-	
+	FILE* pFile = fopen("save.txt", "a");
 	fprintf(pFile, "%s %d %d\n", name,round,score);
 
 	fclose(pFile);
 
-
+	LoadLeaderBoard();
+	SortLeaderBoard();
 	return false;
 }
 
@@ -95,4 +112,32 @@ string * SaveLoader::ReturnRandomStr()
 	Random = rand() % Strdata.size();
 
 	return &Strdata[Random];
+}
+
+void SaveLoader::DrawLeaderBoard(HWND hWnd)
+{
+	HDC hdc = GetDC(hWnd);
+	char StrNum[5];
+
+	int LeaderX = 700;
+	int LeaderY = 100;
+	TextOut(hdc, LeaderX, LeaderY, TEXT("LeaderBoard"),strlen("LeaderBoard"));
+	LeaderY += 30;
+	TextOut(hdc, LeaderX, LeaderY, TEXT("Name"), strlen("Name"));
+	TextOut(hdc, LeaderX + 300, LeaderY, TEXT("Round"), strlen("Round"));
+	TextOut(hdc, LeaderX + 500, LeaderY, TEXT("Score"), strlen("Score"));
+	LeaderY += 30;
+
+	for (auto Iter = LeaderBoardData.begin(); Iter != LeaderBoardData.end(); ++Iter)
+	{
+		TextOut(hdc, LeaderX, LeaderY, (*Iter).name.c_str(), strlen((*Iter).name.c_str()));
+		sprintf(StrNum, "%d", (*Iter).round);
+		TextOut(hdc, LeaderX + 300, LeaderY, StrNum, strlen(StrNum));
+		sprintf(StrNum, "%d", (*Iter).score);
+		TextOut(hdc, LeaderX + 500, LeaderY, StrNum, strlen(StrNum));
+		LeaderY += 30;
+	}
+
+
+	ReleaseDC(hWnd,hdc);
 }

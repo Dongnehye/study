@@ -7,7 +7,6 @@ class Block
 protected:
 	int rand_x;
 	int color;
-
 	int Left;
 	int Top;
 	int Right;
@@ -26,5 +25,6 @@ public:
 	bool CheckCollison();
 	void Update(int speed);
 	bool CheckCollisionBlock(RECT & Town, RECT & beach);
+	virtual bool Item();
 	virtual void BlockFunction();
 };

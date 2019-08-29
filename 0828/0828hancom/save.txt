@@ -1,1 +1,7 @@
-╠Х╫баж 1 0
+aaa 1 200
+bbb 2 300
+ccc 1 100
+ddd 3 500
+eee 1 400
+fff 5 700FLFLFL 1 0
+QWEQWE 1 0

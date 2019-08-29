@@ -19,7 +19,7 @@ public:
 	~Player();
 	void Init(GameManager * _gm);
 	void Input(WPARAM wParam);
-	void InputEnter(WPARAM wParam);
+	void InputEnter(WPARAM wParam,bool &_GameStart);
 	void Draw(HWND hWnd);
 	void Update();
 };

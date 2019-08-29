@@ -15,16 +15,31 @@ GameManager * gm = new GameManager();
 Player * player = new Player();
 SaveLoader * saveLoader = new SaveLoader();
 
+bool GameStart;
+
 void Update()
 {
-	gm->Update();
-	player->Update();
+	if (!gm->CheckGameOver() && GameStart)
+	{
+		gm->Update();
+		player->Update();
+	}
 }
 
 void Init()
 {
 	gm->Init(saveLoader);
 	player->Init(gm);
+}
+void Draw(HWND hWnd)
+{
+	if (!gm->CheckGameOver())
+	{
+		player->Draw(hWnd);
+		gm->Draw(hWnd, GameStart);
+	}
+	else
+		saveLoader->DrawLeaderBoard(hWnd);
 }
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
@@ -33,7 +48,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	MSG Message;
 	WNDCLASS WndClass;
 	g_hInst = hInstance;
-
+	GameStart = false;
 	srand((unsigned)time(NULL));
 
 	WndClass.cbClsExtra = 0; // 화면 지울 때 여분 메모리/.
@@ -65,7 +80,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
-	HPEN MyPen, OldPen;
 	SYSTEMTIME st;
 
 	Init();
@@ -80,13 +94,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		InvalidateRect(hWnd, NULL, TRUE);
 		return 0;
 	case WM_KEYDOWN:
-		player->InputEnter(wParam);
+		player->InputEnter(wParam,GameStart);
 		InvalidateRect(hWnd, NULL, TRUE);
 		return 0;
 	case WM_PAINT: // 출력 담당.
 		hdc = BeginPaint(hWnd, &ps);
-		player->Draw(hWnd);
-		gm->Draw(hWnd);
+		Draw(hWnd);
 		EndPaint(hWnd, &ps);
 		return 0;
 	case WM_DESTROY:

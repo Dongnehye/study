@@ -141,13 +141,17 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="ItemBlock.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SaveLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Block.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="ItemBlock.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SaveLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

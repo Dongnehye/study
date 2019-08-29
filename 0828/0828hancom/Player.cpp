@@ -16,7 +16,6 @@ Player::Player()
 	BeachRect = { 0,800, 1600,850 };
 	InputRect = { 610,620, 790,650 };
 	str[0] = 0;
-	strcpy(name,"╠Х╫баж");
 	Hp = 4;
 }
 
@@ -37,7 +36,7 @@ void Player::Input(WPARAM wParam)
 	str[len + 1] = 0;
 }
 
-void Player::InputEnter(WPARAM wParam)
+void Player::InputEnter(WPARAM wParam ,bool &_GameStart)
 {
 	int len;
 	switch (wParam)
@@ -47,6 +46,11 @@ void Player::InputEnter(WPARAM wParam)
 	case VK_MENU:
 		break;
 	case VK_RETURN:
+		if (!_GameStart)
+		{
+			strcpy(name,str);
+			_GameStart = true;
+		}
 		gm->CheckBlock(str);
 		strcpy(str, "");
 		break;

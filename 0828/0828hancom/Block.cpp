@@ -19,7 +19,6 @@ void Block::Move(int speed)
 
 Block::Block()
 {
-
 }
 
 
@@ -56,6 +55,11 @@ bool Block::CheckCollisionBlock(RECT & Town, RECT & beach)
 		return true;
 	}
 
+	return false;
+}
+
+bool Block::Item()
+{
 	return false;
 }
 

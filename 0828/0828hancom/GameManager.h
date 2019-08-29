@@ -56,7 +56,7 @@ public:
 	bool CheckBlock(char * str);
 	bool CheckCollisionBlock(RECT &Town, RECT &beach);
 	void CountItemColDown();
-	void Draw(HWND hWnd);
+	void Draw(HWND hWnd,bool &GameStart);
 
 	void GameOver(char * name);
 
