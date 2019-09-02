@@ -50,6 +50,8 @@ public:
 	void Update();
 	void Input(bool LButton, POINT pt, WPARAM wParam);
 
+
+
 	void Release();
 	~MainGame();
 };

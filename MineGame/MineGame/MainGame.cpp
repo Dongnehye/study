@@ -25,7 +25,7 @@ void MainGame::Init(HWND _hWnd, HDC _hdc, HINSTANCE _hinst)
 	{
 		for (int j = 0; j < LEVELWIDTH * Level; ++j)
 		{
-			if (rand() % 100 > 50 && MineCount <= MineSize)
+			if (rand() % 100 > 50 && MineCount < MineSize)
 			{
 				IsMine = true;
 				++MineCount;
@@ -34,9 +34,75 @@ void MainGame::Init(HWND _hWnd, HDC _hdc, HINSTANCE _hinst)
 				IsMine = false;
 
 			Mine * pNew = new Mine();
-			pNew->Init(_hdc, _hinst, j * 26  + 40, i * 26 + 43 , IsMine);
+			pNew->Init(_hdc, _hinst, j * 26  + 40, i * 26 + 43 , IsMine, &vecMine);
 			vecMine.push_back(pNew);
 		}
+	}
+	for (auto Iter = vecMine.begin(); Iter != vecMine.end(); ++Iter)
+	{
+		static int CurrentPos = 0;
+		static int LineNumber = 0;
+		int TotalSize = (LEVELWIDTH * LEVELHEIGHT) * Level * Level - 1;
+		if ((*Iter)->GetIsMine())
+		{
+			if (CurrentPos - LEVELWIDTH - 1 >= 0)
+			{
+				vecMine[CurrentPos - LEVELWIDTH - 1]->AddAroundMineNumber();
+			}
+			if (CurrentPos - LEVELWIDTH >= 0)
+			{
+				vecMine[CurrentPos - LEVELWIDTH]->AddAroundMineNumber();
+			}
+			if (CurrentPos - LEVELWIDTH + 1 >= 0)
+			{
+				vecMine[CurrentPos - LEVELWIDTH + 1]->AddAroundMineNumber();
+
+			}
+			//if (CurrentPos - 1 >= 0 &&  && CurrentPos != LEVELWIDTH -1)
+			//{
+			//	vecMine[CurrentPos - 1]->AddAroundMineNumber();
+
+			//}
+			//if (CurrentPos + 1 > 0 && (CurrentPos - 1) % LEVELWIDTH != 0 && CurrentPos != 0)
+			//{
+			//	vecMine[CurrentPos + 1]->AddAroundMineNumber();
+
+			//}
+			if (CurrentPos - 1 >= 0 && LineNumber * LEVELWIDTH != CurrentPos && CurrentPos != LEVELWIDTH - 1)
+			{
+				vecMine[CurrentPos - 1]->AddAroundMineNumber();
+
+			}
+			if (CurrentPos + 1 > 0 && LineNumber * LEVELWIDTH + (LEVELWIDTH - 1) != CurrentPos && CurrentPos != 0)
+			{
+				vecMine[CurrentPos + 1]->AddAroundMineNumber();
+
+			}
+
+
+			if (CurrentPos + LEVELWIDTH - 1 < TotalSize)
+			{
+				vecMine[CurrentPos + LEVELWIDTH - 1]->AddAroundMineNumber();
+
+			}
+			if (CurrentPos + LEVELWIDTH < TotalSize)
+			{
+				vecMine[CurrentPos + LEVELWIDTH]->AddAroundMineNumber();
+
+			}
+			if (CurrentPos + LEVELWIDTH + 1 < TotalSize)
+			{
+				vecMine[CurrentPos + LEVELWIDTH + 1]->AddAroundMineNumber();
+
+			}
+		}
+		++CurrentPos;
+		if (CurrentPos >= LEVELWIDTH && CurrentPos % LEVELWIDTH == 0)
+			++LineNumber;
+	}
+	for (auto Iter = vecMine.begin(); Iter != vecMine.end(); ++Iter)
+	{
+		(*Iter)->SetMineNumberBitMap(hdc,hInst);
 	}
 }
 
@@ -103,3 +169,35 @@ void MainGame::Release()
 MainGame::~MainGame()
 {
 }
+//if (CurrentPos == 0)
+//{
+
+//}
+//else if (CurrentPos == (LEVELWIDTH * Level - 1))
+//{
+
+//}
+//else if (CurrentPos == ((LEVELHEIGHT * Level) * (LEVELWIDTH * Level - 1)))
+//{
+
+//}
+//else if (CurrentPos == ((LEVELHEIGHT * Level) * (LEVELWIDTH * Level) - 1 ))
+//{
+
+//}
+//else if (CurrentPos < LEVELWIDTH * Level - 1)
+//{
+
+//}
+//else if (CurrentPos % LEVELWIDTH == 0)
+//{
+
+//}
+//else if (CurrentPos % LEVELWIDTH == 0)
+//{
+
+//}
+//else
+//{
+
+//}
