@@ -13,14 +13,20 @@
 #define IDB_BITMAP9                     109
 #define IDB_BITMAP10                    110
 #define IDB_BITMAP11                    111
+#define IDR_MENU1                       112
+#define IDD_DIALOG1                     113
+#define IDC_RADIO4                      1004
+#define IDC_RADIO5                      1005
+#define IDC_RADIO6                      1006
+#define ID_FILE_SETTING                 40001
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        112
-#define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1001
+#define _APS_NEXT_RESOURCE_VALUE        115
+#define _APS_NEXT_COMMAND_VALUE         40002
+#define _APS_NEXT_CONTROL_VALUE         1002
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

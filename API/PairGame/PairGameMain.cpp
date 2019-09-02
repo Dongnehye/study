@@ -1,12 +1,20 @@
 #include <windows.h>
 #include "MainGame.h"
+#include "resource.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
 char g_szClassName[256] = "Hello World!!";
+INT_PTR CALLBACK SettingDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtDumpMemoryLeaks();
+	//_CrtSetBreakAlloc(160);
+
+	char* p = new char;
+
 	HWND hWnd;
 	MSG Message;
 	WNDCLASS WndClass;
@@ -20,7 +28,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	WndClass.hInstance = hInstance;
 	WndClass.lpfnWndProc = WndProc;
 	WndClass.lpszClassName = g_szClassName;
-	WndClass.lpszMenuName = NULL;
+	WndClass.lpszMenuName = MAKEINTRESOURCE(IDR_MENU1);
 	WndClass.style = CS_HREDRAW | CS_VREDRAW;
 	RegisterClass(&WndClass);
 
@@ -51,6 +59,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		MainGame::GetInstance()->Init(hWnd , hdc , g_hInst);
 		ReleaseDC(hWnd, hdc);
 		return 0;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case ID_FILE_SETTING:
+			DialogBox(g_hInst, MAKEINTRESOURCE(IDD_DIALOG1),hWnd, SettingDlg);
+			break;
+		}
+		return 0;
 	case WM_TIMER:
 		MainGame::GetInstance()->Update();
 		return 0;
@@ -72,4 +88,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	}
 
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
+}
+
+INT_PTR CALLBACK SettingDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	HWND hRadio;
+
+	switch (message)
+	{
+	case WM_INITDIALOG:
+		hRadio = GetDlgItem(hDlg, IDC_RADIO4);
+		SendMessage(hRadio, BM_SETCHECK, BST_CHECKED, 0);
+		break;
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK)
+		{
+			if(IsDlgButtonChecked(hDlg,IDC_RADIO4) == BST_CHECKED)
+			EndDialog(hDlg, LOWORD(wParam));
+		}
+		else if (LOWORD(wParam) == IDCANCEL)
+		{
+
+			EndDialog(hDlg, LOWORD(wParam));
+		}
+		break;
+	}
+	return 0;
 }
