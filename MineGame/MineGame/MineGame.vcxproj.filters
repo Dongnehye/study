@@ -41,6 +41,9 @@
     <ClInclude Include="BitMap.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CommonHeader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MineGame.rc">

@@ -20,7 +20,6 @@ void BitMap::Init(HDC hdc, HINSTANCE hInst, const char * FileName)
 	GetObject(m_hBitMap, sizeof(bitmap), &bitmap);
 	size.cx = bitmap.bmWidth;
 	size.cy = bitmap.bmHeight;
-
 }
 
 void BitMap::Draw(HDC hdc, int x, int y)

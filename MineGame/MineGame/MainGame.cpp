@@ -1,131 +1,167 @@
 #include "MainGame.h"
 
+using namespace std;
+
 MainGame * MainGame::m_sThis = nullptr;
+
+void MainGame::SetGameinfo()
+{
+	if (Level == 1)
+	{
+		Witdh = 9;
+		Height = 9;
+		MineSize = 4;
+	}
+	else if (Level == 2)
+	{
+		Witdh = 16;
+		Height = 16;
+		MineSize = 7;
+	}
+	else if (Level == 3)
+	{
+		Witdh = 30;
+		Height = 16;
+		MineSize = 20;
+	}
+}
+
+bool MainGame::GameOver()
+{
+	int OpenCount = 0;
+	int TotalTile = Witdh * Height;
+
+	for (auto Iter = vecMine.begin(); Iter != vecMine.end(); ++Iter)
+	{
+		if ((*Iter)->GetGameOverCount())
+			++OpenCount;
+	}
+	if (OpenCount == TotalTile)
+	{
+		KillTimer(hWnd, 1);
+		MessageBox(hWnd, "½Â¸®.", "½Â¸®", MB_OK);
+		return true;
+	}
+	else
+		return false;
+}
 
 MainGame::MainGame()
 {
 }
 
 //40, 43
-void MainGame::Init(HWND _hWnd, HDC _hdc, HINSTANCE _hinst)
+void MainGame::Init(HWND _hWnd, HDC _hdc, HINSTANCE _hinst, int _Level)
 {
 	srand(GetTickCount());
 	hWnd = _hWnd;
 	hdc = _hdc;
 	hInst = _hinst;
 
+	Level = _Level;
+	SetGameinfo();
+
 	BackgroundBitmap = new BitMap();
 	BackgroundBitmap->Init(hdc, hInst, "Mine\\back.bmp");
 
-	SelectLevel(1,10);
-	
-	bool IsMine = false;
-	int MineCount = 0;
-	for (int i = 0; i < LEVELHEIGHT * Level; ++i)
+	for (int i = 0; i < Height; ++i)
 	{
-		for (int j = 0; j < LEVELWIDTH * Level; ++j)
+		for (int j = 0; j < Witdh; ++j)
 		{
-			if (rand() % 100 > 50 && MineCount < MineSize)
-			{
-				IsMine = true;
-				++MineCount;
-			}
-			else
-				IsMine = false;
-
 			Mine * pNew = new Mine();
-			pNew->Init(_hdc, _hinst, j * 26  + 40, i * 26 + 43 , IsMine, &vecMine);
+			pNew->Init(_hdc, _hinst, j, i,Level,Witdh,Height,&vecMine);
 			vecMine.push_back(pNew);
 		}
 	}
+
+	int MineCount = 0;
+	while (true)
+	{
+		if (MineCount >= MineSize)
+			break;
+		int MinePos = rand() % ((Height * Witdh) - 1);
+
+		if (!vecMine[MinePos]->GetIsMine())
+		{
+			vecMine[MinePos]->SetIsMine(true);
+			++MineCount;
+		}
+	}
+
+	int TotalSize = (Height * Witdh);
+	int LevelWIDTH = Witdh;
+	int CurrentPos = 0;
+	int LineNumber = 0;
 	for (auto Iter = vecMine.begin(); Iter != vecMine.end(); ++Iter)
 	{
-		static int CurrentPos = 0;
-		static int LineNumber = 0;
-		int TotalSize = (LEVELWIDTH * LEVELHEIGHT) * Level * Level - 1;
+		if (CurrentPos == 0)
+			LineNumber = 0;
+		else
+			LineNumber = CurrentPos / LevelWIDTH;
+
 		if ((*Iter)->GetIsMine())
 		{
-			if (CurrentPos - LEVELWIDTH - 1 >= 0)
+			if (CurrentPos - LevelWIDTH - 1 >= 0 && CurrentPos != LineNumber * LevelWIDTH)
 			{
-				vecMine[CurrentPos - LEVELWIDTH - 1]->AddAroundMineNumber();
+				vecMine[CurrentPos - LevelWIDTH - 1]->AddAroundMineNumber();
 			}
-			if (CurrentPos - LEVELWIDTH >= 0)
+			if (CurrentPos - LevelWIDTH >= 0)
 			{
-				vecMine[CurrentPos - LEVELWIDTH]->AddAroundMineNumber();
+				vecMine[CurrentPos - LevelWIDTH]->AddAroundMineNumber();
 			}
-			if (CurrentPos - LEVELWIDTH + 1 >= 0)
+			if (CurrentPos - LevelWIDTH + 1 >= 0 && CurrentPos != (LevelWIDTH - 1) + LineNumber * LevelWIDTH)
 			{
-				vecMine[CurrentPos - LEVELWIDTH + 1]->AddAroundMineNumber();
-
+				vecMine[CurrentPos - LevelWIDTH + 1]->AddAroundMineNumber();
 			}
-			//if (CurrentPos - 1 >= 0 &&  && CurrentPos != LEVELWIDTH -1)
-			//{
-			//	vecMine[CurrentPos - 1]->AddAroundMineNumber();
 
-			//}
-			//if (CurrentPos + 1 > 0 && (CurrentPos - 1) % LEVELWIDTH != 0 && CurrentPos != 0)
-			//{
-			//	vecMine[CurrentPos + 1]->AddAroundMineNumber();
-
-			//}
-			if (CurrentPos - 1 >= 0 && LineNumber * LEVELWIDTH != CurrentPos && CurrentPos != LEVELWIDTH - 1)
+			if (CurrentPos != LineNumber * LevelWIDTH)
 			{
 				vecMine[CurrentPos - 1]->AddAroundMineNumber();
-
 			}
-			if (CurrentPos + 1 > 0 && LineNumber * LEVELWIDTH + (LEVELWIDTH - 1) != CurrentPos && CurrentPos != 0)
+			if (CurrentPos != (LevelWIDTH - 1) + LineNumber * LevelWIDTH )
 			{
 				vecMine[CurrentPos + 1]->AddAroundMineNumber();
-
 			}
 
-
-			if (CurrentPos + LEVELWIDTH - 1 < TotalSize)
+			if (CurrentPos + LevelWIDTH - 1 < TotalSize && CurrentPos != LineNumber * LevelWIDTH)
 			{
-				vecMine[CurrentPos + LEVELWIDTH - 1]->AddAroundMineNumber();
-
+				vecMine[CurrentPos + LevelWIDTH - 1]->AddAroundMineNumber();
 			}
-			if (CurrentPos + LEVELWIDTH < TotalSize)
+			if (CurrentPos + LevelWIDTH < TotalSize)
 			{
-				vecMine[CurrentPos + LEVELWIDTH]->AddAroundMineNumber();
-
+				vecMine[CurrentPos + LevelWIDTH]->AddAroundMineNumber();
 			}
-			if (CurrentPos + LEVELWIDTH + 1 < TotalSize)
+			if (CurrentPos + LevelWIDTH + 1 < TotalSize && CurrentPos != (LevelWIDTH - 1) + LineNumber * LevelWIDTH)
 			{
-				vecMine[CurrentPos + LEVELWIDTH + 1]->AddAroundMineNumber();
-
+				vecMine[CurrentPos + LevelWIDTH + 1]->AddAroundMineNumber();
 			}
 		}
 		++CurrentPos;
-		if (CurrentPos >= LEVELWIDTH && CurrentPos % LEVELWIDTH == 0)
-			++LineNumber;
 	}
 	for (auto Iter = vecMine.begin(); Iter != vecMine.end(); ++Iter)
 	{
 		(*Iter)->SetMineNumberBitMap(hdc,hInst);
 	}
+	InvalidateRect(hWnd, NULL, true);
 }
 
-void MainGame::SelectLevel(int _Level, int _MineSize)
+void MainGame::SelectLevel(int _Level, HDC _hdc)
 {
-	Level = _Level;
-	if (Level == 1)
+	SetTimer(hWnd, 1, 10, NULL);
+	for (auto iter = vecMine.begin(); iter != vecMine.end(); iter++)
 	{
-		Witdh = LEVEL_1_WIDTH;
-		Height = LEVEL_1_HEIGHT;
+		delete (*iter);
 	}
-	else if (Level == 2)
-	{
-		Witdh = LEVEL_2_WIDTH;
-		Height = LEVEL_2_HEIGHT;
-	}
-	else if (Level == 3)
-	{
-		Witdh = LEVEL_3_WIDTH;
-		Height = LEVEL_3_HEIGHT;
-	}
+	vecMine.clear();
+	vector<Mine*> TempSwap;
+	vecMine.swap(TempSwap);
 
-	MineSize = _MineSize;
+	BackgroundBitmap->Release();
+	delete BackgroundBitmap;
+
+	Level = _Level;
+
+	Init(hWnd, _hdc, hInst, Level);
 }
 
 void MainGame::Draw(HDC hdc)
@@ -138,17 +174,31 @@ void MainGame::Draw(HDC hdc)
 	}
 }
 
-void MainGame::Update()
-{
-}
-
-void MainGame::Input(bool LButton,POINT pt, WPARAM wParam)
+bool MainGame::Update()
 {
 	for (auto Iter = vecMine.begin(); Iter != vecMine.end(); ++Iter)
 	{
-		if ((*Iter)->Input(LButton, pt, wParam))
-		{
+		(*Iter)->SetIsDoubleClickPush(false);
+		InvalidateRect(hWnd, NULL, true);
+	}
 
+	if (GameOver())
+	{
+		return true;
+	}
+	return false;
+}
+
+void MainGame::Input(bool LButton,bool DoubleClick,POINT pt, WPARAM wParam)
+{
+	for (auto Iter = vecMine.begin(); Iter != vecMine.end(); ++Iter)
+	{
+		if ((*Iter)->Input(LButton, DoubleClick, pt, wParam))
+		{
+			if ((*Iter)->GetIsMine() && LButton && !DoubleClick)
+			{
+				MessageBox(hWnd, "Áö·Ú¿¡ °É·È´Ù.", "Áö·Ú", MB_OK);
+			}
 		}
 	}
 
@@ -169,35 +219,3 @@ void MainGame::Release()
 MainGame::~MainGame()
 {
 }
-//if (CurrentPos == 0)
-//{
-
-//}
-//else if (CurrentPos == (LEVELWIDTH * Level - 1))
-//{
-
-//}
-//else if (CurrentPos == ((LEVELHEIGHT * Level) * (LEVELWIDTH * Level - 1)))
-//{
-
-//}
-//else if (CurrentPos == ((LEVELHEIGHT * Level) * (LEVELWIDTH * Level) - 1 ))
-//{
-
-//}
-//else if (CurrentPos < LEVELWIDTH * Level - 1)
-//{
-
-//}
-//else if (CurrentPos % LEVELWIDTH == 0)
-//{
-
-//}
-//else if (CurrentPos % LEVELWIDTH == 0)
-//{
-
-//}
-//else
-//{
-
-//}

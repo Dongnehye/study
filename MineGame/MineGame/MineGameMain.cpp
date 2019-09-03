@@ -23,7 +23,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	WndClass.lpfnWndProc = WndProc;
 	WndClass.lpszClassName = g_szClassName;
 	WndClass.lpszMenuName = MAKEINTRESOURCE(IDR_MENU1);
-	WndClass.style = CS_HREDRAW | CS_VREDRAW;
+	WndClass.style = CS_HREDRAW | CS_VREDRAW |CS_DBLCLKS;
 	RegisterClass(&WndClass);
 
 	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
@@ -49,8 +49,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 		hdc = GetDC(hWnd);
-		SetTimer(hWnd, 1, 10, NULL);
-		MainGame::GetInstance()->Init(hWnd, hdc, g_hInst);
+		SetTimer(hWnd, 1, 1000, NULL);
+		MainGame::GetInstance()->Init(hWnd, hdc, g_hInst,1);
 		ReleaseDC(hWnd, hdc);
 		return 0;
 	case WM_COMMAND:
@@ -67,12 +67,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 		pt.x = LOWORD(lParam);
 		pt.y = HIWORD(lParam);
-		MainGame::GetInstance()->Input(true,pt, wParam);
+		MainGame::GetInstance()->Input(true, false,pt, wParam);
 		return 0;
 	case WM_RBUTTONDOWN:
 		pt.x = LOWORD(lParam);
 		pt.y = HIWORD(lParam);
-		MainGame::GetInstance()->Input(false, pt, wParam);
+		MainGame::GetInstance()->Input(false, false, pt, wParam);
+		return 0;
+	case WM_LBUTTONDBLCLK:
+		pt.x = LOWORD(lParam);
+		pt.y = HIWORD(lParam);
+		MainGame::GetInstance()->Input(true, true, pt, wParam);
+		return 0;
+	case WM_RBUTTONDBLCLK:
+		pt.x = LOWORD(lParam);
+		pt.y = HIWORD(lParam);
+		MainGame::GetInstance()->Input(false, true, pt, wParam);
 		return 0;
 	case  WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
@@ -101,18 +111,20 @@ INT_PTR CALLBACK SettingDlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lpara
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDOK)
 		{
+			HDC hdc = GetDC(hDlg);
 			if (IsDlgButtonChecked(hDlg, IDC_RADIO1) == BST_CHECKED)
 			{
-				MainGame::GetInstance()->SelectLevel(1, 10);
+				MainGame::GetInstance()->SelectLevel(1,hdc);
 			}
 			else if (IsDlgButtonChecked(hDlg, IDC_RADIO2) == BST_CHECKED)
 			{
-				MainGame::GetInstance()->SelectLevel(2 , 20);
+				MainGame::GetInstance()->SelectLevel(2 ,hdc);
 			}
 			else if (IsDlgButtonChecked(hDlg, IDC_RADIO3) == BST_CHECKED)
 			{
-				MainGame::GetInstance()->SelectLevel(3 , 30);
+				MainGame::GetInstance()->SelectLevel(3 ,hdc);
 			}
+			ReleaseDC(hDlg, hdc);
 			EndDialog(hDlg, LOWORD(wParam));
 		}
 		else if (LOWORD(wParam) == IDCANCEL)

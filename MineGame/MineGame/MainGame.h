@@ -4,17 +4,7 @@
 #include <vector>
 #include "Mine.h"
 #include "BitMap.h"
-
-
-#define LEVELWIDTH 10
-#define LEVELHEIGHT 10
-#define LEVEL_1_WIDTH 10
-#define LEVEL_1_HEIGHT 10
-#define LEVEL_2_WIDTH 20
-#define LEVEL_2_HEIGHT 20
-#define LEVEL_3_WIDTH 30
-#define LEVEL_3_HEIGHT 30
-
+#include "CommonHeader.h"
 
 class MainGame
 {
@@ -32,6 +22,10 @@ class MainGame
 	int Height;
 	int MineSize;
 
+
+	void SetGameinfo();
+	bool GameOver();
+
 	MainGame();
 public:
 	static MainGame* GetInstance()
@@ -43,16 +37,15 @@ public:
 		return m_sThis;
 	}
 
-	void Init(HWND hWnd, HDC hdc,HINSTANCE hInst);
-	void SelectLevel(int Level, int _MineSize);
+	void Init(HWND hWnd, HDC hdc,HINSTANCE hInst, int Level);
+	void SelectLevel(int _Level, HDC _hdc);
 
 	void Draw(HDC hdc);
-	void Update();
-	void Input(bool LButton, POINT pt, WPARAM wParam);
+	bool Update();
+	void Input(bool LButton, bool DoubleClick, POINT pt, WPARAM wParam);
 
 
 
 	void Release();
 	~MainGame();
 };
-
