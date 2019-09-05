@@ -1,15 +1,11 @@
 #pragma comment(lib, "msimg32.lib")
 #include <windows.h>
 #include "MainGame.h"
+#include "CommonHeader.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
 char g_szClassName[256] = "Hello World!!";
-
-void Draw()
-{
-
-}
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
@@ -31,7 +27,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	RegisterClass(&WndClass);
 
 	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
+		RESOLUTION_WITDH, RESOLUTION_HEIGHT, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
 	while (GetMessage(&Message, NULL, 0, 0))
@@ -52,17 +48,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 		hdc = GetDC(hWnd);
-		SetTimer(hWnd, 1, 100, NULL);
+		SetTimer(hWnd, 1, 8, NULL);
 		MainGame::GetInstance()->Init(hdc , g_hInst);
 		ReleaseDC(hWnd, hdc);
 		return 0;
 	case WM_KEYDOWN:
-		MainGame::GetInstance()->Input(hWnd, wParam);
+		MainGame::GetInstance()->InputKeyDown(hWnd, wParam);
+		return 0;
+	case WM_KEYUP:
+		MainGame::GetInstance()->InputKeyUp(hWnd, wParam);
 		return 0;
 	case WM_COMMAND:
 
 		return 0;
 	case WM_TIMER:
+		MainGame::GetInstance()->Update();
 		InvalidateRect(hWnd, NULL, false);
 		return 0;
 	case  WM_PAINT:

@@ -3,14 +3,19 @@
 #include "Bitmap.h"
 class Actor
 {
-	Bitmap Model;
-
 protected:
+	int IndexId;
+	static int g_Index;
+	Bitmap Model;
 	POINT pt;
+
 public:
 	Actor();
 	Actor(HDC hdc);
 	~Actor();
 
-	virtual void Draw(HDC hdc);
+	SIZE size;
+	void Draw(HDC hdc);
+	void Draw(HDC hdc, SIZE size);
+	POINT GetPoint();
 };

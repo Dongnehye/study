@@ -2,21 +2,24 @@
 #include "CommonHeader.h"
 #include <algorithm>
 
+void Scene::CreateTile(HDC hdc)
+{
+
+
+}
+
 Scene::Scene()
 {
 }
 
-Scene::Scene(HDC hdc , HINSTANCE _hInst)
+Scene::Scene(HDC hdc)
 {
 	MemDC = CreateCompatibleDC(hdc);
-	MemBitmap = CreateCompatibleBitmap(hdc, RESOLUTION_WITDH, RESOLUTION_HEIGHT);
+	MemBitmap = CreateCompatibleBitmap(hdc, STAGE_WITDH, STAGE_HEIGHT);
 	MemOldBitmap = (HBITMAP)SelectObject(MemDC, MemBitmap);
-
-	hInst = _hInst;
-	Actor * pNew = new Actor(hdc);
-	ListActor.push_back(pNew);
+	//Actor * pNew = new Actor(hdc);
+	//ListActor.push_back(pNew);
 }
-
 
 Scene::~Scene()
 {
@@ -26,19 +29,24 @@ Scene::~Scene()
 
 void Scene::AddActor(Actor * actor)
 {
-	//Actor * pNew = new Actor(hdc);
-	//ListActor.push_back(pNew);
+	ListActor.push_back(actor);
 }
 
 void Scene::Draw(HDC hdc)
 {
-	for (auto iter = ListActor.begin(); iter != ListActor.end(); ++iter)
-	{
-		(*iter)->Draw(MemDC);
-	}
-
-	BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, 0, 0, SRCCOPY);
+	//for (auto iter = ListActor.begin(); iter != ListActor.end(); ++iter)
+	//{
+	//	(*iter)->Draw(MemDC,(*iter)->size);
+	//}
+	//BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, 0, 0, SRCCOPY);
 }
+void Scene::Update(POINT PlayerPoint)
+{
+
+}
+
+
+
 //g_MemDC[0] = CreateCompatibleDC(hdc);
 //g_hBitmap[0] = CreateCompatibleBitmap(hdc, 1024, 768);
 //g_hOld[0] = (HBITMAP)SelectObject(g_MemDC[0], g_hBitmap[0]);

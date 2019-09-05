@@ -5,11 +5,13 @@ MainGame * MainGame::m_sThis = nullptr;
 
 void MainGame::SceneCreate(HDC hdc)
 {
-	for (int i = 0; i < 2; ++i)
-	{
-		Scene * New = new Scene(hdc , Memhinst);
-		VecScene.push_back(New);
-	}
+	
+	//TitleScene * New = new TitleScene(hdc);
+	//Scene * New = new Scene(hdc);
+
+	FieldScene * New = new FieldScene(hdc);
+	VecScene.push_back(New);
+	
 }
 
 MainGame::MainGame()
@@ -23,19 +25,21 @@ void MainGame::Init(HDC hdc , HINSTANCE _hinst)
 	Memhinst = _hinst;
 	SceneCreate(hdc);
 
-	player = new Player();
+	player = new Player(hdc);
 	scene = VecScene[0];
+
+	scene->AddActor(player);
 }
 
-void MainGame::Input(HWND hWnd, WPARAM wParam)
+void MainGame::InputKeyDown(HWND hWnd, WPARAM wParam)
 {
 	switch (wParam)
 	{
 		case VK_LEFT:
-			player->ActiveMove(-8);
+			player->ActiveMove(-10);
 			break;
 		case VK_RIGHT:
-			player->ActiveMove(8);
+			player->ActiveMove(10);
 			break;
 		case 'a':
 
@@ -44,10 +48,8 @@ void MainGame::Input(HWND hWnd, WPARAM wParam)
 
 			break;
 		case 's':
-			y += 8;
 			break;
 		case 'S':
-			y += 8;
 			break;
 		case 'z':
 			player->ActiveJump();
@@ -65,10 +67,19 @@ void MainGame::Input(HWND hWnd, WPARAM wParam)
 		break;
 	}
 }
-
+void MainGame::InputKeyUp(HWND hWnd, WPARAM wParam)
+{
+	player->StateIdle();
+}
 void MainGame::Draw(HDC hdc)
 {
 	scene->Draw(hdc);
+}
+
+void MainGame::Update()
+{
+	player->Update();
+	scene->Update(player->GetPoint());
 }
 
 MainGame::~MainGame()

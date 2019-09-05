@@ -1,5 +1,7 @@
 #pragma once
 #include "Scene.h"
+#include "FieldScene.h"
+#include "TitleScene.h"
 #include "Player.h"
 #include <vector>
 #include <Windows.h>
@@ -15,7 +17,7 @@ private:
 
 	vector<Scene*> VecScene;
 	Scene * scene;
-	Player* player;
+	Player * player;
 
 	void SceneCreate(HDC hdc);
 
@@ -30,8 +32,10 @@ public:
 		return m_sThis;
 	}
 	void Init(HDC hdc ,HINSTANCE hinst);
-	void Input(HWND hWnd,WPARAM wParam);
+	void InputKeyDown(HWND hWnd,WPARAM wParam);
+	void InputKeyUp(HWND hWnd,WPARAM wParam);
 	void Draw(HDC hdc);
+	void Update();
 
 	~MainGame();
 };

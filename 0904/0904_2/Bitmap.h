@@ -14,5 +14,6 @@ public:
 
 	void Init(HDC hdc, const char * FileName);
 	void BufferDraw(HDC hdc, int x, int y);
+	void BufferDraw(HDC hdc, int x, int y, SIZE _szie);
 	void Release();
 };
