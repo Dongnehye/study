@@ -80,17 +80,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		hdc = BeginPaint(hWnd, &ps);
 		//SetPixel(hdc, 100, 100, RGB(255, 0, 0));
 		//DrawText(hdc, str, -1, &rt, DT_CENTER | DT_WORDBREAK);
-		MoveToEx(hdc, l, t, NULL);
-		Rectangle(hdc, l, t, r, b);
-		Ellipse(hdc, l, t, r, b);
+		//MoveToEx(hdc, l, t, NULL);
+		//Rectangle(hdc, l, t, r, b);
+		//Ellipse(hdc, l, t, r, b);
 
-		MoveToEx(hdc, (l + r)/2, t, NULL);
-		LineTo(hdc, r, (t + b)/2);
-		LineTo(hdc, (l + r) / 2, b);
-		LineTo(hdc, l, (t + b) / 2);
-		LineTo(hdc, (l + r) / 2, t);
+		//MoveToEx(hdc, (l + r)/2, t, NULL);
+		//LineTo(hdc, r, (t + b)/2);
+		//LineTo(hdc, (l + r) / 2, b);
+		//LineTo(hdc, l, (t + b) / 2);
+		//LineTo(hdc, (l + r) / 2, t);
 
-		//DrawCircls(hdc, 100, 100, 50, 50);
+		DrawCircls(hdc, 150, 150, 50, 50);
 		EndPaint(hWnd, &ps);
 		return 0;
 	}

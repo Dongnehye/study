@@ -31,6 +31,7 @@ class Player :
 	Bitmap Die;
 
 	JUMPVECTOR JumpVector;
+	POINT JumpMIddlePos;
 
 	bool IsRun;
 	bool IsBackRun;
@@ -40,6 +41,7 @@ class Player :
 
 	int Speed;
 	void CosJump();
+	bool JumpOver();
 	void Animation(ANIMATION animation);
 
 public:

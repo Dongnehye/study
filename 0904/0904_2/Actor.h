@@ -15,7 +15,7 @@ public:
 	~Actor();
 
 	SIZE size;
-	void Draw(HDC hdc);
-	void Draw(HDC hdc, SIZE size);
+	virtual void Draw(HDC hdc);
+	virtual void Draw(HDC hdc, SIZE size);
 	POINT GetPoint();
 };

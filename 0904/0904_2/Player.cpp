@@ -13,33 +13,60 @@ void Player::StateIdle()
 }
 
 
-float DegreeToRadies(float degree)
-{
-	return (PI / 180) * degree;
-
-}
-
-POINT DrawCircls(int x, int y, int xR, int yR, float Angle)
-{
-	POINT pos;
-	pos.x = cosf(DegreeToRadies(Angle)) * xR + x;
-	pos.y = sinf(DegreeToRadies(Angle)) * yR + y;
-
-	return pos;
-}
-
 void Player::CosJump()
 {
-	int jumpSpeed = 3;
-	static int dt = 0;
+	int JumpPosition = 0;
+	static float bIsJumpInit = false;
+	static float Angle = 180.0f;
+
+
+	if (JumpVector == VECTOR_LEFT)
+		JumpPosition = -100;
+	else if (JumpVector == VECTOR_MIDDLE)
+		JumpPosition = 0;
+	else if (JumpVector == VECTOR_RIGHT)
+		JumpPosition = 100;
+
+
+	if (!bIsJumpInit)
+	{
+		JumpMIddlePos.x = pt.x + JumpPosition;
+		JumpMIddlePos.y = pt.y;
+		
+		bIsJumpInit = true;
+	}
+
+
+	float Radian = Angle * PI / 180.f;
+
+	pt.x = JumpMIddlePos.x + JumpPosition * cos(Radian);
+	pt.y = JumpMIddlePos.y + 130 * sin(Radian);
 	
-	// 이거 수정 된 값 계속 더해서 바꿔야함.
+	++Angle;
+	IsAir = true;
 
-	float Angle = jumpSpeed * dt;
-	Animation(ANI_JUMP);
-	pt = DrawCircls(pt.x, pt.y, 30, 3, Angle);
+	if (JumpOver())
+	{
+		bIsJumpInit = false;
+		Angle = 180.0f;
+	}
 
-	++dt;
+}
+
+bool Player::JumpOver()
+{
+	if (pt.y > JumpMIddlePos.y)
+	{
+		IsAir = false;
+		IsJump = false;
+		pt.y = JumpMIddlePos.y;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	return false;
 }
 
 void Player::Animation(ANIMATION animation)
@@ -157,9 +184,16 @@ void Player::Update()
 {
 	if (IsJump)
 	{
+		Animation(ANI_JUMP);
 		CosJump();
-		return ;
 	}
-	if (IsRun || IsBackRun)
+	else if (IsRun || IsBackRun)
+	{
 		pt.x += Speed;
+	}
+	else
+	{
+		StateIdle();
+	}
+		
 }

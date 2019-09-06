@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="FieldScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="CommonHeader.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="FieldScene.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Player.h" />

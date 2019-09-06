@@ -74,6 +74,7 @@ void FieldScene::Draw(HDC hdc)
 		(*iter)->Draw(MemDC, (*iter)->size);
 	}
 	BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, PlayerStartRunDistance, 0, SRCCOPY);
+	//BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, 0, 0, SRCCOPY);
 }
 void FieldScene::Update(POINT PlayerPoint)
 {
