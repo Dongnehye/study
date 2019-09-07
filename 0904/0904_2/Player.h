@@ -22,6 +22,8 @@ enum JUMPVECTOR
 class Player :
 	public Actor
 {
+	RECT Collision;
+
 	Bitmap Idle;
 	Bitmap Jump;
 	Bitmap Run;

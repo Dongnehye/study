@@ -1,5 +1,7 @@
 #include "Player.h"
 #include <math.h>
+#include <algorithm>
+
 #define PI 3.1415f
 
 void Player::StateIdle()
@@ -13,6 +15,7 @@ void Player::StateIdle()
 void Player::CosJump()
 {
 	int JumpPosition = 0;
+	int JumpSpeed = 7;
 	static float bIsJumpInit = false;
 	static float Angle = 180.0f;
 
@@ -39,7 +42,7 @@ void Player::CosJump()
 	pt.x = JumpMIddlePos.x + JumpPosition * cos(Radian);
 	pt.y = JumpMIddlePos.y + 130 * sin(Radian);
 	
-	++Angle;
+	Angle += JumpSpeed;
 	IsAir = true;
 
 	if (JumpOver())
@@ -152,6 +155,9 @@ Player::Player(HDC hdc)
 
 Player::~Player()
 {
+	RunAnimation.clear();
+	BackRunAnimation.clear();
+	BackRunAnimation.clear();
 }
 
 void Player::ActiveMove(int x)

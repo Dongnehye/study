@@ -66,18 +66,27 @@ void FieldScene::SettingStage(HDC hdc)
 		{
 			char str[10];
 			int ScrollMiter = STAGE_WITDH / BackSize.cx - i / BackSize.cx;
-			StringTile * miter = new StringTile(hdc, "circus\\miter.bmp", i, 430, MiterSize, itoa(ScrollMiter, str, sizeof(str)));
+			Tile * miter = new Tile(hdc, "circus\\miter.bmp", i, 430, MiterSize, itoa(ScrollMiter, str, sizeof(str)));
 			miter->SetIndexId(IndexID);
 			AddActor(miter);
 		}
 	}
-	Tile * End = new Tile(hdc, "Circus\\end.bmp", Scrollx - 120, 345, EndSize);
+	Tile * End = new Tile(hdc, "Circus\\end.bmp", Scrollx - 160, 375, EndSize);
 	End->SetIndexId((Scrollx - 120) / 60);
 	AddActor(End);
-
 	//Tile * BackNormal2 = new Tile(hdc, "Circus\\back_normal2.bmp", 100, 100);
 	//AddActor(BackNormal2);
 
+}
+
+void FieldScene::SetEnemy(HDC hdc)
+{
+	for (int i = 0; i < 30; ++i)
+	{
+		Enemy * enemy = new Enemy(hdc);
+		AddActor(enemy);
+		ListEnemy.push_back(enemy);
+	}
 }
 
 void FieldScene::Draw(HDC hdc)
@@ -92,7 +101,10 @@ void FieldScene::Draw(HDC hdc)
 void FieldScene::Update(POINT PlayerPoint)
 {
 	ScrollMove(PlayerPoint);
-
+	for (auto iter = ListEnemy.begin(); iter != ListEnemy.end(); ++iter)
+	{
+		(*iter)->Move();
+	}
 }
 
 FieldScene::FieldScene()
@@ -111,6 +123,8 @@ FieldScene::FieldScene(HDC hdc)
 	SetBitmapSize();
 
 	SettingStage(hdc);
+
+	SetEnemy(hdc);
 }
 
 

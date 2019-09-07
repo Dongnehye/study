@@ -20,4 +20,5 @@ public:
 	POINT GetPoint();
 	SIZE GetSize();
 	void SetIndexId(int Id);
+	int GetIndexId();
 };

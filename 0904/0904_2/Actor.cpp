@@ -2,6 +2,7 @@
 
 Actor::Actor()
 {
+	IndexId = 0;
 }
 
 Actor::Actor(HDC hdc)
@@ -37,4 +38,9 @@ SIZE Actor::GetSize()
 void Actor::SetIndexId(int Id)
 {
 	IndexId = Id;
+}
+
+int Actor::GetIndexId()
+{
+	return IndexId;
 }

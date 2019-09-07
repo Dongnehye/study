@@ -1,2 +1,8 @@
-﻿  MainGame.cpp
+﻿  Enemy.cpp
+  FieldScene.cpp
+d:\neople\study\0904\0904_2\fieldscene.cpp(69): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdlib.h(1323): note: 'itoa' 선언을 참조하십시오.
+  MainGame.cpp
+  main.cpp
+  코드를 생성하고 있습니다...
   0904_2.vcxproj -> D:\Neople\study\0904\Debug\0904_2.exe

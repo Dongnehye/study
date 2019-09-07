@@ -1,4 +1,5 @@
 #pragma once
+#include "Enemy.h"
 #include "Tile.h"
 #include "StringTile.h"
 #include "Scene.h"
@@ -9,7 +10,7 @@ using namespace std;
 class FieldScene :
 	public Scene
 {
-		
+	list<Enemy*> ListEnemy;
 	Bitmap Back;
 	Bitmap BackDeco;
 	Bitmap BackNormal1;
@@ -31,7 +32,7 @@ class FieldScene :
 
 	void SetBitmapSize();
 	void SettingStage(HDC hdc);
-	void SetEnemy();
+	void SetEnemy(HDC hdc);
 
 	virtual void Update(POINT PlayerPoint);
 
