@@ -36,10 +36,10 @@ void MainGame::InputKeyDown(HWND hWnd, WPARAM wParam)
 	switch (wParam)
 	{
 		case VK_LEFT:
-			player->ActiveMove(-3);
+			player->ActiveMove(-10);
 			break;
 		case VK_RIGHT:
-			player->ActiveMove(3);
+			player->ActiveMove(30);
 			break;
 		case 'a':
 

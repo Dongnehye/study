@@ -1,8 +1,9 @@
 #pragma once
-#define STAGE_WITDH 3060
+#define STAGE_WITDH 6000
 #define STAGE_HEIGHT 480
 
 #define RESOLUTION_WITDH 640
 #define RESOLUTION_HEIGHT 510
 
 #define STAGE_OVERSCROLL 2420
+

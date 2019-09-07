@@ -13,7 +13,7 @@ protected:
 public:
 	Actor();
 	Actor(HDC hdc);
-	~Actor();
+	virtual ~Actor();
 
 	virtual void Draw(HDC hdc);
 	virtual void Draw(HDC hdc, SIZE size);

@@ -32,18 +32,21 @@ void FieldScene::SetBitmapSize()
 	BackNormal1Size.cy = 64;
 
 	EndSize.cx = 76;
-	EndSize.cy = 49;
+	EndSize.cy = 49;	
+	
+	MiterSize.cx = 60;
+	MiterSize.cy = 30;
 }
 
 void FieldScene::SettingStage(HDC hdc)
 {
-	Scrollx = 3060;
+	Scrollx = STAGE_WITDH + BackSize.cx;
 
 
-	for (int i = 0; i < Scrollx; i += 60)
+	for (int i = 0; i < Scrollx; i += BackSize.cx)
 	{
-		int IndexID = i / 60;
-		if (i % 600 == 0)
+		int IndexID = i / BackSize.cx;
+		if (i % 660 == 0)
 		{
 			Tile * BackDeco = new Tile(hdc, "Circus\\back_deco.bmp", i, 100, BackDecoSize);
 			BackDeco->SetIndexId(IndexID);
@@ -58,17 +61,22 @@ void FieldScene::SettingStage(HDC hdc)
 		Tile * Back = new Tile(hdc, "Circus\\back.bmp", i, 167, BackSize);
 		Back->SetIndexId(IndexID);
 		AddActor(Back);
-	}
 
+		if (i % (STAGE_WITDH/ 10) == 0)
+		{
+			char str[10];
+			int ScrollMiter = STAGE_WITDH / BackSize.cx - i / BackSize.cx;
+			StringTile * miter = new StringTile(hdc, "circus\\miter.bmp", i, 430, MiterSize, itoa(ScrollMiter, str, sizeof(str)));
+			miter->SetIndexId(IndexID);
+			AddActor(miter);
+		}
+	}
 	Tile * End = new Tile(hdc, "Circus\\end.bmp", Scrollx - 120, 345, EndSize);
 	End->SetIndexId((Scrollx - 120) / 60);
 	AddActor(End);
 
 	//Tile * BackNormal2 = new Tile(hdc, "Circus\\back_normal2.bmp", 100, 100);
 	//AddActor(BackNormal2);
-	//Tile * Miter = new Tile(hdc, "Circus\\miter.bmp", 100, 100);
-	//AddActor(Miter);
-
 
 }
 
@@ -108,4 +116,5 @@ FieldScene::FieldScene(HDC hdc)
 
 FieldScene::~FieldScene()
 {
+
 }

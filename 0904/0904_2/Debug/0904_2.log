@@ -1,13 +1,2 @@
-﻿  Actor.cpp
-  Enemy.cpp
-  FieldScene.cpp
-  MainGame.cpp
-  Player.cpp
-d:\neople\study\0904\0904_2\player.cpp(39): warning C4244: '=': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\neople\study\0904\0904_2\player.cpp(40): warning C4244: '=': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Scene.cpp
-  Tile.cpp
-  TitleScene.cpp
-  main.cpp
-  코드를 생성하고 있습니다...
+﻿  MainGame.cpp
   0904_2.vcxproj -> D:\Neople\study\0904\Debug\0904_2.exe

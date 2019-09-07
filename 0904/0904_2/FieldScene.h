@@ -1,5 +1,6 @@
 #pragma once
 #include "Tile.h"
+#include "StringTile.h"
 #include "Scene.h"
 #include <list>
 
@@ -22,14 +23,16 @@ class FieldScene :
 	SIZE BackDecoSize;
 	SIZE BackNormal1Size;
 	SIZE EndSize;
+	SIZE MiterSize;
 
 	int PlayerStartPos;
 	int PlayerStartRunDistance;
 	void ScrollMove(POINT PlayerPoint);
 
-
 	void SetBitmapSize();
 	void SettingStage(HDC hdc);
+	void SetEnemy();
+
 	virtual void Update(POINT PlayerPoint);
 
 public:
