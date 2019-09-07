@@ -42,21 +42,26 @@ void FieldScene::SettingStage(HDC hdc)
 
 	for (int i = 0; i < Scrollx; i += 60)
 	{
-
+		int IndexID = i / 60;
 		if (i % 600 == 0)
 		{
 			Tile * BackDeco = new Tile(hdc, "Circus\\back_deco.bmp", i, 100, BackDecoSize);
+			BackDeco->SetIndexId(IndexID);
 			AddActor(BackDeco);
 		}
 		else
 		{
 			Tile * BackNormal1 = new Tile(hdc, "Circus\\back_normal.bmp", i, 100, BackNormal1Size);
+			BackNormal1->SetIndexId(IndexID);
 			AddActor(BackNormal1);
 		}
 		Tile * Back = new Tile(hdc, "Circus\\back.bmp", i, 167, BackSize);
+		Back->SetIndexId(IndexID);
 		AddActor(Back);
 	}
-	Tile * End = new Tile(hdc, "Circus\\end.bmp", 2940, 345, EndSize);
+
+	Tile * End = new Tile(hdc, "Circus\\end.bmp", Scrollx - 120, 345, EndSize);
+	End->SetIndexId((Scrollx - 120) / 60);
 	AddActor(End);
 
 	//Tile * BackNormal2 = new Tile(hdc, "Circus\\back_normal2.bmp", 100, 100);
@@ -71,7 +76,7 @@ void FieldScene::Draw(HDC hdc)
 {
 	for (auto iter = ListActor.begin(); iter != ListActor.end(); ++iter)
 	{
-		(*iter)->Draw(MemDC, (*iter)->size);
+		(*iter)->Draw(MemDC, (*iter)->GetSize());
 	}
 	BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, PlayerStartRunDistance, 0, SRCCOPY);
 	//BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, 0, 0, SRCCOPY);

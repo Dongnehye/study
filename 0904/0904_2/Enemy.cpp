@@ -7,8 +7,8 @@ Enemy::Enemy()
 }
 Enemy::Enemy(HDC hdc)
 {
-	pt.x = 100;
-	pt.y = 345;
+	pt.x = 400;
+	pt.y = 100;
 	IndexId = 0;
 
 	size.cx = 67;

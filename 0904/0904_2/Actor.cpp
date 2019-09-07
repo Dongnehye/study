@@ -1,11 +1,7 @@
 #include "Actor.h"
 
-int Actor::g_Index = 0;
-
 Actor::Actor()
 {
-	IndexId = g_Index;
-	++g_Index;
 }
 
 Actor::Actor(HDC hdc)
@@ -31,4 +27,14 @@ void Actor::Draw(HDC hdc, SIZE size)
 POINT Actor::GetPoint()
 {
 	return pt;
+}
+
+SIZE Actor::GetSize()
+{
+	return size;
+}
+
+void Actor::SetIndexId(int Id)
+{
+	IndexId = Id;
 }

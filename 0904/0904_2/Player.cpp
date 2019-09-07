@@ -7,11 +7,8 @@ void Player::StateIdle()
 	IsRun = false;
 	IsBackRun = false;
 	Speed = 0;
-	//IsJump = false;
-	//IsAir = false;
-	Animation(ANI_IDLE);
+	AnimaitonTickCount = 0;
 }
-
 
 void Player::CosJump()
 {
@@ -66,11 +63,12 @@ bool Player::JumpOver()
 	{
 		return false;
 	}
-	return false;
 }
 
 void Player::Animation(ANIMATION animation)
 {
+	static int Count;
+
 	if (animation == ANI_IDLE)
 	{
 		Model = Idle;
@@ -78,35 +76,33 @@ void Player::Animation(ANIMATION animation)
 	}
 	else if (animation == ANI_RUN)
 	{
-		if (TickCount)
-		{
-			Model = Idle;
-			TickCount = false;
-		}
-		else
-		{
-			Model = Run;
-			TickCount = true;
-
-		}
+		IsBackRun = false;
+		Count = RunAnimation.size() - 1;
+		Model = RunAnimation.at(AnimaitonTickCount);
 	}
 	else if (animation == ANI_BACKRUN)
 	{
-		if (TickCount)
-		{
-			Model = Idle;
-			TickCount = false;
-		}
-		else
-		{
-			Model = BACKRUN;
-			TickCount = true;
-		}
+		IsRun = false;
+		Count = BackRunAnimation.size() - 1;
+		Model = BackRunAnimation.at(AnimaitonTickCount);
 	}
 	else if (animation == ANI_JUMP)
 	{
 		Model = Jump;
 	}
+	else if (animation == ANI_WIN)
+	{
+		Count = WinAnimation.size() - 1;
+		Model = WinAnimation.at(AnimaitonTickCount);
+	}
+	else if (animation == ANI_DIE)
+	{
+		Model = Die;
+	}
+	if (AnimaitonTickCount >= Count)
+		AnimaitonTickCount = 0;
+	else
+		++AnimaitonTickCount;
 }
 
 Player::Player()
@@ -140,6 +136,17 @@ Player::Player(HDC hdc)
 	IsJump		= false;
 	IsAir		= false;
 	TickCount	= false;
+
+	RunAnimation.push_back(Run);
+	RunAnimation.push_back(BACKRUN);
+	RunAnimation.push_back(Idle);
+
+	BackRunAnimation.push_back(BACKRUN);
+	BackRunAnimation.push_back(Idle);
+
+	WinAnimation.push_back(Win1);
+	WinAnimation.push_back(Win2);
+	AnimaitonTickCount = 0;
 }
 
 
@@ -151,12 +158,10 @@ void Player::ActiveMove(int x)
 {
 	if (x > 0)
 	{
-		Animation(ANI_RUN);
 		IsRun = true;
 	}
 	else if (x < 0)
 	{
-		Animation(ANI_BACKRUN);
 		IsBackRun = true;
 	}
 	Speed = x;
@@ -187,13 +192,20 @@ void Player::Update()
 		Animation(ANI_JUMP);
 		CosJump();
 	}
-	else if (IsRun || IsBackRun)
+	else if (IsRun)
 	{
+		Animation(ANI_RUN);
+		pt.x += Speed;
+	}
+	else if (IsBackRun)
+	{
+		Animation(ANI_BACKRUN);
 		pt.x += Speed;
 	}
 	else
 	{
 		StateIdle();
+		Animation(ANI_IDLE);
 	}
 		
 }

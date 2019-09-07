@@ -8,14 +8,16 @@ protected:
 	static int g_Index;
 	Bitmap Model;
 	POINT pt;
+	SIZE size;
 
 public:
 	Actor();
 	Actor(HDC hdc);
 	~Actor();
 
-	SIZE size;
 	virtual void Draw(HDC hdc);
 	virtual void Draw(HDC hdc, SIZE size);
 	POINT GetPoint();
+	SIZE GetSize();
+	void SetIndexId(int Id);
 };
