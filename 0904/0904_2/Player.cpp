@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "CommonHeader.h"
 #include <math.h>
 #include <algorithm>
 
@@ -15,17 +16,17 @@ void Player::StateIdle()
 void Player::CosJump()
 {
 	int JumpPosition = 0;
-	int JumpSpeed = 7;
+	int JumpSpeed = 2;
 	static float bIsJumpInit = false;
 	static float Angle = 180.0f;
 
 
 	if (JumpVector == VECTOR_LEFT)
-		JumpPosition = -100;
+		JumpPosition = -80;
 	else if (JumpVector == VECTOR_MIDDLE)
 		JumpPosition = 0;
 	else if (JumpVector == VECTOR_RIGHT)
-		JumpPosition = 100;
+		JumpPosition = 80;
 
 
 	if (!bIsJumpInit)
@@ -49,6 +50,11 @@ void Player::CosJump()
 	{
 		bIsJumpInit = false;
 		Angle = 180.0f;
+		if (bAddScore)
+		{
+			Score += 100;
+			bAddScore = false;
+		}
 	}
 
 }
@@ -79,19 +85,18 @@ void Player::Animation(ANIMATION animation)
 	}
 	else if (animation == ANI_RUN)
 	{
-		IsBackRun = false;
 		Count = RunAnimation.size() - 1;
 		Model = RunAnimation.at(AnimaitonTickCount);
 	}
 	else if (animation == ANI_BACKRUN)
 	{
-		IsRun = false;
 		Count = BackRunAnimation.size() - 1;
 		Model = BackRunAnimation.at(AnimaitonTickCount);
 	}
 	else if (animation == ANI_JUMP)
 	{
 		Model = Jump;
+		AnimaitonTickCount = 0;
 	}
 	else if (animation == ANI_WIN)
 	{
@@ -115,15 +120,16 @@ Player::Player()
 
 Player::Player(HDC hdc)
 {
+	Life = MAXLIFE;
+
 	pt.x = 100;
-	pt.y = 345;
-	IndexId = 0;
+	pt.y = 335;
 
 	size.cx = 67;
-	size.cy = 80;
+	size.cy = 90;
 
 	Speed = 0;
-
+	Score = 0;
 	Idle.Init(hdc,"Circus\\player0.bmp");
 	Jump.Init(hdc, "Circus\\player2.bmp");
 	Run.Init(hdc,"Circus\\player2.bmp");
@@ -137,8 +143,11 @@ Player::Player(HDC hdc)
 	IsRun		= false;
 	IsBackRun	= false;
 	IsJump		= false;
+	IsDie		= false;
 	IsAir		= false;
 	TickCount	= false;
+	bAddScore	= false;
+	IsGameClear = false;
 
 	RunAnimation.push_back(Run);
 	RunAnimation.push_back(BACKRUN);
@@ -191,27 +200,115 @@ void Player::ActiveJump()
 	IsJump = true;
 }
 
+bool Player::LostLife(RECT EnemyCollision)
+{
+	if (Collision.left < EnemyCollision.right &&
+		Collision.top < EnemyCollision.bottom &&
+		Collision.right > EnemyCollision.left &&
+		Collision.bottom > EnemyCollision.top && !IsDie)
+	{
+		Life -= 1;
+		IsDie = true;
+		return true;
+	}
+	else
+		return false;
+}
+bool Player::AddScore(RECT EnemyScoreCollision)
+{
+	if (Collision.left < EnemyScoreCollision.right &&
+		Collision.top < EnemyScoreCollision.bottom &&
+		Collision.right > EnemyScoreCollision.left &&
+		Collision.bottom > EnemyScoreCollision.top)
+	{
+		bAddScore = true;
+		return true;
+	}
+	else
+		return false;
+}
+
+bool Player::GameClear(RECT EndActorCollision)
+{
+	if (Collision.left < EndActorCollision.right &&
+		Collision.top < EndActorCollision.bottom &&
+		Collision.right > EndActorCollision.left &&
+		Collision.bottom > EndActorCollision.top)
+	{
+		pt.x = EndActorCollision.left;
+		pt.y = 290;
+		IsGameClear = true;
+		return true;
+	}
+	else
+		return false;
+}
+
+int Player::GetLife()
+{
+	return Life;
+}
+
+int Player::GetScore()
+{
+	return Score;
+}
+
 void Player::Update()
 {
-	if (IsJump)
+	if (IsGameClear)
 	{
-		Animation(ANI_JUMP);
+		IsDie = false;
+	}
+	else if (IsDie)
+	{
+
+	}
+	else if (IsJump)
+	{
 		CosJump();
 	}
 	else if (IsRun)
 	{
-		Animation(ANI_RUN);
+		IsBackRun = false;
 		pt.x += Speed;
 	}
 	else if (IsBackRun)
 	{
-		Animation(ANI_BACKRUN);
+		IsRun = false;
 		pt.x += Speed;
 	}
 	else
 	{
 		StateIdle();
+	}
+	Collision = { pt.x ,pt.y,pt.x + size.cx,pt.y + size.cy };
+}
+
+void Player::AnimationUpdate()
+{
+	if (IsGameClear)
+	{
+		Animation(ANI_WIN);
+	}
+	else if (IsDie)
+	{
+		Animation(ANI_DIE);
+	}
+	else if (IsJump)
+	{
+		Animation(ANI_JUMP);
+	}
+	else if (IsRun)
+	{
+		Animation(ANI_RUN);
+	}
+	else if (IsBackRun)
+	{
+		Animation(ANI_BACKRUN);
+	}
+	else
+	{
 		Animation(ANI_IDLE);
 	}
-		
 }

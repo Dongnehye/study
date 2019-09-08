@@ -4,8 +4,6 @@
 class Actor
 {
 protected:
-	int IndexId;
-	static int g_Index;
 	Bitmap Model;
 	POINT pt;
 	SIZE size;
@@ -19,6 +17,4 @@ public:
 	virtual void Draw(HDC hdc, SIZE size);
 	POINT GetPoint();
 	SIZE GetSize();
-	void SetIndexId(int Id);
-	int GetIndexId();
 };

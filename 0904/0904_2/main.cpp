@@ -48,7 +48,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_CREATE:
 		hdc = GetDC(hWnd);
-		SetTimer(hWnd, 1, 30, NULL);
+		SetTimer(hWnd, 1, 10, NULL);
+		SetTimer(hWnd, 2, 100, NULL);
+		SetTimer(hWnd, 3, 1000, NULL);
 		MainGame::GetInstance()->Init(hdc , g_hInst);
 		ReleaseDC(hWnd, hdc);
 		return 0;
@@ -62,7 +64,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 		return 0;
 	case WM_TIMER:
-		MainGame::GetInstance()->Update();
+		MainGame::GetInstance()->Update(wParam);
 		InvalidateRect(hWnd, NULL, false);
 		return 0;
 	case  WM_PAINT:
@@ -72,6 +74,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_DESTROY:
 		KillTimer(hWnd, 1);
+		KillTimer(hWnd, 2);
+		KillTimer(hWnd, 3);
 		PostQuitMessage(0);
 		return 0;
 	}

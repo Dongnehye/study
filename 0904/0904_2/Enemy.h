@@ -3,7 +3,9 @@
 class Enemy :
 	public Actor
 {
+protected:
 	RECT Collision;
+	RECT ScoreCollision;
 	Bitmap Back;
 	Bitmap front;
 
@@ -15,6 +17,11 @@ public:
 	Enemy(HDC hdc);
 	virtual ~Enemy();
 	virtual void Draw(HDC hdc, SIZE size);
+	bool IsScrollStartOver();
 
-	void Move();
+	RECT GetCollision();
+	RECT GetScoreCollision();
+
+	void SetPositionX(int x);
+	virtual void Update();
 };

@@ -1,9 +1,6 @@
 #include "FieldScene.h"
 #include "CommonHeader.h"
 
-
-
-
 void FieldScene::ScrollMove(POINT PlayerPoint)
 {
 	static bool bInitPlayerStart = false;
@@ -30,9 +27,6 @@ void FieldScene::SetBitmapSize()
 
 	BackNormal1Size.cx = 60;
 	BackNormal1Size.cy = 64;
-
-	EndSize.cx = 76;
-	EndSize.cy = 49;	
 	
 	MiterSize.cx = 60;
 	MiterSize.cy = 30;
@@ -45,21 +39,17 @@ void FieldScene::SettingStage(HDC hdc)
 
 	for (int i = 0; i < Scrollx; i += BackSize.cx)
 	{
-		int IndexID = i / BackSize.cx;
 		if (i % 660 == 0)
 		{
 			Tile * BackDeco = new Tile(hdc, "Circus\\back_deco.bmp", i, 100, BackDecoSize);
-			BackDeco->SetIndexId(IndexID);
 			AddActor(BackDeco);
 		}
 		else
 		{
 			Tile * BackNormal1 = new Tile(hdc, "Circus\\back_normal.bmp", i, 100, BackNormal1Size);
-			BackNormal1->SetIndexId(IndexID);
 			AddActor(BackNormal1);
 		}
 		Tile * Back = new Tile(hdc, "Circus\\back.bmp", i, 167, BackSize);
-		Back->SetIndexId(IndexID);
 		AddActor(Back);
 
 		if (i % (STAGE_WITDH/ 10) == 0)
@@ -67,43 +57,149 @@ void FieldScene::SettingStage(HDC hdc)
 			char str[10];
 			int ScrollMiter = STAGE_WITDH / BackSize.cx - i / BackSize.cx;
 			Tile * miter = new Tile(hdc, "circus\\miter.bmp", i, 430, MiterSize, itoa(ScrollMiter, str, sizeof(str)));
-			miter->SetIndexId(IndexID);
 			AddActor(miter);
 		}
 	}
-	Tile * End = new Tile(hdc, "Circus\\end.bmp", Scrollx - 160, 375, EndSize);
-	End->SetIndexId((Scrollx - 120) / 60);
-	AddActor(End);
-	//Tile * BackNormal2 = new Tile(hdc, "Circus\\back_normal2.bmp", 100, 100);
-	//AddActor(BackNormal2);
-
+	AddActor(actorEnd);
 }
 
 void FieldScene::SetEnemy(HDC hdc)
 {
-	for (int i = 0; i < 30; ++i)
+	//20
+	for (int i = 0; i < 0; ++i)
 	{
+		if (i % 2 == 0)
+		{
+			EnemyTrap * enemyTrap = new EnemyTrap(hdc);
+			AddActor(enemyTrap);
+			ListEnemy.push_back(enemyTrap);
+		}
 		Enemy * enemy = new Enemy(hdc);
 		AddActor(enemy);
 		ListEnemy.push_back(enemy);
+	}
+	EnemyTrap * enemy = new EnemyTrap(hdc);
+	AddActor(enemy);
+	ListEnemy.push_back(enemy);
+}
+
+void FieldScene::InlineEnemy(POINT PlayerPoint)
+{
+	static bool FirstInlineEnemy = false;
+	static int InlineEnemyCount = 0;
+	if (!FirstInlineEnemy)
+	{
+		int StartPos = 400;
+		for (auto iter = ListEnemy.begin(); iter != ListEnemy.end(); ++iter)
+		{
+			(*iter)->SetPositionX(PlayerPoint.x + StartPos);
+			if(InlineEnemyCount < 1)
+				StartPos += 250;
+			else if (InlineEnemyCount < 4)
+			{
+				StartPos += 400;
+			}
+			else
+			{
+				InlineEnemyCount = -1;
+			}
+			++InlineEnemyCount;
+		}
+		ListEnemy.back()->SetPositionX(STAGE_WITDH - 160);
+
+
+		FirstInlineEnemy = true;
+	}
+	for (auto iter = ListEnemy.begin(); iter != ListEnemy.end(); ++iter)
+	{
+		if ((*iter)->IsScrollStartOver())
+		{
+			(*iter)->SetPositionX(STAGE_WITDH);
+		}	
+	}
+}
+
+void FieldScene::GameOver()
+{
+
+
+}
+void FieldScene::SetPlayer(Player * player)
+{
+	ListActor.push_back(player);
+	for (auto iter = ListEnemy.begin(); iter != ListEnemy.end(); ++iter)
+	{
+		AddActor((*iter));
 	}
 }
 
 void FieldScene::Draw(HDC hdc)
 {
+	static int SafeDrawLange = 100;
+
+	BlackBackground.BufferDraw(MemDC, PlayerStartRunDistance, 0);
+	topbar->DrawTopBar(MemDC, PlayerStartRunDistance);
+
 	for (auto iter = ListActor.begin(); iter != ListActor.end(); ++iter)
 	{
-		(*iter)->Draw(MemDC, (*iter)->GetSize());
+		POINT AcotrPoint = (*iter)->GetPoint();
+		if(AcotrPoint.x >= PlayerStartRunDistance - SafeDrawLange && AcotrPoint.x <= RESOLUTION_WITDH + PlayerStartRunDistance + SafeDrawLange)
+			(*iter)->Draw(MemDC, (*iter)->GetSize());
 	}
+
 	BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, PlayerStartRunDistance, 0, SRCCOPY);
 	//BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, 0, 0, SRCCOPY);
 }
-void FieldScene::Update(POINT PlayerPoint)
+
+
+
+void FieldScene::Update(Player * player)
 {
-	ScrollMove(PlayerPoint);
-	for (auto iter = ListEnemy.begin(); iter != ListEnemy.end(); ++iter)
+	static bool GameOver = false;
+	static int GameOverCount = 0;
+
+	if (GameOver)
 	{
-		(*iter)->Move();
+		//if (GameOverCount > 20)
+		//{
+		//	GameOver = false;
+		//}
+		//else
+		//	++GameOverCount;
+	}
+	else
+	{
+		ScrollMove(player->GetPoint());
+		InlineEnemy(player->GetPoint());
+		for (auto iter = ListEnemy.begin(); iter != ListEnemy.end(); ++iter)
+		{
+			(*iter)->Update();
+			if (player->LostLife((*iter)->GetCollision()))
+			{
+				GameOver = true;
+				break;
+			}
+			else if (player->AddScore((*iter)->GetScoreCollision()))
+			{
+
+			}
+			else if (player->GameClear(actorEnd->GetCollision()))
+			{
+
+			}
+		}
+		topbar->Update(player, BounsScore, HighScore);
+	}
+}
+
+void FieldScene::UpdateTimeSecond(Player * player)
+{
+
+	BounsScore -= 10;
+	if (BounsScore <= 0)
+	{
+		BounsScore = 0;
+		// palyer GameOver.
 	}
 }
 
@@ -120,15 +216,23 @@ FieldScene::FieldScene(HDC hdc)
 	MemBitmap = CreateCompatibleBitmap(hdc, STAGE_WITDH, STAGE_HEIGHT);
 	MemOldBitmap = (HBITMAP)SelectObject(MemDC, MemBitmap);
 
+	BounsScore = 5000;
+	HighScore = 20000;
+	PlayerStartRunDistance = 0;
+
 	SetBitmapSize();
 
-	SettingStage(hdc);
 
+	topbar = new TopBar(hdc);
+	actorEnd = new ActorEnd(hdc);
+	SettingStage(hdc);
+	BlackBackground.Init(hdc, "Circus\\back_black.bmp");
 	SetEnemy(hdc);
 }
 
 
 FieldScene::~FieldScene()
 {
-
+	delete topbar;
+	delete actorEnd;
 }

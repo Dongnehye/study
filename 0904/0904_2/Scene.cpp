@@ -17,8 +17,8 @@ Scene::Scene(HDC hdc)
 	MemDC = CreateCompatibleDC(hdc);
 	MemBitmap = CreateCompatibleBitmap(hdc, STAGE_WITDH, STAGE_HEIGHT);
 	MemOldBitmap = (HBITMAP)SelectObject(MemDC, MemBitmap);
-	//Actor * pNew = new Actor(hdc);
-	//ListActor.push_back(pNew);
+
+	BlackBackground.Init(hdc, "Circus\\back_black.bmp");
 }
 
 Scene::~Scene()
@@ -32,17 +32,21 @@ void Scene::AddActor(Actor * actor)
 	ListActor.push_back(actor);
 }
 
+void Scene::SetPlayer(Player * player)
+{
+}
+
 void Scene::Draw(HDC hdc)
 {
-	//for (auto iter = ListActor.begin(); iter != ListActor.end(); ++iter)
-	//{
-	//	(*iter)->Draw(MemDC,(*iter)->size);
-	//}
-	//BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, 0, 0, SRCCOPY);
+
 }
-void Scene::Update(POINT PlayerPoint)
+void Scene::Update(Player * player)
 {
 
+}
+
+void Scene::UpdateTimeSecond(Player * player)
+{
 }
 
 

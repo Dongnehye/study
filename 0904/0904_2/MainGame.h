@@ -35,7 +35,9 @@ public:
 	void InputKeyDown(HWND hWnd,WPARAM wParam);
 	void InputKeyUp(HWND hWnd,WPARAM wParam);
 	void Draw(HDC hdc);
-	void Update();
+	void Update(WPARAM wParam);
+	void UpdateTimeMilliSecond();
+	void UpdateTimeSecond();
 
 	~MainGame();
 };

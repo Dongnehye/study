@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "CommonHeader.h"
 
 Enemy::Enemy()
 {
@@ -18,9 +19,10 @@ Enemy::Enemy()
 }
 Enemy::Enemy(HDC hdc)
 {
+
 	Collision = {0,0,0,0};
 
-	pt.x = 400;
+	pt.x = STAGE_WITDH;
 	pt.y = 170;
 	size.cx = 25;
 	size.cy = 180;
@@ -43,18 +45,43 @@ Enemy::~Enemy()
 void Enemy::Draw(HDC hdc, SIZE size)
 {
 	if (!Isfront)
-		Actor::Draw(hdc,size);
+	{
+		Back.BufferDraw(hdc, pt.x - size.cx / 2, pt.y, size);
+		Isfront = true;
+	}
 	else
-		front.BufferDraw(hdc, pt.x, pt.y,size);
+	{
+		front.BufferDraw(hdc, pt.x + size.cx / 2, pt.y, size);
+		Isfront = false;
+	}
 }
 
-void Enemy::Move()
+bool Enemy::IsScrollStartOver()
 {
-	//Collision.left = ;
-	//Collision.top = ;
-	//Collision.right = ;
-	//Collision.bottom = ;
+	if (pt.x < 0)
+		return true;
+	else
+		return false;
+}
 
-	pt.x -= 10;
-	--IndexId;
+RECT Enemy::GetCollision()
+{
+	return Collision;
+}
+
+RECT Enemy::GetScoreCollision()
+{
+	return ScoreCollision;
+}
+
+void Enemy::SetPositionX(int x)
+{
+	pt.x = x;
+}
+
+void Enemy::Update()
+{
+	pt.x -= 1;
+	ScoreCollision = { pt.x + 7 ,pt.y + 10 ,pt.x + size.cx,pt.y + size.cy };
+	Collision = { pt.x + 7 ,pt.y + size.cy - 10 ,pt.x + size.cx,pt.y + size.cy};
 }

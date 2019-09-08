@@ -35,8 +35,14 @@ StringTile::~StringTile()
 	
 }
 
+void StringTile::SetPositionX(int x)
+{
+	pt.x = x;
+}
+
 void StringTile::SetString(const char * String)
 {
+	VecBitmap.clear();
 	string str = String;
 	for (int i = 0; i < str.length() ; ++i)
 	{

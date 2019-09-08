@@ -22,6 +22,8 @@ enum JUMPVECTOR
 class Player :
 	public Actor
 {
+	int Life;
+
 	RECT Collision;
 
 	Bitmap Idle;
@@ -43,8 +45,13 @@ class Player :
 	bool IsBackRun;
 	bool IsJump;
 	bool IsAir;
+	bool IsDie;
 	bool TickCount;
 	int AnimaitonTickCount;
+
+	int Score;
+	bool bAddScore;
+	bool IsGameClear;
 
 	int Speed;
 	void CosJump();
@@ -60,6 +67,13 @@ public:
 	void ActiveMove(int x);
 	void ActiveJump();
 
-	void Update();
+	bool LostLife(RECT EnemyCollision);
+	bool AddScore(RECT EnemyScoreCollision);
+	bool GameClear(RECT EndActorCollision);
 
+	int GetLife();
+	int GetScore();
+
+	void Update();
+	void AnimationUpdate();
 };

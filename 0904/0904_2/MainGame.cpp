@@ -27,8 +27,7 @@ void MainGame::Init(HDC hdc , HINSTANCE _hinst)
 
 	player = new Player(hdc);
 	scene = VecScene[0];
-
-	scene->AddActor(player);
+	scene->SetPlayer(player);
 }
 
 void MainGame::InputKeyDown(HWND hWnd, WPARAM wParam)
@@ -36,10 +35,10 @@ void MainGame::InputKeyDown(HWND hWnd, WPARAM wParam)
 	switch (wParam)
 	{
 		case VK_LEFT:
-			player->ActiveMove(-10);
+			player->ActiveMove(-2);
 			break;
 		case VK_RIGHT:
-			player->ActiveMove(30);
+			player->ActiveMove(4);
 			break;
 		case 'a':
 
@@ -76,10 +75,31 @@ void MainGame::Draw(HDC hdc)
 	scene->Draw(hdc);
 }
 
-void MainGame::Update()
+void MainGame::Update(WPARAM wParam)
 {
-	player->Update();
-	scene->Update(player->GetPoint());
+	switch (wParam)
+	{
+	case 1:
+		scene->Update(player);
+		player->Update();
+		break;
+	case 2:
+		UpdateTimeMilliSecond();
+		break;
+	case 3:
+		UpdateTimeSecond();
+		break;
+	}
+}
+
+void MainGame::UpdateTimeMilliSecond()
+{
+	player->AnimationUpdate();
+}
+
+void MainGame::UpdateTimeSecond()
+{
+	scene->UpdateTimeSecond(player);
 }
 
 MainGame::~MainGame()

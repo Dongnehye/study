@@ -30,6 +30,7 @@ public:
 	StringTile(HDC hdc, int x, int y, const char * _String);
 	~StringTile();
 
+	void SetPositionX(int x);
 	void SetString(const char * String);
 	void Draw(HDC hdc);
 };

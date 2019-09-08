@@ -32,6 +32,10 @@ void Bitmap::BufferDraw(HDC hdc, int x, int y, SIZE _szie)
 {
 	TransparentBlt(hdc, x, y, _szie.cx, _szie.cy, m_hMemDC, 0, 0, size.cx, size.cy, RGB(255, 0, 255));
 }
+SIZE Bitmap::GetSize()
+{
+	return size;
+}
 void Bitmap::Release()
 {
 	SelectObject(m_hMemDC, m_hOldBitMap);

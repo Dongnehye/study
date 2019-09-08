@@ -14,14 +14,17 @@ protected:
 	HBITMAP MemBitmap;
 	HBITMAP MemOldBitmap;
 
+	Bitmap BlackBackground;
 	virtual void CreateTile(HDC hdc);
 
 
 public:
 	Scene();
 	Scene(HDC hdc);
-	~Scene();
+	virtual ~Scene();
 	void AddActor(Actor * actor);
+	virtual void SetPlayer(Player * player);
 	virtual void Draw(HDC hdc);
-	virtual void Update(POINT PlayerPoint);
+	virtual void Update(Player * player);
+	virtual void UpdateTimeSecond(Player * player);
 };

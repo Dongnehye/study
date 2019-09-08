@@ -37,7 +37,7 @@
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -140,8 +140,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="ActorEnd.cpp" />
     <ClCompile Include="Bitmap.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyTrap.cpp" />
     <ClCompile Include="FieldScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
@@ -150,12 +152,15 @@
     <ClCompile Include="StringTile.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="TopBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="ActorEnd.h" />
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="CommonHeader.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyTrap.h" />
     <ClInclude Include="FieldScene.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Player.h" />
@@ -163,6 +168,7 @@
     <ClInclude Include="StringTile.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="TopBar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

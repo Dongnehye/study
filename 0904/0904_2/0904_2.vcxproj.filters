@@ -60,6 +60,15 @@
     <ClCompile Include="StringTile.cpp">
       <Filter>소스 파일\Actor</Filter>
     </ClCompile>
+    <ClCompile Include="TopBar.cpp">
+      <Filter>소스 파일\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyTrap.cpp">
+      <Filter>소스 파일\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="ActorEnd.cpp">
+      <Filter>소스 파일\Actor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainGame.h">
@@ -93,6 +102,15 @@
       <Filter>헤더 파일\Actor</Filter>
     </ClInclude>
     <ClInclude Include="StringTile.h">
+      <Filter>헤더 파일\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="TopBar.h">
+      <Filter>헤더 파일\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyTrap.h">
+      <Filter>헤더 파일\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="ActorEnd.h">
       <Filter>헤더 파일\Actor</Filter>
     </ClInclude>
   </ItemGroup>
