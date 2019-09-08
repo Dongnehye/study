@@ -5,13 +5,10 @@ MainGame * MainGame::m_sThis = nullptr;
 
 void MainGame::SceneCreate(HDC hdc)
 {
-	
-	//TitleScene * New = new TitleScene(hdc);
-	//Scene * New = new Scene(hdc);
-
-	FieldScene * New = new FieldScene(hdc);
-	VecScene.push_back(New);
-	
+	TitleScene * TitleSceneNew = new TitleScene(hdc);
+	VecScene.push_back(TitleSceneNew);
+	FieldScene * FieldSceneNew = new FieldScene(hdc);
+	VecScene.push_back(FieldSceneNew);	
 }
 
 MainGame::MainGame()
@@ -22,18 +19,20 @@ MainGame::MainGame()
 
 void MainGame::Init(HDC hdc , HINSTANCE _hinst)
 {
+	IsStageStart = false;
 	Memhinst = _hinst;
 	SceneCreate(hdc);
 
 	player = new Player(hdc);
-	scene = VecScene[0];
-	scene->SetPlayer(player);
+	scene = VecScene[STAGE_TITLE];
 }
 
 void MainGame::InputKeyDown(HWND hWnd, WPARAM wParam)
 {
-	switch (wParam)
+	if (IsStageStart)
 	{
+		switch (wParam)
+		{
 		case VK_LEFT:
 			player->ActiveMove(-2);
 			break;
@@ -62,9 +61,17 @@ void MainGame::InputKeyDown(HWND hWnd, WPARAM wParam)
 		case 'X':
 			player->ActiveJump();
 			break;
-	default:
-		break;
+		default:
+			break;
+		}
 	}
+	else
+	{
+		IsStageStart = true;
+		scene = VecScene[STAGE_1];
+		scene->SetPlayer(player);
+	}
+
 }
 void MainGame::InputKeyUp(HWND hWnd, WPARAM wParam)
 {

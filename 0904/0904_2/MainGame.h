@@ -6,20 +6,26 @@
 #include <vector>
 #include <Windows.h>
 
+enum STAGE
+{
+	STAGE_TITLE,
+	STAGE_1,
+	STAGE_END
+};
+
 class MainGame
 {
 private:
 	static MainGame* m_sThis;
 	HINSTANCE Memhinst;
 	HDC MemDC;
-	int x;
-	int y;
 
 	vector<Scene*> VecScene;
 	Scene * scene;
 	Player * player;
 
 	void SceneCreate(HDC hdc);
+	bool IsStageStart;
 
 	MainGame();
 public:
