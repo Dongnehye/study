@@ -1,2 +1,6 @@
 ﻿  MainTool.cpp
-  BattleCityMapTool.vcxproj -> C:\Users\Administrator\Documents\repo\study\0909\Debug\BattleCityMapTool.exe
+  Tile.cpp
+  main.cpp
+d:\neople\study\0909\battlecitymaptool\main.cpp(51): warning C4101: 'str' :참조되지 않은 지역 변수입니다.
+  코드를 생성하고 있습니다...
+  BattleCityMapTool.vcxproj -> D:\Neople\study\0909\Debug\BattleCityMapTool.exe

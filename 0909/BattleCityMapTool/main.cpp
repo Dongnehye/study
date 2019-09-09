@@ -65,11 +65,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			BS_AUTORADIOBUTTON | WS_GROUP, 460,30,100,30,hWnd,(HMENU)BLOCK_BRICK,g_hInst,NULL);
 		r2 = CreateWindow(TEXT("button"), TEXT("Silver"), WS_CHILD | WS_VISIBLE |
 			BS_AUTORADIOBUTTON, 460, 90, 100, 30, hWnd, (HMENU)BLOCK_SILVER, g_hInst, NULL);
-		r3 = CreateWindow(TEXT("button"), TEXT("WATER"), WS_CHILD | WS_VISIBLE |
+		r3 = CreateWindow(TEXT("button"), TEXT("Water"), WS_CHILD | WS_VISIBLE |
 			BS_AUTORADIOBUTTON, 460, 150, 100, 30, hWnd, (HMENU)BLOCK_WATER, g_hInst, NULL);
-		r4 = CreateWindow(TEXT("button"), TEXT("FOREST"), WS_CHILD | WS_VISIBLE |
+		r4 = CreateWindow(TEXT("button"), TEXT("Forest"), WS_CHILD | WS_VISIBLE |
 			BS_AUTORADIOBUTTON, 460, 210, 100, 30, hWnd, (HMENU)BLOCK_FOREST, g_hInst, NULL);
-		r5 = CreateWindow(TEXT("button"), TEXT("METAL"), WS_CHILD | WS_VISIBLE |
+		r5 = CreateWindow(TEXT("button"), TEXT("Metal"), WS_CHILD | WS_VISIBLE |
 			BS_AUTORADIOBUTTON, 460, 270, 100, 30, hWnd, (HMENU)BLOCK_METAL, g_hInst, NULL);
 
 		CheckRadioButton(hWnd, BLOCK_BRICK, BLOCK_METAL, BLOCK_BRICK);
@@ -103,6 +103,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			MessageBox(hWnd, TEXT("Load"), TEXT("Button"), MB_OK);
 			break;
 		}
+		return 0;
+	case WM_KEYDOWN:
+		MainTool::GetInstance()->Input(wParam);
 		return 0;
 	case WM_TIMER:
 		//MainTool::GetInstance()->Update();
