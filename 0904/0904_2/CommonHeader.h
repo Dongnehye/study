@@ -7,10 +7,6 @@
 
 #define STAGE_OVERSCROLL 5370
 
-//#define STAGE_WITDH 1000
-//#define STAGE_OVERSCROLL 500
-
-//#define STAGE_WITDH 6000
-//#define STAGE_OVERSCROLL 5370
-
 #define MAXLIFE 3
+
+#define ENEMYNUM 15

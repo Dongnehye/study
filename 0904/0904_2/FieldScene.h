@@ -19,6 +19,8 @@ class FieldScene :
 	list<Enemy*> ListEnemy;
 	queue<Enemy*> QueueEnemy;
 
+	Bitmap StageScreen;
+	Bitmap GameOverScreen;
 	Bitmap Back;
 	Bitmap BackDeco;
 	Bitmap BackNormal1;
@@ -44,8 +46,11 @@ class FieldScene :
 	void SetEnemy(HDC hdc);
 	void InlineEnemy(POINT PlayerPoint);
 
-	void GameOver();
-
+	void LostLifeGameOver(Player * player);
+	bool GameClear;
+	bool SceneGameOver;
+	bool GameStart;
+	bool GameOver;
 
 	virtual void Update(Player * player);
 	virtual void UpdateTimeSecond(Player * player);

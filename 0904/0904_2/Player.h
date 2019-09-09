@@ -66,9 +66,12 @@ public:
 	void StateIdle();
 	void ActiveMove(int x);
 	void ActiveJump();
+	void SettingPlayer(int x);
+	void AddScroe(int Score);
 
+	float Angle;
 	bool LostLife(RECT EnemyCollision);
-	bool AddScore(RECT EnemyScoreCollision);
+	bool RectAddScore(RECT EnemyScoreCollision);
 	bool GameClear(RECT EndActorCollision);
 
 	int GetLife();

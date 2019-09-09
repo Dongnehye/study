@@ -18,7 +18,6 @@ void Player::CosJump()
 	int JumpPosition = 0;
 	int JumpSpeed = 2;
 	static float bIsJumpInit = false;
-	static float Angle = 180.0f;
 
 
 	if (JumpVector == VECTOR_LEFT)
@@ -149,6 +148,8 @@ Player::Player(HDC hdc)
 	bAddScore	= false;
 	IsGameClear = false;
 
+	Angle = 180.0f;
+
 	RunAnimation.push_back(Run);
 	RunAnimation.push_back(BACKRUN);
 	RunAnimation.push_back(Idle);
@@ -200,6 +201,32 @@ void Player::ActiveJump()
 	IsJump = true;
 }
 
+void Player::SettingPlayer(int x)
+{
+	IsDie = false;
+	IsJump = false;
+	IsDie = false;
+	IsAir = false;
+	TickCount = false;
+	bAddScore = false;
+	IsGameClear = false;
+
+	StateIdle();
+
+	pt.x = x;
+	pt.y = 335;
+	Angle = 180.f;
+
+	JumpMIddlePos.x = x;
+	JumpMIddlePos.y = 335;
+}
+
+void Player::AddScroe(int _Score)
+{
+	if(_Score > 0)
+		Score += _Score;
+}
+
 bool Player::LostLife(RECT EnemyCollision)
 {
 	if (Collision.left < EnemyCollision.right &&
@@ -214,7 +241,7 @@ bool Player::LostLife(RECT EnemyCollision)
 	else
 		return false;
 }
-bool Player::AddScore(RECT EnemyScoreCollision)
+bool Player::RectAddScore(RECT EnemyScoreCollision)
 {
 	if (Collision.left < EnemyScoreCollision.right &&
 		Collision.top < EnemyScoreCollision.bottom &&

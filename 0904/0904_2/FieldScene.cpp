@@ -65,7 +65,7 @@ void FieldScene::SettingStage(HDC hdc)
 
 void FieldScene::SetEnemy(HDC hdc)
 {
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < ENEMYNUM; ++i)
 	{
 		if (i % 2 == 0)
 		{
@@ -86,17 +86,22 @@ void FieldScene::InlineEnemy(POINT PlayerPoint)
 {
 	static bool FirstInlineEnemy = false;
 	static int InlineEnemyCount = 0;
+
 	if (!FirstInlineEnemy)
 	{
 		int StartPos = 400;
+		int EndActorPosition = STAGE_WITDH - 160;
+		int ShortDistance = 250;
+		int LongDistance = 400;
+
 		for (auto iter = ListEnemy.begin(); iter != ListEnemy.end(); ++iter)
 		{
 			(*iter)->SetPositionX(PlayerPoint.x + StartPos);
 			if(InlineEnemyCount < 1)
-				StartPos += 250;
+				StartPos += ShortDistance;
 			else if (InlineEnemyCount < 4)
 			{
-				StartPos += 400;
+				StartPos += LongDistance;
 			}
 			else
 			{
@@ -104,8 +109,7 @@ void FieldScene::InlineEnemy(POINT PlayerPoint)
 			}
 			++InlineEnemyCount;
 		}
-		ListEnemy.back()->SetPositionX(STAGE_WITDH - 160);
-
+		ListEnemy.back()->SetPositionX(EndActorPosition);
 
 		FirstInlineEnemy = true;
 	}
@@ -118,11 +122,19 @@ void FieldScene::InlineEnemy(POINT PlayerPoint)
 	}
 }
 
-void FieldScene::GameOver()
+void FieldScene::LostLifeGameOver(Player * player)
 {
-
+	if (player->GetLife() > 0)
+	{
+		player->SettingPlayer(PlayerStartRunDistance);
+	}
+	else
+	{
+		SceneGameOver = true;
+	}
 
 }
+
 void FieldScene::SetPlayer(Player * player)
 {
 	ListActor.push_back(player);
@@ -137,36 +149,45 @@ void FieldScene::Draw(HDC hdc)
 	static int SafeDrawLange = 100;
 
 	BlackBackground.BufferDraw(MemDC, PlayerStartRunDistance, 0);
+
+	if (SceneGameOver)
+	{
+		GameOverScreen.BufferDraw(MemDC, PlayerStartRunDistance + SafeDrawLange, 0);
+	}
+	else if (GameStart)
+	{
+		StageScreen.BufferDraw(MemDC, PlayerStartRunDistance + SafeDrawLange, 0);
+	}
+	else
+	{
+		for (auto iter = ListActor.begin(); iter != ListActor.end(); ++iter)
+		{
+			POINT AcotrPoint = (*iter)->GetPoint();
+			if (AcotrPoint.x >= PlayerStartRunDistance - SafeDrawLange && AcotrPoint.x <= RESOLUTION_WITDH + PlayerStartRunDistance + SafeDrawLange)
+				(*iter)->Draw(MemDC, (*iter)->GetSize());
+		}
+	}
 	topbar->DrawTopBar(MemDC, PlayerStartRunDistance);
 
-	for (auto iter = ListActor.begin(); iter != ListActor.end(); ++iter)
-	{
-		POINT AcotrPoint = (*iter)->GetPoint();
-		if(AcotrPoint.x >= PlayerStartRunDistance - SafeDrawLange && AcotrPoint.x <= RESOLUTION_WITDH + PlayerStartRunDistance + SafeDrawLange)
-			(*iter)->Draw(MemDC, (*iter)->GetSize());
-	}
-
 	BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, PlayerStartRunDistance, 0, SRCCOPY);
-	//BitBlt(hdc, 0, 0, RESOLUTION_WITDH, RESOLUTION_HEIGHT, MemDC, 0, 0, SRCCOPY);
 }
 
 
 
 void FieldScene::Update(Player * player)
 {
-	static bool GameOver = false;
 	static int GameOverCount = 0;
 
-	if (GameOver)
+	if (GameClear)
 	{
-		//if (GameOverCount > 20)
-		//{
-		//	GameOver = false;
-		//}
-		//else
-		//	++GameOverCount;
+		if (BounsScore > 0)
+		{
+			player->AddScroe(10);
+
+			BounsScore -= 10;
+		}
 	}
-	else
+	else if(!GameOver && !GameStart)
 	{
 		ScrollMove(player->GetPoint());
 		InlineEnemy(player->GetPoint());
@@ -178,27 +199,56 @@ void FieldScene::Update(Player * player)
 				GameOver = true;
 				break;
 			}
-			else if (player->AddScore((*iter)->GetScoreCollision()))
+			else if (player->RectAddScore((*iter)->GetScoreCollision()))
 			{
 
 			}
 			else if (player->GameClear(actorEnd->GetCollision()))
 			{
-
+				GameClear = true;
+				break;
 			}
 		}
-		topbar->Update(player, BounsScore, HighScore);
+
 	}
+	topbar->Update(player, BounsScore, HighScore);
 }
 
 void FieldScene::UpdateTimeSecond(Player * player)
 {
+	static int GameCount = 0;
+	int CountSecond = 3;
 
-	BounsScore -= 10;
-	if (BounsScore <= 0)
+	if (GameOver)
 	{
-		BounsScore = 0;
-		// palyer GameOver.
+		if (GameCount > CountSecond)
+		{
+			LostLifeGameOver(player);
+			GameOver = false;
+			GameStart = true;
+			GameCount = 0;
+		}
+
+		++GameCount;
+	}
+	else if (GameStart)
+	{
+		if (GameCount > CountSecond)
+		{
+			GameStart = false;
+			GameCount = 0;
+		}
+
+		++GameCount;
+	}
+	else if(!SceneGameOver)
+	{
+		BounsScore -= 10;
+		if (BounsScore <= 0)
+		{
+			BounsScore = 0;
+			// palyer GameOver.
+		}
 	}
 }
 
@@ -218,15 +268,22 @@ FieldScene::FieldScene(HDC hdc)
 	BounsScore = 5000;
 	HighScore = 20000;
 	PlayerStartRunDistance = 0;
-
+	SceneGameOver = false;
+	GameStart = true;
+	GameOver = false;
+	GameClear = false;
 	SetBitmapSize();
-
 
 	topbar = new TopBar(hdc);
 	actorEnd = new ActorEnd(hdc);
+
 	SettingStage(hdc);
-	BlackBackground.Init(hdc, "Circus\\back_black.bmp");
 	SetEnemy(hdc);
+
+
+	BlackBackground.Init(hdc, "Circus\\back_black.bmp");
+	StageScreen.Init(hdc, "Circus\\Stage.bmp");
+	GameOverScreen.Init(hdc, "Circus\\GameOver.bmp");
 }
 
 

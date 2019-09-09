@@ -1,23 +1,5 @@
-﻿  ActorEnd.cpp
-  Bitmap.cpp
-  Enemy.cpp
-  EnemyTrap.cpp
-  FieldScene.cpp
-d:\neople\study\0904\0904_2\fieldscene.cpp(59): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdlib.h(1323): note: 'itoa' 선언을 참조하십시오.
-  MainGame.cpp
-  Player.cpp
-d:\neople\study\0904\0904_2\player.cpp(43): warning C4244: '=': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-d:\neople\study\0904\0904_2\player.cpp(44): warning C4244: '=': 'float'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Scene.cpp
+﻿  MainGame.cpp
   TitleScene.cpp
-  TopBar.cpp
-d:\neople\study\0904\0904_2\topbar.cpp(51): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdlib.h(1323): note: 'itoa' 선언을 참조하십시오.
-d:\neople\study\0904\0904_2\topbar.cpp(54): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdlib.h(1323): note: 'itoa' 선언을 참조하십시오.
-d:\neople\study\0904\0904_2\topbar.cpp(57): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdlib.h(1323): note: 'itoa' 선언을 참조하십시오.
   main.cpp
   코드를 생성하고 있습니다...
-  0904_2.vcxproj -> D:\Neople\study\0904\Debug\0904_2.exe
+  0904_2.vcxproj -> C:\Users\Administrator\Documents\repo\study\0904\Debug\0904_2.exe

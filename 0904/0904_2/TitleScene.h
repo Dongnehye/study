@@ -5,6 +5,7 @@ class TitleScene :
 {
 	Bitmap TitleBmp;
 	Bitmap PressBmp;
+	Bitmap StarTitleBmp;
 
 public:
 	TitleScene();
