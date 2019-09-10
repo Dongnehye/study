@@ -143,12 +143,14 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainTool.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RollbackData.cpp" />
     <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitmap.h" />
     <ClInclude Include="MainTool.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="RollbackData.h" />
     <ClInclude Include="Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

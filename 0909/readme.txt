@@ -1,9 +1,5 @@
 라디오 버튼 클릭으로 블럭 결정.
 
-게임시작시 기지는 고정
-
-1. 컨트롤 z Undo redo 되돌리기 되돌리기도디로기릳릳리 스택.
-
 save , load
 
 파일 다이얼로그 띄우기.
@@ -27,3 +23,24 @@ if(GetOpenFileName(&OFN) != 0)
 	sprintf(str, "%s 파일을 선택했습니다.", OFN.lpstrFile);
 	MessageBox(hWnd,str,"파일 열기 성공", MB_OK);
 }
+
+파일 구조체
+3 4 // x, y
+1 // Style
+0 // Change
+
+// 위 완료
+// 아래 미완료
+
+
+게임시작시 기지는 고정
+
+1. 컨트롤 z Undo redo 되돌리기 되돌리기도디로기릳릳리 스택.
+
+
+
+게임.
+
+PeekMessage();
+DispatchMessage();
+std chrono;

@@ -43,6 +43,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 }
 HWND hEdit;
 HWND r1, r2, r3, r4, r5;
+int BlockStyle = BLOCK_BRICK;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
@@ -82,33 +83,47 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam))
 		{
 		case BLOCK_BRICK:
-
+			BlockStyle = BLOCK_BRICK;
+			SetFocus(hWnd);
 			break;
 		case BLOCK_SILVER:
-
+			BlockStyle = BLOCK_SILVER;
+			SetFocus(hWnd);
 			break;
 		case BLOCK_WATER:
-
+			BlockStyle = BLOCK_WATER;
+			SetFocus(hWnd);
 			break;
 		case BLOCK_FOREST:
-
+			BlockStyle = BLOCK_FOREST;
+			SetFocus(hWnd);
 			break;
 		case BLOCK_METAL:
-
+			BlockStyle = BLOCK_METAL;
+			SetFocus(hWnd);
 			break;
 		case ID_SAVE:
-			MessageBox(hWnd, TEXT("Save"), TEXT("Button"), MB_OK);
+			MainTool::GetInstance()->Save(hWnd);
 			break;
 		case ID_LOAD:
-			MessageBox(hWnd, TEXT("Load"), TEXT("Button"), MB_OK);
+			MainTool::GetInstance()->Load(hWnd);
 			break;
 		}
+		MainTool::GetInstance()->SetCurrentBlock(BlockStyle);
+		return 0;
+	case WM_LBUTTONDOWN:
+		MainTool::GetInstance()->MouseInput(lParam,true);
+		return 0;
+	case WM_RBUTTONDOWN:
+		MainTool::GetInstance()->MouseInput(lParam,false);
+		return 0;
+	case WM_MBUTTONDOWN:
+		MainTool::GetInstance()->MouseMiddleInput(lParam);
 		return 0;
 	case WM_KEYDOWN:
 		MainTool::GetInstance()->Input(wParam);
 		return 0;
 	case WM_TIMER:
-		//MainTool::GetInstance()->Update();
 		InvalidateRect(hWnd, NULL, false);
 		return 0;
 	case WM_PAINT:
