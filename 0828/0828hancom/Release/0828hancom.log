@@ -1,0 +1,62 @@
+﻿  Block.cpp
+  GameManager.cpp
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(28): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(30): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(90): note: 'strcat' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(29): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1774): note: 'sprintf' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(36): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(38): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(90): note: 'strcat' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(37): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1774): note: 'sprintf' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(60): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(61): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(62): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(211): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(216): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(225): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(231): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\gamemanager.cpp(237): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+  ItemBlock.cpp
+  main.cpp
+c:\users\administrator\documents\repo\study\0828\0828hancom\main.cpp(83): warning C4101: 'st' :참조되지 않은 지역 변수입니다.
+  Player.cpp
+c:\users\administrator\documents\repo\study\0828\0828hancom\player.cpp(51): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\player.cpp(55): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\player.cpp(81): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1774): note: 'sprintf' 선언을 참조하십시오.
+  SaveLoader.cpp
+c:\users\administrator\documents\repo\study\0828\0828hancom\saveloader.cpp(10): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1774): note: 'sprintf' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\saveloader.cpp(18): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: 'fopen' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\saveloader.cpp(23): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note: 'fscanf' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\saveloader.cpp(49): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: 'fopen' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\saveloader.cpp(55): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note: 'fscanf' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\saveloader.cpp(43): warning C4101: 'StrNum' :참조되지 않은 지역 변수입니다.
+c:\users\administrator\documents\repo\study\0828\0828hancom\saveloader.cpp(84): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: 'fopen' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\saveloader.cpp(134): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1774): note: 'sprintf' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\0828\0828hancom\saveloader.cpp(136): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1774): note: 'sprintf' 선언을 참조하십시오.
+  코드를 생성하고 있습니다.
+  All 408 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  코드를 생성했습니다.
+  0828hancom.vcxproj -> C:\Users\Administrator\Documents\repo\study\0828\Release\0828hancom.exe
