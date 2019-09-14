@@ -1,7 +1,0 @@
-#pragma once
-#define MAP_SIZE 13
-
-#define STAGE_SIZE 429
-
-#define RESOLUSITION_WIDTH 960
-#define RESOLUSITION_HEIGHT 720
