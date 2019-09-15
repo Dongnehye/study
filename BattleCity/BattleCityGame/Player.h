@@ -1,5 +1,6 @@
 #pragma once
 #include "Tank.h"
+
 class Player :
 	public Tank
 {
@@ -15,6 +16,6 @@ public:
 	float GetPositionY();
 
 	virtual ~Player();
-	virtual void Update();
+	virtual void Update(float fElapseTime);
 };
 

@@ -55,6 +55,9 @@ class MainGame
 	Bitmap * BlockMetal;
 	Bitmap * BlockEngle;
 
+	Bitmap * BulletNormal;
+	Bitmap * BulletBoom;
+
 	Player * player;
 
 	int Score;
@@ -76,4 +79,3 @@ public:
 	void Update();
 	void Render();
 };
-

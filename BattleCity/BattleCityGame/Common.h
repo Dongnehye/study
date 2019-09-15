@@ -1,4 +1,16 @@
 #pragma once
+
+enum ARROW
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	ARROWEND
+};
+#define TANKSPEED 100
+#define BULLETSPEED 200
+
 #define MAP_SIZE 13
 
 #define TILE_SIZE 32

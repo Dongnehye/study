@@ -1,2 +1,4 @@
-﻿  Tank.cpp
+﻿  Bullet.cpp
+d:\neople\study\battlecity\battlecitygame\bullet.cpp(98): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\neople\study\battlecity\battlecitygame\bullet.cpp(108): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   BattleCityGame.vcxproj -> D:\Neople\study\BattleCity\Debug\BattleCityGame.exe

@@ -28,6 +28,7 @@ void Tank::ApproximationTilePos(float & Number)
 Tank::Tank()
 {
 	AnimationCount = 0;
+	FireColdown = 0;
 }
 
 
@@ -56,8 +57,24 @@ void Tank::Move(float fElapseTime)
 		AddPositionY(speed * fElapseTime);
 }
 
-void Tank::Fire()
+void Tank::Fire(HWND hWnd, std::vector<Bullet*> &VecBullet)
 {
+	if (FireColdown <= 0)
+	{
+		Bullet * bullet = new Bullet(hWnd,Arrow,x,y,IsPlayer);
+		VecBullet.push_back(bullet);
+		FireColdown = 5;
+	}
+}
+
+void Tank::Update(float fElapseTime)
+{
+	//if (sec.count() < 1000)
+	//{
+	//	return;
+	//}
+	if (FireColdown > 0)
+		--FireColdown;
 
 }
 

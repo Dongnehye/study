@@ -83,7 +83,43 @@ void Tile::Update(std::vector<Tank*> &VecTank, std::vector<Bullet*> &VecBullet)
 			}
 		}
 	}
+	for (auto iter = VecBullet.begin(); iter != VecBullet.end(); ++iter)
+	{
+		if (IntersectRect(&rcInter, &(*iter)->Collision, &Collision))
+		{
+			int InterW = rcInter.right - rcInter.left;
+			int InterH = rcInter.bottom - rcInter.top;
 
+			if (InterW > InterH)
+			{
+				if (rcInter.top == Collision.top)
+				{
+					(*iter)->Collision.top -= InterH;
+					(*iter)->Collision.bottom -= InterH;
+
+				}
+				else if (rcInter.bottom == Collision.bottom)
+				{
+					(*iter)->Collision.top += InterH;
+					(*iter)->Collision.bottom += InterH;
+				}
+			}
+			else
+			{
+				if (rcInter.left == Collision.left)
+				{
+					(*iter)->Collision.left -= InterW;
+					(*iter)->Collision.right -= InterW;
+				}
+				else if (rcInter.right == Collision.right)
+				{
+					(*iter)->Collision.left += InterW;
+					(*iter)->Collision.right += InterW;
+				}
+			}
+			(*iter)->IsBoomActive();
+		}
+	}
 
 }
 int Tile::GetChangeIndex()

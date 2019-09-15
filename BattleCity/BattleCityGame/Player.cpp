@@ -9,13 +9,15 @@ Player::Player()
 Player::Player(HDC hdc)
 {
 	Arrow = UP;
-	speed = 100;
+	speed = TANKSPEED;
 	Position.x = 0;
 	Position.y = 0;
 	x = 0;
 	y = 0;
 	Model = nullptr;
 	Idle = false;
+	IsPlayer = true;
+
 	Up[0] = new Bitmap(hdc, "BattleCity\\tank_up_00.bmp");
 	Up[1] = new Bitmap(hdc, "BattleCity\\tank_up_01.bmp");
 	Down[0] = new Bitmap(hdc, "BattleCity\\tank_down_00.bmp");
@@ -24,6 +26,12 @@ Player::Player(HDC hdc)
 	Left[1] = new Bitmap(hdc, "BattleCity\\tank_left_01.bmp");
 	Right[0] = new Bitmap(hdc, "BattleCity\\tank_right_00.bmp");
 	Right[1] = new Bitmap(hdc, "BattleCity\\tank_right_01.bmp");
+
+	TankBoom[TANKBOOM00] = new Bitmap(hdc, "BattleCity\\explosion_00.bmp");
+	TankBoom[TANKBOOM01] = new Bitmap(hdc, "BattleCity\\explosion_01.bmp");
+	TankBoom[TANKBOOM02] = new Bitmap(hdc, "BattleCity\\explosion_02.bmp");
+	TankBoom[TANKBOOM03] = new Bitmap(hdc, "BattleCity\\explosion_03.bmp");
+	TankBoom[TANKBOOM04] = new Bitmap(hdc, "BattleCity\\explosion_04.bmp");
 
 	Model = Up[0];
 
@@ -51,11 +59,20 @@ Player::~Player()
 
 }
 
-void Player::Update()
+void Player::Update(float fElapseTime)
 {
 	if (!Idle)
 	{
 		MoveAnimation();
 	}
 	Collision = { (int)x, (int)y,(int)x+ TileSize.cx, (int)y+ TileSize.cy };
+
+	if (fElapseTime * 1000 > 1000)
+	{
+		if (FireColdown > 0)
+		{
+			--FireColdown;
+		}
+		return;
+	}
 }

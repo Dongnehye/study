@@ -44,8 +44,6 @@ void MainGame::ResourceLoad(HDC hdc)
 	BlockSilver[BLOCKCHANGE_BOTTOM] = new Bitmap(hdc, "BattleCity\\block11.bmp");
 	BlockSilver[BLOCKCHANGE_LEFT] = new Bitmap(hdc, "BattleCity\\block10.bmp");
 	BlockSilver[BLOCKCHANGE_UP] = new Bitmap(hdc, "BattleCity\\block09.bmp");
-
-
 }
 
 void MainGame::LoadMap()
@@ -138,26 +136,28 @@ void MainGame::OperateInput()
 		player->AddPositionY(speed * m_fElapseTime);
 	else
 		player->SetIdle(true);
+	if (GetAsyncKeyState('Z') & 0x0001)
+		player->Fire(mhWnd, VecBullet);	
 }
 
 void MainGame::Update()
 {
 	std::chrono::duration<float> sec = std::chrono::system_clock::now() - m_LastTime;
-	if (sec.count() < (1 / FPS))
-	{
-		return;
-	}
+	//if (sec.count() < (1 / FPS))
+	//{
+	//	return;
+	//}
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
-
+	cout << m_fElapseTime << endl;
 	for (auto iter = VecTank.begin(); iter != VecTank.end(); ++iter)
 	{
-		(*iter)->Update();
+		(*iter)->Update(m_fElapseTime);
 	}
-	//for (auto iter = VecBullet.begin(); iter != VecBullet.end(); ++iter)
-	//{
-	//	(*iter)->Update();
-	//}
+	for (auto iter = VecBullet.begin(); iter != VecBullet.end(); ++iter)
+	{
+		(*iter)->Update(m_fElapseTime);
+	}
 	for (auto iter = VecTile.begin(); iter != VecTile.end(); ++iter)
 	{
 		(*iter)->Update(VecTank, VecBullet);
@@ -175,6 +175,10 @@ void MainGame::Render()
 	BitBlt(hMemDC[0], 0, 0, STAGE_SIZE, STAGE_SIZE, hMemDC[1], 0, 0, SRCCOPY);
 
 	for (auto iter = VecTile.begin(); iter != VecTile.end(); ++iter)
+	{
+		(*iter)->Draw(hMemDC[0]);
+	}
+	for (auto iter = VecBullet.begin(); iter != VecBullet.end(); ++iter)
 	{
 		(*iter)->Draw(hMemDC[0]);
 	}

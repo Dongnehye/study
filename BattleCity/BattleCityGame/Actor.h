@@ -15,6 +15,6 @@ public:
 	Actor();
 	RECT Collision;
 	virtual ~Actor();
-	virtual void Update() = 0;
+	virtual void Update(float fElapseTime) = 0;
 	virtual void Draw(HDC hdc);
 };

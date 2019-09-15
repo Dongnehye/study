@@ -1,14 +1,18 @@
 #pragma once
 #include "Actor.h"
+#include "Bullet.h"
+#include <vector>
 
-enum TANKANIMATION
+enum BOOMANIMATION
 {
-	IDLE,
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
+	TANKBOOM00,
+	TANKBOOM01,
+	TANKBOOM02,
+	TANKBOOM03,
+	TANKBOOM04,
+	TANKBOOMEND
 };
+
 
 class Tank :
 	public Actor
@@ -18,23 +22,26 @@ class Tank :
 protected:
 	int Arrow;
 	int speed;
-
+	int FireColdown;
+	bool IsPlayer;
 	Bitmap * Up[2];
 	Bitmap * Down[2];
 	Bitmap * Left[2];
 	Bitmap * Right[2];
+
+	Bitmap * TankBoom[TANKBOOMEND];
 
 public:
 	Tank();
 	virtual ~Tank();
 
 	void Move(float fElapseTime);
-	void Fire();
 	void MoveAnimation();
 
 	void AddPositionX(float _x);
 
 	void AddPositionY(float _y);
 
-	virtual void Update() = 0;
+	virtual void Fire(HWND hWnd, std::vector<Bullet*> &VecBullet);
+	virtual void Update(float fElapseTime);
 };
