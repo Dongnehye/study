@@ -21,22 +21,34 @@
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Engle.cpp" />
+    <ClCompile Include="Forest.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />
+    <ClCompile Include="Metal.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Sliver.cpp" />
     <ClCompile Include="Tank.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="Water.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Bitmap.h" />
+    <ClInclude Include="Block.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Engle.h" />
+    <ClInclude Include="Forest.h" />
     <ClInclude Include="MainGame.h" />
+    <ClInclude Include="Metal.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Sliver.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="Water.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

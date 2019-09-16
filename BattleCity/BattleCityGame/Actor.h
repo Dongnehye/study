@@ -9,7 +9,6 @@ protected:
 	float y;
 
 	SIZE TileSize;
-	POINT Position;
 	Bitmap * Model;
 public:
 	Actor();

@@ -10,10 +10,8 @@ Player::Player(HDC hdc)
 {
 	Arrow = UP;
 	speed = TANKSPEED;
-	Position.x = 0;
-	Position.y = 0;
-	x = 0;
-	y = 0;
+	x = 5 * TILE_SIZE;
+	y = 12 * TILE_SIZE;
 	Model = nullptr;
 	Idle = false;
 	IsPlayer = true;
@@ -61,18 +59,11 @@ Player::~Player()
 
 void Player::Update(float fElapseTime)
 {
+	Tank::Update(fElapseTime);
+
 	if (!Idle)
 	{
 		MoveAnimation();
 	}
 	Collision = { (int)x, (int)y,(int)x+ TileSize.cx, (int)y+ TileSize.cy };
-
-	if (fElapseTime * 1000 > 1000)
-	{
-		if (FireColdown > 0)
-		{
-			--FireColdown;
-		}
-		return;
-	}
 }

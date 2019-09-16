@@ -25,6 +25,12 @@
     <Filter Include="헤더 파일\Actor\Tank">
       <UniqueIdentifier>{68be2c67-c24e-49f5-a1eb-f10f44798559}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Tile">
+      <UniqueIdentifier>{9f09a1f9-c4ce-4be7-b411-91e07ba75063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Tile">
+      <UniqueIdentifier>{961e1b2f-fa28-412b-adce-cb1590b9b722}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -49,7 +55,25 @@
       <Filter>소스 파일\Actor\Tank</Filter>
     </ClCompile>
     <ClCompile Include="Tile.cpp">
-      <Filter>소스 파일\Actor</Filter>
+      <Filter>소스 파일\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>소스 파일\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Metal.cpp">
+      <Filter>소스 파일\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Water.cpp">
+      <Filter>소스 파일\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Forest.cpp">
+      <Filter>소스 파일\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Sliver.cpp">
+      <Filter>소스 파일\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Engle.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,13 +92,31 @@
     <ClInclude Include="Actor.h">
       <Filter>헤더 파일\Actor</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>헤더 파일\Actor\Tank</Filter>
     </ClInclude>
     <ClInclude Include="Common.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>헤더 파일\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>헤더 파일\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Forest.h">
+      <Filter>헤더 파일\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Metal.h">
+      <Filter>헤더 파일\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Water.h">
+      <Filter>헤더 파일\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Sliver.h">
+      <Filter>헤더 파일\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Engle.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

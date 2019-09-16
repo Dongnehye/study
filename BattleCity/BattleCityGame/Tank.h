@@ -23,6 +23,7 @@ protected:
 	int Arrow;
 	int speed;
 	int FireColdown;
+	float Second;
 	bool IsPlayer;
 	Bitmap * Up[2];
 	Bitmap * Down[2];

@@ -21,9 +21,11 @@ Bullet::Bullet(HWND hWnd, int _Arrow,float _x,float _y ,bool _IsPlayer)
 
 	Speed = BULLETSPEED;
 	AnimationCount = BOOM00;
+	BoomCount = 0.0f;
 
 	IsPlayer = _IsPlayer;
 	IsBoom = false;
+	IsBoomEnd = false;
 
 	BulletNormal[UP] = new Bitmap(hdc, "BattleCity\\missile_00.bmp");
 	BulletNormal[DOWN] = new Bitmap(hdc, "BattleCity\\missile_01.bmp");
@@ -72,12 +74,16 @@ void Bullet::Move(float fElapseTime)
 
 void Bullet::Boom(float fElapseTime)
 {
-	BoomAnimation(fElapseTime);
-
+	BoomCount += fElapseTime;
+	if (BoomCount < 1)
+		BoomAnimation(fElapseTime);
+	else
+		IsBoomEnd = true;
 }
 
 void Bullet::BoomAnimation(float fElapseTime)
 {
+	
 	Model = BulletBoom[AnimationCount];
 
 	if (AnimationCount == 2)
@@ -95,7 +101,7 @@ bool Bullet::CheckStageEnd()
 	}
 	else if (x > STAGE_SIZE - TileSize.cx)
 	{
-		x = STAGE_SIZE - TileSize.cx;
+		x = (float)STAGE_SIZE - (float)TileSize.cx;
 		return true;
 	}
 	if (y <= 0)
@@ -105,7 +111,7 @@ bool Bullet::CheckStageEnd()
 	}
 	else if (y > STAGE_SIZE - TileSize.cy)
 	{
-		y = STAGE_SIZE - TileSize.cy;
+		y = (float)STAGE_SIZE - (float)TileSize.cy;
 		return true;
 	}
 	return false;
@@ -114,18 +120,23 @@ bool Bullet::CheckStageEnd()
 void Bullet::IsBoomActive()
 {
 	IsBoom = true;
-	//TileSize.cx = TILE_SIZE;
-	//TileSize.cy = TILE_SIZE;
+	x = x - TILE_SIZE / 4;
+	y = y - TILE_SIZE / 4;
+	TileSize.cx = TILE_SIZE;
+	TileSize.cy = TILE_SIZE;
+	cout << x << endl;
+}
 
-	//x = x - TILE_SIZE / 2 + 4;
-	//y = y - TILE_SIZE / 2 + 4;
+bool Bullet::TimeOverBullet()
+{
+	return IsBoomEnd;
 }
 
 void Bullet::Update(float fElapseTime)
 {
 	if (IsBoom)
 	{
-		//Boom(fElapseTime);
+		Boom(fElapseTime);
 	}
 	else if (CheckStageEnd())
 	{

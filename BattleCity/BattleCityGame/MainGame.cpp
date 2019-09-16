@@ -1,5 +1,11 @@
 #include "MainGame.h"
 #include "Common.h"
+#include "Block.h"
+#include "Engle.h"
+#include "Water.h"
+#include "Sliver.h"
+#include "Forest.h"
+#include "Metal.h"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -7,22 +13,43 @@
 void MainGame::SetTile(int _BlockStyle, int ChangeIndex, POINT pt)
 {
 	Bitmap * pBitmap;
-
+	Tile * pNew;
 	if (_BlockStyle == BLOCK_BRICK)
+	{
 		pBitmap = BlockBrick[ChangeIndex];
+		pNew = new Block(mhWnd, pt, _BlockStyle, ChangeIndex, pBitmap);
+		VecFrontTile.push_back(pNew);
+	}
 	else if (_BlockStyle == BLOCK_SILVER)
+	{
 		pBitmap = BlockSilver[ChangeIndex];
+		pNew = new Sliver(mhWnd, pt, _BlockStyle, ChangeIndex, pBitmap);
+		VecFrontTile.push_back(pNew);
+	}
 	else if (_BlockStyle == BLOCK_WATER)
+	{
 		pBitmap = BlockWater;
+		pNew = new Water(mhWnd, pt, _BlockStyle, ChangeIndex, pBitmap);
+		VecFrontTile.push_back(pNew);
+	}
 	else if (_BlockStyle == BLOCK_FOREST)
+	{
 		pBitmap = BlockForest;
+		pNew = new Forest(mhWnd, pt, _BlockStyle, ChangeIndex, pBitmap);
+		VecBackTile.push_back(pNew);
+	}
 	else if (_BlockStyle == BLOCK_METAL)
+	{
 		pBitmap = BlockMetal;
+		pNew = new Metal(mhWnd, pt, _BlockStyle, ChangeIndex, pBitmap);
+		VecFrontTile.push_back(pNew);
+	}
 	else if (_BlockStyle == BLOCK_ENGLE)
+	{
 		pBitmap = BlockEngle;
-
-	Tile * pNew = new Tile(pt, _BlockStyle, ChangeIndex, pBitmap);
-	VecTile.push_back(pNew);
+		pNew = new Engle(mhWnd, pt, _BlockStyle, ChangeIndex, pBitmap);
+		VecFrontTile.push_back(pNew);
+	}
 }
 
 void MainGame::ResourceLoad(HDC hdc)
@@ -149,16 +176,23 @@ void MainGame::Update()
 	//}
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
-	cout << m_fElapseTime << endl;
 	for (auto iter = VecTank.begin(); iter != VecTank.end(); ++iter)
 	{
 		(*iter)->Update(m_fElapseTime);
 	}
-	for (auto iter = VecBullet.begin(); iter != VecBullet.end(); ++iter)
+	for (auto iter = VecBullet.begin(); iter != VecBullet.end();)
 	{
 		(*iter)->Update(m_fElapseTime);
+		if ((*iter)->TimeOverBullet())
+		{
+			iter = VecBullet.erase(iter);
+		}
+		else
+		{
+			++iter;
+		}
 	}
-	for (auto iter = VecTile.begin(); iter != VecTile.end(); ++iter)
+	for (auto iter = VecFrontTile.begin(); iter != VecFrontTile.end(); ++iter)
 	{
 		(*iter)->Update(VecTank, VecBullet);
 	}
@@ -174,7 +208,7 @@ void MainGame::Render()
 
 	BitBlt(hMemDC[0], 0, 0, STAGE_SIZE, STAGE_SIZE, hMemDC[1], 0, 0, SRCCOPY);
 
-	for (auto iter = VecTile.begin(); iter != VecTile.end(); ++iter)
+	for (auto iter = VecFrontTile.begin(); iter != VecFrontTile.end(); ++iter)
 	{
 		(*iter)->Draw(hMemDC[0]);
 	}
@@ -182,8 +216,12 @@ void MainGame::Render()
 	{
 		(*iter)->Draw(hMemDC[0]);
 	}
-
 	player->Draw(hMemDC[0]);
+
+	for (auto iter = VecBackTile.begin(); iter != VecBackTile.end(); ++iter)
+	{
+		(*iter)->Draw(hMemDC[0]);
+	}
 
 	BitBlt(hdc, 0, 0, STAGE_SIZE, STAGE_SIZE, hMemDC[0], 0, 0, SRCCOPY);
 

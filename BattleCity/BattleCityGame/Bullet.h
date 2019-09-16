@@ -18,10 +18,13 @@ class Bullet :
 	int AnimationCount;
 	Bitmap * BulletNormal[ARROWEND];
 	Bitmap * BulletBoom[BOOMEND];
+
+	float BoomCount;
 	void BoomAnimation(float fElapseTime);
 
 	bool IsPlayer;
 	bool IsBoom;
+	bool IsBoomEnd;
 
 	void Move(float fElapseTime);
 
@@ -33,6 +36,7 @@ public:
 	virtual ~Bullet();
 
 	void IsBoomActive();
+	bool TimeOverBullet();
 	virtual void Update(float fElapseTime);
 };
 

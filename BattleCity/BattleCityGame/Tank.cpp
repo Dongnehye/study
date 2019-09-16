@@ -29,6 +29,7 @@ Tank::Tank()
 {
 	AnimationCount = 0;
 	FireColdown = 0;
+	Second = 0;
 }
 
 
@@ -63,20 +64,20 @@ void Tank::Fire(HWND hWnd, std::vector<Bullet*> &VecBullet)
 	{
 		Bullet * bullet = new Bullet(hWnd,Arrow,x,y,IsPlayer);
 		VecBullet.push_back(bullet);
-		FireColdown = 5;
+		FireColdown = 2;
 	}
 }
 
 void Tank::Update(float fElapseTime)
 {
-	//if (sec.count() < 1000)
-	//{
-	//	return;
-	//}
-	if (FireColdown > 0)
+	Second += fElapseTime;
+	if (FireColdown > 0 && Second > 1)
+	{
 		--FireColdown;
+		Second = 0;
+	}
 
-}
+} 
 
 void Tank::MoveAnimation()
 {

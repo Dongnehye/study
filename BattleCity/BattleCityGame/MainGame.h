@@ -11,35 +11,14 @@ using namespace std;
 
 #define FPS 60
 
-enum BLOCKSTYLE
-{
-	BLOCK_EMPTY,
-	BLOCK_BRICK,
-	BLOCK_SILVER,
-	BLOCK_WATER,
-	BLOCK_FOREST,
-	BLOCK_METAL,
-	BLOCK_ENGLE,
-	BLOCKSTYLE_END
-};
-
-enum BLOCKCHANGE
-{
-	BLOCKCHANGE_FULL,
-	BLOCKCHANGE_RIGHT,
-	BLOCKCHANGE_BOTTOM,
-	BLOCKCHANGE_LEFT,
-	BLOCKCHANGE_UP,
-	BLOCKCHANGE_END
-};
-
 class MainGame
 {
 	HWND mhWnd;
 	chrono::system_clock::time_point m_LastTime;
 	float m_fElapseTime;
 
-	vector<Tile*> VecTile;
+	vector<Tile*> VecFrontTile;
+	vector<Tile*> VecBackTile;
 	vector<Tank*> VecTank;
 	vector<Bullet*> VecBullet;
 

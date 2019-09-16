@@ -2,10 +2,12 @@
 #include "Bitmap.h"
 #include "Tank.h"
 #include "Bullet.h"
+#include "Common.h"
 #include <vector>
 
 class Tile
 {
+protected:
 	float x;
 	float y;
 
@@ -18,12 +20,15 @@ class Tile
 	int ChangeIndex;
 	int BlockStyle;
 
-	Bitmap * BlockBrick[5];
-	Bitmap * BlockSilver[5];
+	virtual void CheckTankCollision(std::vector<Tank*> &VecTank);
+	virtual void CheckBulletCollision(std::vector<Bullet*> &VecBullet);
+
+	virtual void IntersectRcetTank(Tank * tank, RECT Collision);
+	virtual void IntersectRcetBullet(Bullet* bullet, RECT &Collision);
 
 	Tile();
 public:
-	Tile(POINT pt, int _BlockStyle, int _ChangeIndex, Bitmap * _Bitmap);
+	Tile(HWND hWnd,POINT pt, int _BlockStyle, int _ChangeIndex, Bitmap * _Bitmap);
 	virtual ~Tile();
 
 	void SetBlockStyle(int _BlockStyle, int _ChangeIndex);
@@ -33,6 +38,7 @@ public:
 	int GetChangeIndex();
 	int GetBlockStyle();
 
-	void Update(std::vector<Tank*> &VecTank, std::vector<Bullet*> &VecBullet);
+	virtual void Update(std::vector<Tank*> &VecTank, std::vector<Bullet*> &VecBullet);
+
 	virtual void Draw(HDC hdc);
 };
