@@ -45,4 +45,5 @@ public:
 
 	virtual void Fire(HWND hWnd, std::vector<Bullet*> &VecBullet);
 	virtual void Update(float fElapseTime);
+	virtual void Update(float fElapseTime, HWND hWnd, std::vector<Bullet*> &VecBullet);
 };

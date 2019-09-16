@@ -6,6 +6,7 @@
 #include "Sliver.h"
 #include "Forest.h"
 #include "Metal.h"
+#include "EnemyTank.h"
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -107,6 +108,15 @@ void MainGame::LoadMap()
 
 }
 
+void MainGame::SpawnEnemy()
+{
+	POINT pt;
+	pt.x = 0;
+	pt.y = 0;
+	Tank * pNew = new EnemyTank(mhWnd,pt);
+	VecTank.push_back(pNew);
+}
+
 MainGame::MainGame()
 {
 }
@@ -116,7 +126,13 @@ MainGame::MainGame(HWND hWnd)
 	mhWnd = hWnd;
 
 	HDC hdc = GetDC(hWnd);
+
+	srand(GetTickCount());
 	
+	std::chrono::duration<float> sec = std::chrono::system_clock::now() - m_LastTime;
+	m_fElapseTime = sec.count();
+	m_LastTime = std::chrono::system_clock::now();
+
 	hMemDC[0] = CreateCompatibleDC(hdc);
 	hBitmap[0] = CreateCompatibleBitmap(hdc, 640, 480);
 	hOld[0] = (HBITMAP)SelectObject(hMemDC[0], hBitmap[0]);
@@ -132,7 +148,7 @@ MainGame::MainGame(HWND hWnd)
 
 	player = new Player(hdc);
 	VecTank.push_back(player);
-
+	SpawnEnemy();
 	ReleaseDC(hWnd,hdc);
 }
 
@@ -145,8 +161,22 @@ MainGame::~MainGame()
 		DeleteObject(hBitmap[i]);
 		DeleteDC(hMemDC[i]);
 	}
-
-	
+	for (auto iter = VecFrontTile.begin(); iter != VecFrontTile.end();)
+	{
+		iter = VecFrontTile.erase(iter);
+	}
+	for (auto iter = VecBackTile.begin(); iter != VecBackTile.end();)
+	{
+		iter = VecBackTile.erase(iter);
+	}
+	for (auto iter = VecTank.begin(); iter != VecTank.end();)
+	{
+		iter = VecTank.erase(iter);
+	}
+	for (auto iter = VecBullet.begin(); iter != VecBullet.end();)
+	{
+		iter = VecBullet.erase(iter);
+	}
 }
 
 void MainGame::OperateInput()
@@ -170,16 +200,20 @@ void MainGame::OperateInput()
 void MainGame::Update()
 {
 	std::chrono::duration<float> sec = std::chrono::system_clock::now() - m_LastTime;
-	//if (sec.count() < (1 / FPS))
-	//{
-	//	return;
-	//}
+	if (sec.count() < (1 / FPS))
+	{
+		return;
+	}
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
+
+	player->Update(m_fElapseTime);
+
 	for (auto iter = VecTank.begin(); iter != VecTank.end(); ++iter)
 	{
-		(*iter)->Update(m_fElapseTime);
+		(*iter)->Update(m_fElapseTime,mhWnd,VecBullet);
 	}
+
 	for (auto iter = VecBullet.begin(); iter != VecBullet.end();)
 	{
 		(*iter)->Update(m_fElapseTime);
@@ -216,7 +250,11 @@ void MainGame::Render()
 	{
 		(*iter)->Draw(hMemDC[0]);
 	}
-	player->Draw(hMemDC[0]);
+	for (auto iter = VecTank.begin(); iter != VecTank.end(); ++iter)
+	{
+		(*iter)->Draw(hMemDC[0]);
+	}
+	//player->Draw(hMemDC[0]);
 
 	for (auto iter = VecBackTile.begin(); iter != VecBackTile.end(); ++iter)
 	{

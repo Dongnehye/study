@@ -44,9 +44,10 @@ class MainGame
 	
 
 	void SetTile(int _BlockStyle, int ChangeIndex, POINT pt);
-
 	void ResourceLoad(HDC hdc);
 	void LoadMap();
+
+	void SpawnEnemy();
 
 	MainGame();
 public:

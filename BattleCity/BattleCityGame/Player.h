@@ -18,4 +18,3 @@ public:
 	virtual ~Player();
 	virtual void Update(float fElapseTime);
 };
-

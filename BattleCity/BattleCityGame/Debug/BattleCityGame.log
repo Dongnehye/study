@@ -1,16 +1,2 @@
-﻿  Actor.cpp
-c:\users\administrator\documents\repo\study\battlecity\battlecitygame\actor.cpp(17): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  Block.cpp
-  Bullet.cpp
-  Engle.cpp
-  Forest.cpp
-  MainGame.cpp
-  Metal.cpp
-  Player.cpp
-  Sliver.cpp
-  Tank.cpp
-  Tile.cpp
-  Water.cpp
-  main.cpp
-  코드를 생성하고 있습니다...
+﻿  MainGame.cpp
   BattleCityGame.vcxproj -> C:\Users\Administrator\Documents\repo\study\BattleCity\Debug\BattleCityGame.exe

@@ -32,7 +32,6 @@ Tank::Tank()
 	Second = 0;
 }
 
-
 Tank::~Tank()
 {
 	delete Up[0];
@@ -49,13 +48,13 @@ Tank::~Tank()
 void Tank::Move(float fElapseTime)
 {
 	if (Arrow == UP)
-		AddPositionX(-(speed * fElapseTime));
-	else if (Arrow == DOWN)
 		AddPositionY(-(speed * fElapseTime));
-	else if (Arrow == LEFT)
-		AddPositionX(speed * fElapseTime);
-	else if (Arrow == RIGHT)
+	else if (Arrow == DOWN)
 		AddPositionY(speed * fElapseTime);
+	else if (Arrow == LEFT)
+		AddPositionX(-(speed * fElapseTime));
+	else if (Arrow == RIGHT)
+		AddPositionX(speed * fElapseTime);
 }
 
 void Tank::Fire(HWND hWnd, std::vector<Bullet*> &VecBullet)
@@ -76,7 +75,16 @@ void Tank::Update(float fElapseTime)
 		--FireColdown;
 		Second = 0;
 	}
+}
 
+void Tank::Update(float fElapseTime,HWND hWnd, std::vector<Bullet*> &VecBullet)
+{
+	Second += fElapseTime;
+	if (FireColdown > 0 && Second > 1)
+	{
+		--FireColdown;
+		Second = 0;
+	}
 } 
 
 void Tank::MoveAnimation()

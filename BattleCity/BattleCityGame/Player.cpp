@@ -10,7 +10,7 @@ Player::Player(HDC hdc)
 {
 	Arrow = UP;
 	speed = TANKSPEED;
-	x = 5 * TILE_SIZE;
+	x = 4 * TILE_SIZE;
 	y = 12 * TILE_SIZE;
 	Model = nullptr;
 	Idle = false;

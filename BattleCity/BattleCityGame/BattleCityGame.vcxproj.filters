@@ -75,6 +75,9 @@
     <ClCompile Include="Engle.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyTank.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bitmap.h">
@@ -117,6 +120,9 @@
       <Filter>헤더 파일\Tile</Filter>
     </ClInclude>
     <ClInclude Include="Engle.h">
+      <Filter>헤더 파일\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyTank.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
