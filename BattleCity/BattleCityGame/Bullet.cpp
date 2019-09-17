@@ -13,8 +13,8 @@ Bullet::Bullet(HWND hWnd, int _Arrow,float _x,float _y ,bool _IsPlayer)
 	HDC hdc = GetDC(hWnd);
 
 	Arrow = _Arrow;
-	TileSize.cx = 8;
-	TileSize.cy = 8;
+	TileSize.cx = BULLET_SIZE;
+	TileSize.cy = BULLET_SIZE;
 
 	x = _x + TILE_SIZE / 2 - TileSize.cx / 2;
 	y = _y + TILE_SIZE / 2 - TileSize.cy / 2;
@@ -51,6 +51,50 @@ Bullet::~Bullet()
 	delete BulletBoom[BOOM01];
 	delete BulletBoom[BOOM02];
 }
+void Bullet::CheckBulletCollision(std::vector<Bullet*>& VecBullet)
+{
+
+	for (auto iter = VecBullet.begin(); iter != VecBullet.end(); ++iter)
+	{
+		if ((*iter)->GetIsPlayer() != IsPlayer)
+			IntersectRcetBullet((*iter));
+	}
+}
+
+void Bullet::IntersectRcetBullet(Bullet * bullet)
+{
+	RECT rcInter;
+	if (IntersectRect(&rcInter, &bullet->Collision, &Collision))
+	{
+		int InterW = rcInter.right - rcInter.left;
+		int InterH = rcInter.bottom - rcInter.top;
+
+		if (InterW > InterH)
+		{
+			if (rcInter.top == Collision.top)
+			{
+				bullet->Collision.top += TILE_SIZE / 4;
+			}
+			else if (rcInter.bottom == Collision.bottom)
+			{
+
+				bullet->Collision.bottom -= TILE_SIZE / 4;
+			}
+		}
+		else
+		{
+			if (rcInter.left == Collision.left)
+			{
+				bullet->Collision.left += TILE_SIZE / 4;
+			}
+			else if (rcInter.right == Collision.right)
+			{
+				bullet->Collision.right -= TILE_SIZE / 4;
+			}
+		}
+		IsBoomActive();
+	}
+}
 
 void Bullet::Move(float fElapseTime)
 {
@@ -75,7 +119,7 @@ void Bullet::Move(float fElapseTime)
 void Bullet::Boom(float fElapseTime)
 {
 	BoomCount += fElapseTime;
-	if (BoomCount < 1)
+	if (BoomCount < 0.2f)
 		BoomAnimation(fElapseTime);
 	else
 		IsBoomEnd = true;
@@ -124,7 +168,11 @@ void Bullet::IsBoomActive()
 	y = y - TILE_SIZE / 4;
 	TileSize.cx = TILE_SIZE;
 	TileSize.cy = TILE_SIZE;
-	cout << x << endl;
+}
+
+bool Bullet::GetIsPlayer()
+{
+	return IsPlayer;
 }
 
 bool Bullet::TimeOverBullet()
@@ -132,7 +180,7 @@ bool Bullet::TimeOverBullet()
 	return IsBoomEnd;
 }
 
-void Bullet::Update(float fElapseTime)
+void Bullet::Update(float fElapseTime, std::vector<Bullet*> &VecBullet)
 {
 	if (IsBoom)
 	{
@@ -145,6 +193,7 @@ void Bullet::Update(float fElapseTime)
 	else
 	{
 		Move(fElapseTime);
+		CheckBulletCollision(VecBullet);
 		Collision = { (int)x, (int)y,(int)x + TileSize.cx, (int)y + TileSize.cy };
 	}
 }

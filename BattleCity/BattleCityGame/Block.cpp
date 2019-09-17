@@ -143,7 +143,6 @@ void Block::IntersectRcetBullet(Bullet * bullet, RECT &Collision)
 					pt.x = Collision.right - TILE_SIZE / 2;
 					BlackTilePoint.push_back(pt);
 				}
-
 				Collision.top += TILE_SIZE / 4;
 			}
 			else if (rcInter.bottom == Collision.bottom)

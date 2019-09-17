@@ -108,13 +108,40 @@ void MainGame::LoadMap()
 
 }
 
-void MainGame::SpawnEnemy()
+void MainGame::SpawnEnemy(float fElapseTime)
 {
-	POINT pt;
-	pt.x = 0;
-	pt.y = 0;
-	Tank * pNew = new EnemyTank(mhWnd,pt);
-	VecTank.push_back(pNew);
+	if (EnemyNumber <= 0 || VecTank.size() > 0)
+	{
+		return;
+	}
+
+	SpawnEnemyCount += fElapseTime;
+	if (SpawnEnemyCount > 1.5f)
+	{
+		--EnemyNumber;
+		POINT pt;
+		if (SpawnPoint == SPAWN_MIDDLE)
+		{
+			pt.x = 5;
+			SpawnPoint = SPAWN_RIGHT;
+		}
+		else if (SpawnPoint == SPAWN_LEFT)
+		{
+			pt.x = 0;
+			SpawnPoint = SPAWN_MIDDLE;
+
+		}
+		else if (SpawnPoint == SPAWN_RIGHT)
+		{
+			pt.x = 12;
+			SpawnPoint = SPAWN_LEFT;
+		}
+
+		pt.y = 0;
+		Tank * pNew = new EnemyTank(mhWnd, pt);
+		VecTank.push_back(pNew);
+		SpawnEnemyCount = 0;
+	}
 }
 
 MainGame::MainGame()
@@ -146,9 +173,14 @@ MainGame::MainGame(HWND hWnd)
 
 	LoadMap();
 
+	Score = 0;
+	EnemyNumber = 20;
+	SpawnEnemyCount = 0;
+	SpawnPoint = SPAWN_MIDDLE;
+
 	player = new Player(hdc);
 	VecTank.push_back(player);
-	SpawnEnemy();
+
 	ReleaseDC(hWnd,hdc);
 }
 
@@ -184,17 +216,38 @@ void MainGame::OperateInput()
 	int speed = 100;
 	player->SetIdle(false);
 	if (GetKeyState(VK_LEFT) & 0x8000)
-		player->AddPositionX(-(speed * m_fElapseTime));
+	{
+		player->SetArrow(LEFT);
+		player->Move(m_fElapseTime);
+	}
 	else if (GetKeyState(VK_UP) & 0x8000)
-		player->AddPositionY(-(speed * m_fElapseTime));
+	{
+		player->SetArrow(UP);
+		player->Move(m_fElapseTime);
+	}
 	else if (GetKeyState(VK_RIGHT) & 0x8000)
-		player->AddPositionX(speed * m_fElapseTime);
+	{
+		player->SetArrow(RIGHT);
+		player->Move(m_fElapseTime);
+	}
 	else if (GetKeyState(VK_DOWN) & 0x8000)
-		player->AddPositionY(speed * m_fElapseTime);
+	{
+		player->SetArrow(DOWN);
+		player->Move(m_fElapseTime);
+	}
 	else
 		player->SetIdle(true);
 	if (GetAsyncKeyState('Z') & 0x0001)
 		player->Fire(mhWnd, VecBullet);	
+
+	//if (GetKeyState(VK_LEFT) & 0x8000)
+//	player->AddPositionX(-(speed * m_fElapseTime));
+//else if (GetKeyState(VK_UP) & 0x8000)
+//	player->AddPositionY(-(speed * m_fElapseTime));
+//else if (GetKeyState(VK_RIGHT) & 0x8000)
+//	player->AddPositionX(speed * m_fElapseTime);
+//else if (GetKeyState(VK_DOWN) & 0x8000)
+//	player->AddPositionY(speed * m_fElapseTime);
 }
 
 void MainGame::Update()
@@ -207,16 +260,26 @@ void MainGame::Update()
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
 
-	player->Update(m_fElapseTime);
+	player->Update(m_fElapseTime,VecBullet, VecTank);
 
-	for (auto iter = VecTank.begin(); iter != VecTank.end(); ++iter)
+	SpawnEnemy(m_fElapseTime);
+
+	for (auto iter = VecTank.begin(); iter != VecTank.end();)
 	{
-		(*iter)->Update(m_fElapseTime,mhWnd,VecBullet);
+		(*iter)->Update(m_fElapseTime,mhWnd,VecBullet,VecTank);
+		if ((*iter)->GetTankDIe())
+		{
+			iter = VecTank.erase(iter);
+		}
+		else
+		{
+			++iter;
+		}
 	}
 
 	for (auto iter = VecBullet.begin(); iter != VecBullet.end();)
 	{
-		(*iter)->Update(m_fElapseTime);
+		(*iter)->Update(m_fElapseTime,VecBullet);
 		if ((*iter)->TimeOverBullet())
 		{
 			iter = VecBullet.erase(iter);
@@ -231,7 +294,10 @@ void MainGame::Update()
 		(*iter)->Update(VecTank, VecBullet);
 	}
 
+	if (player->GameOver())
+	{
 
+	}
 	OperateInput();
 	Render();
 }
@@ -254,7 +320,6 @@ void MainGame::Render()
 	{
 		(*iter)->Draw(hMemDC[0]);
 	}
-	//player->Draw(hMemDC[0]);
 
 	for (auto iter = VecBackTile.begin(); iter != VecBackTile.end(); ++iter)
 	{

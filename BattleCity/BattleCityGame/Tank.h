@@ -18,8 +18,15 @@ class Tank :
 	public Actor
 {
 	int AnimationCount;
+
+	void CheckTankCollision(std::vector<Tank*>& VecTank);
+	void CheckBulletCollision(std::vector<Bullet*>& VecBullet);
+	void IntersectRcetTank(Tank * tank);
+	void IntersectRcetBullet(Bullet * bullet);
+
 	void ApproximationTilePos(float &Number);
 protected:
+	int PreArrow;
 	int Arrow;
 	int speed;
 	int FireColdown;
@@ -32,6 +39,13 @@ protected:
 
 	Bitmap * TankBoom[TANKBOOMEND];
 
+	bool IsBoom;
+	bool IsBoomEnd;
+	float BoomAnimCount;
+	void BoomAnimation(float ElapseTime);
+
+	bool IsTankDie;
+	virtual void TankDieBoom() = 0;
 public:
 	Tank();
 	virtual ~Tank();
@@ -42,8 +56,8 @@ public:
 	void AddPositionX(float _x);
 
 	void AddPositionY(float _y);
-
+	bool GetTankDIe();
 	virtual void Fire(HWND hWnd, std::vector<Bullet*> &VecBullet);
-	virtual void Update(float fElapseTime);
-	virtual void Update(float fElapseTime, HWND hWnd, std::vector<Bullet*> &VecBullet);
+	virtual void Update(float fElapseTime, std::vector<Bullet*> &VecBullet,std::vector<Tank*> &VecTank);
+	virtual void Update(float fElapseTime, HWND hWnd, std::vector<Bullet*> &VecBullet, std::vector<Tank*> &VecTank);
 };

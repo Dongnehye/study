@@ -22,7 +22,6 @@ class MainGame
 	vector<Tank*> VecTank;
 	vector<Bullet*> VecBullet;
 
-
 	HDC hMemDC[2];
 	HBITMAP hBitmap[2];
 	HBITMAP hOld[2];
@@ -47,7 +46,9 @@ class MainGame
 	void ResourceLoad(HDC hdc);
 	void LoadMap();
 
-	void SpawnEnemy();
+	int SpawnPoint;
+	float SpawnEnemyCount;
+	void SpawnEnemy(float fElapseTime);
 
 	MainGame();
 public:

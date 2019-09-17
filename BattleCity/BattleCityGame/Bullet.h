@@ -1,6 +1,7 @@
 #pragma once
 #include "Actor.h"
 #include "Common.h"
+#include <vector>
 enum BULLETBOOMANIMATION
 {
 	BOOM00,
@@ -35,8 +36,12 @@ public:
 	Bullet(HWND hWnd, int Arrow, float x, float y, bool IsPlayer);
 	virtual ~Bullet();
 
-	void IsBoomActive();
-	bool TimeOverBullet();
-	virtual void Update(float fElapseTime);
-};
+	void CheckBulletCollision(std::vector<Bullet*>& VecBullet);
 
+	void IntersectRcetBullet(Bullet * bullet);
+
+	void IsBoomActive();
+	bool GetIsPlayer();
+	bool TimeOverBullet();
+	virtual void Update(float fElapseTime, std::vector<Bullet*> &VecBullet);
+};
