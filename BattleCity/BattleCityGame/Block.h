@@ -11,6 +11,10 @@ protected:
 	RECT CollisionRT;
 	RECT CollisionLB;
 	RECT CollisionRB;
+	RECT TankCollisionLT;
+	RECT TankCollisionRT;
+	RECT TankCollisionLB;
+	RECT TankCollisionRB;
 	Bitmap * BlackTile;
 
 	std::vector<POINT> BlackTilePoint;
@@ -25,7 +29,7 @@ protected:
 	void CheckBulletCollision(std::vector<Bullet*> &VecBullet);
 
 	void IntersectRcetTank(Tank * tank, RECT Collision);
-	void IntersectRcetBullet(Bullet* bullet, RECT &Collision);
+	void IntersectRcetBullet(Bullet* bullet, RECT &Collision, RECT &TankCollision);
 
 	Block();
 public:

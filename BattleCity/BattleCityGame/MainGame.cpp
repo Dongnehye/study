@@ -110,7 +110,7 @@ void MainGame::LoadMap()
 
 void MainGame::SpawnEnemy(float fElapseTime)
 {
-	if (EnemyNumber <= 0 || VecTank.size() > 0)
+	if (EnemyNumber <= 0 || VecTank.size() > 4)
 	{
 		return;
 	}
@@ -195,18 +195,22 @@ MainGame::~MainGame()
 	}
 	for (auto iter = VecFrontTile.begin(); iter != VecFrontTile.end();)
 	{
+		delete (*iter);
 		iter = VecFrontTile.erase(iter);
 	}
 	for (auto iter = VecBackTile.begin(); iter != VecBackTile.end();)
 	{
+		delete (*iter);
 		iter = VecBackTile.erase(iter);
 	}
 	for (auto iter = VecTank.begin(); iter != VecTank.end();)
 	{
+		delete (*iter);
 		iter = VecTank.erase(iter);
 	}
 	for (auto iter = VecBullet.begin(); iter != VecBullet.end();)
 	{
+		delete (*iter);
 		iter = VecBullet.erase(iter);
 	}
 }
@@ -239,15 +243,6 @@ void MainGame::OperateInput()
 		player->SetIdle(true);
 	if (GetAsyncKeyState('Z') & 0x0001)
 		player->Fire(mhWnd, VecBullet);	
-
-	//if (GetKeyState(VK_LEFT) & 0x8000)
-//	player->AddPositionX(-(speed * m_fElapseTime));
-//else if (GetKeyState(VK_UP) & 0x8000)
-//	player->AddPositionY(-(speed * m_fElapseTime));
-//else if (GetKeyState(VK_RIGHT) & 0x8000)
-//	player->AddPositionX(speed * m_fElapseTime);
-//else if (GetKeyState(VK_DOWN) & 0x8000)
-//	player->AddPositionY(speed * m_fElapseTime);
 }
 
 void MainGame::Update()

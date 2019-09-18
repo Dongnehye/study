@@ -1,6 +1,8 @@
 #include "Block.h"
 #include "Common.h"
+#include <iostream>
 
+using namespace std;
 
 Block::Block()
 {
@@ -9,6 +11,7 @@ Block::Block()
 
 Block::~Block()
 {
+	delete BlackTile;
 }
 
 void Block::SetCollision()
@@ -19,6 +22,7 @@ void Block::SetCollision()
 		CollisionRT = { (int)x + TileSize.cx / 2, (int)y, (int)x + TileSize.cx, (int)y + TileSize.cy / 2 };
 		CollisionLB = { (int)x, (int)y + TileSize.cy / 2, (int)x + TileSize.cx / 2, (int)y + TileSize.cy };
 		CollisionRB = { (int)x + TileSize.cx / 2, (int)y + TileSize.cy / 2, (int)x + TileSize.cx, (int)y + TileSize.cy };
+
 	}
 	else if (ChangeIndex == BLOCKCHANGE_RIGHT)
 	{
@@ -26,6 +30,7 @@ void Block::SetCollision()
 		CollisionRT = { (int)x + TileSize.cx / 2, (int)y, (int)x + TileSize.cx, (int)y + TileSize.cy / 2 };
 		CollisionLB = { 0, 0, 0, 0 };
 		CollisionRB = { (int)x + TileSize.cx / 2, (int)y + TileSize.cy / 2, (int)x + TileSize.cx, (int)y + TileSize.cy };
+	
 	}
 	else if (ChangeIndex == BLOCKCHANGE_BOTTOM)
 	{
@@ -48,16 +53,20 @@ void Block::SetCollision()
 		CollisionLB = { 0, 0, 0, 0 };
 		CollisionRB = { 0, 0, 0, 0 };
 	}
+	TankCollisionLT = CollisionLT;
+	TankCollisionRT = CollisionRT;
+	TankCollisionLB = CollisionLB;
+	TankCollisionRB = CollisionRB;
 }
 
 void Block::CheckTankCollision(std::vector<Tank*>& VecTank)
 {
 	for (auto iter = VecTank.begin(); iter != VecTank.end(); ++iter)
 	{
-		IntersectRcetTank((*iter), CollisionLT);
-		IntersectRcetTank((*iter), CollisionRT);
-		IntersectRcetTank((*iter), CollisionLB);
-		IntersectRcetTank((*iter), CollisionRB);
+		IntersectRcetTank((*iter), TankCollisionLT);
+		IntersectRcetTank((*iter), TankCollisionRT);
+		IntersectRcetTank((*iter), TankCollisionLB);
+		IntersectRcetTank((*iter), TankCollisionRB);
 	}
 }
 
@@ -66,16 +75,17 @@ void Block::CheckBulletCollision(std::vector<Bullet*>& VecBullet)
 
 	for (auto iter = VecBullet.begin(); iter != VecBullet.end(); ++iter)
 	{
-		IntersectRcetBullet((*iter), CollisionLT);
-		IntersectRcetBullet((*iter), CollisionRT);
-		IntersectRcetBullet((*iter), CollisionLB);
-		IntersectRcetBullet((*iter), CollisionRB);
+		IntersectRcetBullet((*iter), CollisionLT, TankCollisionLT);
+		IntersectRcetBullet((*iter), CollisionRT, TankCollisionRT);
+		IntersectRcetBullet((*iter), CollisionLB, TankCollisionLB);
+		IntersectRcetBullet((*iter), CollisionRB, TankCollisionRB);
 	}
 }
 
 void Block::IntersectRcetTank(Tank * tank, RECT Collision)
 {
 	RECT rcInter;
+
 	if (IntersectRect(&rcInter, &tank->Collision, &Collision))
 	{
 		int InterW = rcInter.right - rcInter.left;
@@ -115,7 +125,7 @@ void Block::IntersectRcetTank(Tank * tank, RECT Collision)
 	}
 }
 
-void Block::IntersectRcetBullet(Bullet * bullet, RECT &Collision)
+void Block::IntersectRcetBullet(Bullet * bullet, RECT &Collision, RECT &BlockCollision)
 {
 	RECT rcInter;
 	if (IntersectRect(&rcInter, &bullet->Collision, &Collision))
@@ -206,6 +216,14 @@ void Block::IntersectRcetBullet(Bullet * bullet, RECT &Collision)
 				Collision.right -= TILE_SIZE / 4;
 			}
 		}
+		if (Collision.top - Collision.bottom == 0 || Collision.left - Collision.right == 0)
+		{
+			BlockCollision.top = 0;
+			BlockCollision.bottom = 0;
+			BlockCollision.left = 0;
+			BlockCollision.right = 0;
+		}
+
 		bullet->IsBoomActive();
 	}
 }

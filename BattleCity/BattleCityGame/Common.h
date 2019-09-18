@@ -39,6 +39,8 @@ enum ENEMYSPAWNPOINT
 #define BULLETSPEED 300
 
 #define PLAYERLIFE 2
+#define PLAYERPOSX 4
+#define PLAYERPOSY 12
 
 #define MAP_SIZE 13
 

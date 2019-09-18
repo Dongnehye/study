@@ -36,17 +36,15 @@ void Tank::IntersectRcetTank(Tank * tank)
 		{
 			if (rcInter.top == Collision.top)
 			{
-				tank->Collision.top -= InterH;
-				tank->Collision.bottom -= InterH;
-				tank->AddPositionY((float)-InterH);
+				Collision.top -= InterH;
+				Collision.bottom -= InterH;
 				AddPositionY((float)InterH);
 
 			}
 			else if (rcInter.bottom == Collision.bottom)
 			{
-				tank->Collision.top += InterH;
-				tank->Collision.bottom += InterH;
-				tank->AddPositionY((float)InterH);
+				Collision.top += InterH;
+				Collision.bottom += InterH;
 				AddPositionY((float)-InterH);
 			}
 		}
@@ -54,16 +52,14 @@ void Tank::IntersectRcetTank(Tank * tank)
 		{
 			if (rcInter.left == Collision.left)
 			{
-				tank->Collision.left -= InterW;
-				tank->Collision.right -= InterW;
-				tank->AddPositionX((float)-InterW);
+				Collision.left -= InterW;
+				Collision.right -= InterW;
 				AddPositionX((float)InterW);
 			}
 			else if (rcInter.right == Collision.right)
 			{
-				tank->Collision.left += InterW;
-				tank->Collision.right += InterW;
-				tank->AddPositionX((float)InterW);
+				Collision.left += InterW;
+				Collision.right += InterW;
 				AddPositionX((float)-InterW);
 			}
 		}

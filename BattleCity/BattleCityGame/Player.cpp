@@ -11,8 +11,8 @@ void Player::Revival()
 }
 void Player::TankDieBoom()
 {
-	x = 4 * TILE_SIZE;
-	y = 12 * TILE_SIZE;
+	x = PLAYERPOSX * TILE_SIZE;
+	y = PLAYERPOSY * TILE_SIZE;
 
 	TileSize.cx = TILE_SIZE;
 	TileSize.cy = TILE_SIZE;
@@ -35,8 +35,8 @@ Player::Player(HDC hdc)
 	Arrow = UP;
 	PreArrow = Arrow;
 	speed = TANKSPEED;
-	x = 4 * TILE_SIZE;
-	y = 12 * TILE_SIZE;
+	x = PLAYERPOSX * TILE_SIZE;
+	y = PLAYERPOSY * TILE_SIZE;
 	Model = nullptr;
 	Idle = false;
 	IsPlayer = true;

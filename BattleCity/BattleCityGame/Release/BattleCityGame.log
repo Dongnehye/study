@@ -1,7 +1,23 @@
-﻿  Player.cpp
+﻿  Actor.cpp
+c:\users\administrator\documents\repo\study\battlecity\battlecitygame\actor.cpp(20): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Block.cpp
+  Bullet.cpp
+  EnemyTank.cpp
+c:\users\administrator\documents\repo\study\battlecity\battlecitygame\enemytank.cpp(31): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\battlecity\battlecitygame\enemytank.cpp(32): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Engle.cpp
+  Forest.cpp
+  MainGame.cpp
+  Metal.cpp
+  Player.cpp
+  Sliver.cpp
+  Tank.cpp
+  Tile.cpp
+  Water.cpp
+  main.cpp
   코드를 생성하고 있습니다.
-  2 of 564 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+  123 of 565 functions (21.8%) were compiled, the rest were copied from previous compilation.
+    2 functions were new in current compilation
+    35 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   BattleCityGame.vcxproj -> C:\Users\Administrator\Documents\repo\study\BattleCity\Release\BattleCityGame.exe
