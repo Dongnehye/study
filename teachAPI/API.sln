@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BitMapRes", "BitMapRes\BitM
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PairGame", "PairGame\PairGame.vcxproj", "{4D920706-992A-44BB-AF10-3F7366FA3DDD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameFrame", "GameFrame\GameFrame.vcxproj", "{127D7CC3-707A-483A-9065-D11D9B3AA7FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{4D920706-992A-44BB-AF10-3F7366FA3DDD}.Release|x64.Build.0 = Release|x64
 		{4D920706-992A-44BB-AF10-3F7366FA3DDD}.Release|x86.ActiveCfg = Release|Win32
 		{4D920706-992A-44BB-AF10-3F7366FA3DDD}.Release|x86.Build.0 = Release|Win32
+		{127D7CC3-707A-483A-9065-D11D9B3AA7FC}.Debug|x64.ActiveCfg = Debug|x64
+		{127D7CC3-707A-483A-9065-D11D9B3AA7FC}.Debug|x64.Build.0 = Debug|x64
+		{127D7CC3-707A-483A-9065-D11D9B3AA7FC}.Debug|x86.ActiveCfg = Debug|Win32
+		{127D7CC3-707A-483A-9065-D11D9B3AA7FC}.Debug|x86.Build.0 = Debug|Win32
+		{127D7CC3-707A-483A-9065-D11D9B3AA7FC}.Release|x64.ActiveCfg = Release|x64
+		{127D7CC3-707A-483A-9065-D11D9B3AA7FC}.Release|x64.Build.0 = Release|x64
+		{127D7CC3-707A-483A-9065-D11D9B3AA7FC}.Release|x86.ActiveCfg = Release|Win32
+		{127D7CC3-707A-483A-9065-D11D9B3AA7FC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
