@@ -98,7 +98,6 @@ void SendPos()
 	packet.data.wX = g_mapPlayer[g_iIndex]->x;
 	packet.data.wY = g_mapPlayer[g_iIndex]->y;
 	send(g_sock, (const char*)&packet, sizeof(packet), 0);
-	send(g_sock, (const char*)&packet, sizeof(packet), 0);
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
