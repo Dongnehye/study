@@ -256,16 +256,32 @@ bool ProcessPacket(SOCKET sock, User* pUser, char* szBuf, int& len)
 	{
 	case PACKET_INDEX_LOGIN_RET:
 	{
-		PACKET_LOGIN_RET packet;
-		memcpy(&packet, szBuf, header.wLen);
+		PACKET_LOGIN_RET RetPacket;
+		memcpy(&RetPacket, szBuf, header.wLen);
+
+		PACKET_LOGIN_RES ResPacket;
+		ResPacket.header.wIndex = PACKET_INDEX_LOGIN_RES;
+		ResPacket.header.wLen = sizeof(ResPacket);
+
 		// 로그인 검사.
 		int Money = 0;
 
-		if (CheckLogin((const char*)packet.Id, (const char*)packet.Pw,Money))
+		if (CheckLogin((const char*)RetPacket.Id, (const char*)RetPacket.Pw,Money))
 		{
 			printf("[TCP 서버] 클라이언트 접속 : ID = %s , PW = %s, Money = %d\n", 
-				(const char*)packet.Id, (const char*)packet.Pw, Money);
+				(const char*)RetPacket.Id, (const char*)RetPacket.Pw, Money);
+			ResPacket.IsLogin = true;
+			strcpy(ResPacket.data.Id, (const char*)RetPacket.Id);
+			strcpy(ResPacket.data.Pw, (const char*)RetPacket.Pw);
+			ResPacket.data.Money = Money;
+			ResPacket.data.iIndex = pUser->index;
 		}
+		else
+		{
+			ResPacket.IsLogin = false;
+		}
+
+		send(sock, (const char*)&ResPacket, ResPacket.header.wLen, 0);
 
 		//PACKET_USER_DATA user_packet;
 		//user_packet.header.wIndex = PACKET_INDEX_USER_DATA;
@@ -283,6 +299,33 @@ bool ProcessPacket(SOCKET sock, User* pUser, char* szBuf, int& len)
 		//{
 		//	send(iter->first, (const char*)&user_packet, user_packet.header.wLen, 0);
 		//}
+
+	}
+	break;
+	case PACKET_INDEX_SEND_LOBBY:
+	{
+		PACKET_SEND_LOBBYDATA Lobbypacket;
+		Lobbypacket.header.wIndex = PACKET_INDEX_SEND_LOBBY;
+		Lobbypacket.header.wLen = sizeof(Lobbypacket);
+		Lobbypacket.LobbySize = VecRoom.size();
+
+		int i = 0;
+		for (auto iter = VecRoom.begin(); iter != VecRoom.end(); ++iter, ++i)
+		{
+			Lobbypacket.data[i].iIndex = i;
+			Lobbypacket.data[i].IsStart = i;
+			Lobbypacket.data[i].UserSize = i;
+		}
+
+		send(sock, (const char*)&Lobbypacket, header.wLen, 0);
+	}
+	break;
+	case PACKET_INDEX_SEND_ROOMENTER:
+	{
+		PACKET_SEND_ROOMENTER packet;
+		memcpy(&packet, szBuf, header.wLen);
+
+		g_mapUser[sock]->RoomIndex = packet.RoomIndex;
 
 	}
 	break;

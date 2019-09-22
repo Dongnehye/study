@@ -9,11 +9,16 @@ Room : lobby, Room 8개로 만듬.
 
 아이디 패스워드(사용자 :int id, pw, money, room)
 
+Server
 로비서버
 vector<int> 8개의 방, int는 방 번호.
 room에 맞는 사용자 끼리 게임 update.
 
 vector<id(int)> 로비서버에 존재하는 사용자들 채팅을 위해서 만듬.
+
+Client
+Scene : Login, Lobby, TableRoom
+
 
 채팅
 로비에 있는 사람한테만 echo 

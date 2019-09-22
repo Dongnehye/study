@@ -1,12 +1,22 @@
-﻿  Main.cpp
-d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(40): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+﻿  BadugiMain.cpp
+  LobbyScene.cpp
+  LoginScene.cpp
+  Main.cpp
+d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(48): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(41): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(49): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(83): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(58): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(59): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(110): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1830): note: 'inet_addr' 선언을 참조하십시오.
-d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(91): warning C4996: 'WSAAsyncSelect': Use WSAEventSelect() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(118): warning C4996: 'WSAAsyncSelect': Use WSAEventSelect() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(2679): note: 'WSAAsyncSelect' 선언을 참조하십시오.
-d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(172): warning C4101: 'client_sock' :참조되지 않은 지역 변수입니다.
-d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(173): warning C4101: 'clientaddr' :참조되지 않은 지역 변수입니다.
+d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(215): warning C4101: 'client_sock' :참조되지 않은 지역 변수입니다.
+d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\main.cpp(216): warning C4101: 'clientaddr' :참조되지 않은 지역 변수입니다.
+  Scene.cpp
+  코드를 생성하고 있습니다...
+Player.obj : warning LNK4099: 'vc141.pdb' PDB를 'Player.obj' 또는 'D:\Neople\study\WindowSocket\Badugi\BadugiClient\Debug\vc141.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
   BadugiClient.vcxproj -> D:\Neople\study\WindowSocket\Badugi\BadugiClient\Debug\BadugiClient.exe

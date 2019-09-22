@@ -1,9 +1,13 @@
 #pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "msimg32.lib")
 #include <WinSock2.h>
 #include <windows.h>
 #include <map>
 #include "Player.h"
 #include "PACKET_HEADER.h"
+#include "Scene.h"
+#include "LoginScene.h"
+#include "LobbyScene.h"
 
 using namespace std;
 
@@ -18,9 +22,13 @@ char g_szClassName[256] = "Hello World!!";
 
 SOCKET g_sock;
 
-
 map<int, Player*> g_mapPlayer;
 int g_iIndex = 0;
+
+Scene * ArrScene[3];
+
+const char * g_Id = "123";
+const char * g_Pw = "456";
 
 void SendPos()
 {
@@ -32,16 +40,35 @@ void SendPos()
 	//packet.data.wY = g_mapPlayer[g_iIndex]->y;
 	send(g_sock, (const char*)&packet, sizeof(packet), 0);
 }
-void SendLogin()
+void SendLogin(const char * Id, const char * Pw)
 {
 	PACKET_LOGIN_RET packet;
 	packet.header.wIndex = PACKET_INDEX_LOGIN_RET;
 	packet.header.wLen = sizeof(packet);
-	strcpy(packet.Id, "123");
-	strcpy(packet.Pw, "456");
+	strcpy(packet.Id, Id);
+	strcpy(packet.Pw, Pw);
 	send(g_sock, (const char*)&packet, sizeof(packet), 0);
 }
+void SendRoomEnter(int RoomIndex)
+{
+	PACKET_SEND_ROOMENTER packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_ROOMENTER;
+	packet.header.wLen = sizeof(packet);
+	packet.RoomIndex = RoomIndex;
+	strcpy(packet.data.Id, g_Id);
+	strcpy(packet.data.Pw, g_Pw);
+	
+	send(g_sock, (const char*)&packet, sizeof(packet), 0);
+}
+void SceneInit(HWND hWnd)
+{
+	LobbyScene * Lobby = new LobbyScene(hWnd);
+	LoginScene * Login = new LoginScene(hWnd);
 
+	ArrScene[SCENE_INDEX_LOGIN] = Lobby;
+	ArrScene[SCENE_INDEX_LOBBY] = Login;
+	// room
+}
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
 	HWND hWnd;
@@ -62,7 +89,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	RegisterClass(&WndClass);
 
 	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		100, 100, NULL, (HMENU)NULL, hInstance, NULL);
+		640, 480, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
 	WSADATA wsa;
@@ -94,10 +121,20 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		return -1;
 	}
 
-	while (GetMessage(&Message, NULL, 0, 0))
+	while (true)
 	{
-		TranslateMessage(&Message);
-		DispatchMessage(&Message);
+		if (PeekMessage(&Message, NULL, 0U, 0U, PM_REMOVE))
+		{
+			if (Message.message == WM_QUIT)
+				break;
+
+			TranslateMessage(&Message);
+			DispatchMessage(&Message);
+		}
+		else
+		{
+
+		}
 	}
 
 	closesocket(g_sock);
@@ -117,6 +154,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	switch (iMessage)
 	{
 	case WM_CREATE:
+		SceneInit(hWnd);
 		return 0;
 	case WM_SOCKET:
 		ProcessSocketMessage(hWnd, iMessage, wParam, lParam);
@@ -125,8 +163,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
+			case '1':
+				SendRoomEnter(1);
+				break;
+			case '2':
+				SendRoomEnter(2);
+				break;
 			case VK_LEFT:
-				SendLogin();
+				SendLogin(g_Id,g_Pw);
 				break;
 			//case VK_RIGHT:
 			//	g_mapPlayer[g_iIndex]->x += 8;
@@ -140,7 +184,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 			//	g_mapPlayer[g_iIndex]->y += 8;
 			//	SendPos();
 			//	break;
-			
 		}
 		InvalidateRect(hWnd, NULL, true);
 		return 0;
@@ -208,7 +251,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 void ProcessPacket(char* szBuf, int len)
-{
+ {
 	PACKET_HEADER header;
 
 	memcpy(&header, szBuf, sizeof(header));
@@ -217,10 +260,17 @@ void ProcessPacket(char* szBuf, int len)
 	{
 	case PACKET_INDEX_LOGIN_RES:
 	{
-		PACKET_LOGIN_RET packet;
+		PACKET_LOGIN_RES packet;
 		memcpy(&packet, szBuf, header.wLen);
+		
+		bool IsLogin;
+		IsLogin = packet.IsLogin;
+	}
+	break;
+	case PACKET_INDEX_SEND_LOBBY:
+	{
 
-		//g_iIndex = packet.iIndex;
+
 	}
 	break;
 	case PACKET_INDEX_USER_DATA:
