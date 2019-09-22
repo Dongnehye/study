@@ -279,6 +279,8 @@ bool ProcessPacket(SOCKET sock, User* pUser, char* szBuf, int& len)
 		else
 		{
 			ResPacket.IsLogin = false;
+			printf("[TCP 서버] 클라이언트 로그인 실패 : ID = %s , PW = %s\n",
+				(const char*)RetPacket.Id, (const char*)RetPacket.Pw);
 		}
 
 		send(sock, (const char*)&ResPacket, ResPacket.header.wLen, 0);
@@ -326,7 +328,8 @@ bool ProcessPacket(SOCKET sock, User* pUser, char* szBuf, int& len)
 		memcpy(&packet, szBuf, header.wLen);
 
 		g_mapUser[sock]->RoomIndex = packet.RoomIndex;
-
+		printf("[TCP 서버] 클라이언트 방 접속 : RoomIndex = %d\n",
+			g_mapUser[sock]->RoomIndex);
 	}
 	break;
 	case PACKET_INDEX_SEND_POS:
