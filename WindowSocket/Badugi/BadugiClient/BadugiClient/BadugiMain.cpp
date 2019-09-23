@@ -16,12 +16,15 @@ BadugiMain::BadugiMain()
 {
 }
 
-BadugiMain::BadugiMain(HWND hWnd, HINSTANCE hInst, SOCKET _sock)
+BadugiMain::BadugiMain(HWND hWnd, SOCKET _sock)
 {
 	mhWnd = hWnd;
-	mhInst = hInst;
 	sock = _sock;
 	HDC hdc = GetDC(hWnd);
+
+	IsLogin = false;
+	IsLobby = false;
+	isGameTable = false;
 
 	std::chrono::duration<float> sec = std::chrono::system_clock::now() - m_LastTime;
 	m_fElapseTime = sec.count();
@@ -50,6 +53,16 @@ void BadugiMain::SendLogin(const char * Id, const char * Pw)
 	send(sock, (const char*)&packet, sizeof(packet), 0);
 }
 
+void BadugiMain::SetId(char * Id)
+{
+	Login->SetId(Id);
+}
+
+void BadugiMain::SetPw(char * Pw)
+{
+	Login->SetPw(Pw);
+}
+
 void BadugiMain::SendRoomEnter(int RoomIndex)
 {
 	PACKET_SEND_ROOMENTER packet;
@@ -72,12 +85,12 @@ void BadugiMain::SendLobbyRefresh()
 
 void BadugiMain::SceneInit()
 {
-	LobbyScene * Lobby = new LobbyScene(mhWnd);
-	LoginScene * Login = new LoginScene(mhWnd, mhInst);
-	GameTableScene * GameTable = new GameTableScene(mhWnd);
+	Lobby = new LobbyScene(mhWnd);
+	Login = new LoginScene(mhWnd, sock);
+	GameTable = new GameTableScene(mhWnd);
 
-	ArrScene[SCENE_INDEX_LOGIN] = Lobby;
-	ArrScene[SCENE_INDEX_LOBBY] = Login;
+	ArrScene[SCENE_INDEX_LOGIN] = Login;
+	ArrScene[SCENE_INDEX_LOBBY] = Lobby;
 	ArrScene[SCENE_INDEX_ROOM] = GameTable;
 	// room
 }
@@ -95,10 +108,12 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 		PACKET_LOGIN_RES packet;
 		memcpy(&packet, szBuf, header.wLen);
 		IsLogin = packet.IsLogin;
-
-		g_iIndex = packet.data.iIndex;
-		Player * pNew = new Player(packet.data.Id, packet.data.Money);
-		g_mapPlayer.insert(make_pair(g_iIndex, pNew));
+		if (IsLogin)
+		{
+			g_iIndex = packet.data.iIndex;
+			Player * pNew = new Player(packet.data.Id, packet.data.Money);
+			g_mapPlayer.insert(make_pair(g_iIndex, pNew));
+		}
 	}
 	break;
 	case PACKET_INDEX_SEND_LOBBY:
@@ -182,7 +197,7 @@ void BadugiMain::OperateInput()
 	}
 	else if (GetAsyncKeyState(VK_RIGHT) & 0x0001)
 	{
-		SendLogin(g_Id, g_Pw);
+		Login->SendLogin();
 	}
 	else if (GetAsyncKeyState(VK_DOWN) & 0x0001)
 	{

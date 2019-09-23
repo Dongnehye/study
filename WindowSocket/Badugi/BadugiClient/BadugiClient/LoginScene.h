@@ -1,19 +1,23 @@
 #pragma once
 #include "Scene.h"
 
-#define ID_EDIT 1
+
 
 class LoginScene
 	: public Scene
 {
-	HWND IdEdit;
-	HWND PwEdit;
+	char * Id;
+	char * Pw;
 
 
 	LoginScene();
 public:
-	LoginScene(HWND hWnd, HINSTANCE hInst);
+	LoginScene(HWND hWnd,SOCKET sock);
 	virtual ~LoginScene();
+	void SetId(char * Id);
+	void SetPw(char * Pw);
+
+	void SendLogin();
 
 	virtual void Draw(HDC hdc);
 };

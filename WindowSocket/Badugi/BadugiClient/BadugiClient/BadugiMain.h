@@ -19,7 +19,6 @@ using namespace std;
 class BadugiMain
 {
 	HWND mhWnd;
-	HINSTANCE mhInst;
 	HDC hMemDC[2];
 	HBITMAP hBitmap[2];
 	HBITMAP hOld[2];
@@ -34,6 +33,9 @@ class BadugiMain
 
 	Scene * ArrScene[3];
 	Scene * CurrentScene;
+	LobbyScene * Lobby;
+	LoginScene * Login;
+	GameTableScene * GameTable;
 
 	const char * g_Id = "123";
 	const char * g_Pw = "456";
@@ -45,8 +47,10 @@ class BadugiMain
 
 	BadugiMain();
 public:
-	BadugiMain(HWND hWnd, HINSTANCE hInst,SOCKET _sock);
+	BadugiMain(HWND hWnd,SOCKET _sock);
 	void SendLogin(const char * Id, const char * Pw);
+	void SetId(char * Id);
+	void SetPw(char * Pw);
 	void SendRoomEnter(int RoomIndex);
 	void SendLobbyRefresh();
 
@@ -58,4 +62,3 @@ public:
 	void Render();
 	virtual ~BadugiMain();
 };
-

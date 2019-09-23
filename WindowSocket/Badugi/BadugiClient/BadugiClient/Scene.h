@@ -7,6 +7,7 @@ class Scene
 protected:
 	int Index;
 	Bitmap * Background;
+	SOCKET sock;
 
 public:
 	Scene();
