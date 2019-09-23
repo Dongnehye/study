@@ -1,12 +1,12 @@
 #pragma once
 class Player
 {
+	Player();
 public:
-	int Id;
+	char * Id;
 	int Money;
 	int RoomIndex;
 	
-
-	Player();
+	Player(char * _id, int _Money);
 	virtual ~Player();
 };

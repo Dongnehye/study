@@ -8,11 +8,11 @@ class Bitmap
 	HBITMAP m_hOldBitMap;
 	SIZE size;
 
-public:
 	Bitmap();
+public:
+	Bitmap(HDC hdc, const char * FileName);
 	~Bitmap();
 
-	void Init(HDC hdc, const char * FileName);
 	void BufferDraw(HDC hdc, int x, int y);
 	void BufferDraw(HDC hdc, int x, int y, SIZE _szie);
 	SIZE GetSize();

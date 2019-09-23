@@ -10,3 +10,8 @@ Room::Room()
 Room::~Room()
 {
 }
+
+int Room::GetUserSize()
+{
+	return UserSIze;
+}

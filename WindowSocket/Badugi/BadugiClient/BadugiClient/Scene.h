@@ -4,10 +4,13 @@
 
 class Scene
 {
+protected:
 	int Index;
 	Bitmap * Background;
 
 public:
 	Scene();
 	virtual ~Scene();
+
+	virtual void Draw(HDC hdc) = 0;
 };

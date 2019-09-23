@@ -1,16 +1,43 @@
 #include "BadugiMain.h"
+#include "CommonHeader.h"
 
 
+void BadugiMain::SceneChange()
+{
+	if(IsLogin)
+		CurrentScene = ArrScene[SCENE_INDEX_LOBBY];
+	else if(isGameTable)
+		CurrentScene = ArrScene[SCENE_INDEX_ROOM];
+	else
+		CurrentScene = ArrScene[SCENE_INDEX_LOGIN];
+}
 
 BadugiMain::BadugiMain()
 {
 }
 
-BadugiMain::BadugiMain(HWND hWnd, SOCKET _sock)
+BadugiMain::BadugiMain(HWND hWnd, HINSTANCE hInst, SOCKET _sock)
 {
 	mhWnd = hWnd;
+	mhInst = hInst;
 	sock = _sock;
+	HDC hdc = GetDC(hWnd);
+
+	std::chrono::duration<float> sec = std::chrono::system_clock::now() - m_LastTime;
+	m_fElapseTime = sec.count();
+	m_LastTime = std::chrono::system_clock::now();
+
+	hMemDC[0] = CreateCompatibleDC(hdc);
+	hBitmap[0] = CreateCompatibleBitmap(hdc, SCREEN_WIDTH, SCREEN_HEIGHT);
+	hOld[0] = (HBITMAP)SelectObject(hMemDC[0], hBitmap[0]);
+
+	hMemDC[1] = CreateCompatibleDC(hMemDC[0]);
+	hBitmap[1] = (HBITMAP)LoadImage(NULL, "..\\..\\Resource\\back_black.bmp", IMAGE_BITMAP, 0, 0
+		, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hOld[1] = (HBITMAP)SelectObject(hMemDC[1], hBitmap[1]);
 	SceneInit();
+
+	ReleaseDC(hWnd,hdc);
 }
 
 void BadugiMain::SendLogin(const char * Id, const char * Pw)
@@ -35,13 +62,23 @@ void BadugiMain::SendRoomEnter(int RoomIndex)
 	send(sock, (const char*)&packet, sizeof(packet), 0);
 }
 
+void BadugiMain::SendLobbyRefresh()
+{
+	PACKET_HEADER packet;
+	packet.wIndex = PACKET_INDEX_SEND_LOBBYREFRESH;
+	packet.wLen = sizeof(packet);
+	send(sock, (const char*)&packet, sizeof(packet), 0);
+}
+
 void BadugiMain::SceneInit()
 {
 	LobbyScene * Lobby = new LobbyScene(mhWnd);
-	LoginScene * Login = new LoginScene(mhWnd);
+	LoginScene * Login = new LoginScene(mhWnd, mhInst);
+	GameTableScene * GameTable = new GameTableScene(mhWnd);
 
 	ArrScene[SCENE_INDEX_LOGIN] = Lobby;
 	ArrScene[SCENE_INDEX_LOBBY] = Login;
+	ArrScene[SCENE_INDEX_ROOM] = GameTable;
 	// room
 }
 
@@ -57,14 +94,33 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 	{
 		PACKET_LOGIN_RES packet;
 		memcpy(&packet, szBuf, header.wLen);
-
-		bool IsLogin;
 		IsLogin = packet.IsLogin;
+
+		g_iIndex = packet.data.iIndex;
+		Player * pNew = new Player(packet.data.Id, packet.data.Money);
+		g_mapPlayer.insert(make_pair(g_iIndex, pNew));
 	}
 	break;
 	case PACKET_INDEX_SEND_LOBBY:
 	{
+		PACKET_SEND_LOBBYDATA packet;
+		memcpy(&packet, szBuf, header.wLen);
 
+		for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); iter++)
+		{
+			delete iter->second;
+		}
+		RoomInfo.clear();
+
+		for (int i = 0; i < packet.LobbySize; ++i)
+		{
+			LOBBY_DATA * pNew = new LOBBY_DATA;
+			pNew->iIndex = packet.data[i].iIndex;
+			pNew->IsStart = packet.data[i].IsStart;
+			pNew->UserSize = packet.data[i].UserSize;
+
+			RoomInfo.insert((make_pair(pNew->iIndex,pNew)));
+		}
 
 	}
 	break;
@@ -81,10 +137,7 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 
 		for (int i = 0; i < packet.wCount; i++)
 		{
-			Player* pNew = new Player();
-			//pNew->x = packet.data[i].wX;
-			//pNew->y = packet.data[i].wY;
-			g_mapPlayer.insert(make_pair(packet.data[i].iIndex, pNew));
+
 		}
 	}
 	break;
@@ -110,6 +163,8 @@ void BadugiMain::Updata()
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
 
+	SceneChange();
+
 	OperateInput();
 	Render();
 
@@ -131,12 +186,22 @@ void BadugiMain::OperateInput()
 	}
 	else if (GetAsyncKeyState(VK_DOWN) & 0x0001)
 	{
-		
+		SendLobbyRefresh();
 	}
 }
 
 void BadugiMain::Render()
 {
+	HDC hdc = GetDC(mhWnd);
+
+	BitBlt(hMemDC[0], 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, hMemDC[1], 0, 0, SRCCOPY);
+
+	CurrentScene->Draw(hMemDC[0]);
+
+	BitBlt(hdc, 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, hMemDC[0], 0, 0, SRCCOPY);
+
+	ReleaseDC(mhWnd, hdc);
+
 }
 
 

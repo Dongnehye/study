@@ -1,7 +1,9 @@
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "msimg32.lib")
 #include "BadugiMain.h"
+#include "CommonHeader.h"
 #include <windows.h>
+
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -9,8 +11,7 @@ void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 HINSTANCE g_hInst;
 char g_szClassName[256] = "Hello World!!";
 
-#define BUFSIZE 512
-#define WM_SOCKET (WM_USER+1)
+
 
 BadugiMain * MainGame;
 
@@ -33,8 +34,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	WndClass.style = CS_HREDRAW | CS_VREDRAW;
 	RegisterClass(&WndClass);
 
-	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		640, 480, NULL, (HMENU)NULL, hInstance, NULL);
+	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, CW_USEDEFAULT, CW_USEDEFAULT,
+		SCREEN_WIDTH, SCREEN_HEIGHT, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
 	WSADATA wsa;
@@ -65,7 +66,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	{
 		return -1;
 	}
-	MainGame = new BadugiMain(hWnd,sock);
+	MainGame = new BadugiMain(hWnd, g_hInst ,sock);
 
 	while (true)
 	{

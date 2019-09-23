@@ -1,7 +1,15 @@
 Room : lobby, Room 8개로 만듬.
 로그인 작동 완료.
+플레이어 방 접속.
 
 // 위완료
+
+// 오늘 할거.
+
+아이디 패스워드 Text
+SendLogin()
+Edit 쓰는데 WM_COMMAND; 해야됨
+
 // 아래미완료.
 
 로그인 검사

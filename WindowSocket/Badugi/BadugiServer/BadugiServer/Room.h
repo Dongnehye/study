@@ -2,11 +2,13 @@
 class Room
 {
 	int Index;
-	int DeckSize; //MAX 52.
-	bool IsLobby;
+public:
+	int UserSIze;
 
 public:
 	Room();
 	virtual ~Room();
+	int GetUserSize();
+	void Update();
 };
 

@@ -141,14 +141,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CommonHeader.h" />
+    <ClCompile Include="GameTable.cpp" />
+    <ClCompile Include="Lobby.cpp" />
     <ClCompile Include="Room.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="User.cpp" />
+    <ClCompile Include="WinSocketMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\PACKET_HEADER.h" />
+    <ClInclude Include="GameTable.h" />
+    <ClInclude Include="Lobby.h" />
     <ClInclude Include="Room.h" />
+    <ClInclude Include="ServerMain.h" />
     <ClInclude Include="User.h" />
+    <ClInclude Include="WinSocketMain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
