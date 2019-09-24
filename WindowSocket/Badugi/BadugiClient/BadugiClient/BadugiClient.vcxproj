@@ -143,6 +143,7 @@
     <ClInclude Include="..\..\Common\PACKET_HEADER.h" />
     <ClInclude Include="BadugiMain.h" />
     <ClInclude Include="Bitmap.h" />
+    <ClInclude Include="Button.h" />
     <ClInclude Include="CommonHeader.h" />
     <ClInclude Include="GameTableScene.h" />
     <ClInclude Include="LobbyScene.h" />
@@ -153,6 +154,7 @@
   <ItemGroup>
     <ClCompile Include="BadugiMain.cpp" />
     <ClCompile Include="Bitmap.cpp" />
+    <ClCompile Include="Button.cpp" />
     <ClCompile Include="GameTableScene.cpp" />
     <ClCompile Include="LobbyScene.cpp" />
     <ClCompile Include="LoginScene.cpp" />

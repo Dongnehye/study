@@ -17,7 +17,11 @@ void ServerMain::RoomInit()
 	for (int i = 1; i <= ROOMSIZE; ++i)
 	{
 		GameTable * pGameTableNew = new GameTable();
-		pGameTableNew->UserSIze = 4;
+
+		if (i == 8)
+			pGameTableNew->UserSIze = 0;
+		else
+			pGameTableNew->UserSIze = 4;
 
 		VecRoom.insert(make_pair( i,pGameTableNew));
 	}
@@ -32,6 +36,11 @@ ServerMain::ServerMain()
 
 ServerMain::~ServerMain()
 {
+	for (auto iter = VecRoom.begin(); iter != VecRoom.end(); ++iter)
+	{
+		delete iter->second;
+	}
+	VecRoom.clear();
 }
 
 void ServerMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -135,12 +144,6 @@ void ServerMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 	}
 	break;
 	case FD_CLOSE:
-		for (auto iter = VecRoom.begin(); iter != VecRoom.end(); ++iter)
-		{
-			delete iter->second;
-		}
-		VecRoom.clear();
-
 		closesocket(wParam);
 		break;
 	}
@@ -254,7 +257,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		memcpy(&packet, szBuf, header.wLen);
 
 		int WantRoomIndex = packet.RoomIndex;
-
+		bool IsRoomEnter = false;
 		if (g_mapUser[sock]->SceneIndex == SCENE_INDEX_LOBBY)
 		{
 			if (VecRoom[WantRoomIndex]->UserSIze < ROOMPLAYERSIZE)
@@ -262,29 +265,21 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 				g_mapUser[sock]->RoomIndex = packet.RoomIndex;
 				printf("[TCP 서버] 클라이언트 방 접속 : RoomIndex = %d\n",
 					g_mapUser[sock]->RoomIndex);
+				IsRoomEnter = true;
 			}
 			else
 			{
 				printf("[TCP 서버] 클라이언트 방 접속실패 : RoomIndex = %d 인원수 초과\n",
 					WantRoomIndex);
+				IsRoomEnter = false;
 			}
-		}
-	}
-	break;
-	case PACKET_INDEX_SEND_POS:
-	{
-		PACKET_SEND_POS packet;
-		memcpy(&packet, szBuf, header.wLen);
 
-		//g_mapUser[sock]->x = packet.data.wX;
-		//g_mapUser[sock]->y = packet.data.wY;
-
-		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); iter++)
-		{
-			//if (iter->first == sock)
-				//continue;
-
-			send(iter->first, (const char*)&packet, header.wLen, 0);
+			PACKET_SEND_ROOMENTER_RES packet;
+			packet.header.wIndex = PACKET_INDEX_SEND_ROOMENTER_RES;
+			packet.header.wLen = sizeof(PACKET_HEADER) + sizeof(WORD) + sizeof(bool);
+			packet.RoomIndex = g_mapUser[sock]->RoomIndex;
+			packet.isRoomEnter = IsRoomEnter;
+			send(sock, (const char*)&packet, packet.header.wLen, 0);
 		}
 	}
 	break;

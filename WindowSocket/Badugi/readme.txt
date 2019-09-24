@@ -1,21 +1,21 @@
 Room : lobby, Room 8개로 만듬.
 로그인 작동 완료.
 플레이어 방 접속.
+로그인 검사
+파일 입출력
+
+아이디 패스워드(사용자 :int id, pw, money, room)
+SendLogin()
+
+방접속 후 background 표시
 
 // 위완료
 
 // 오늘 할거.
 
-아이디 패스워드 Text
-SendLogin()
-Edit 쓰는데 WM_COMMAND; 해야됨
+방정보 표시해주기.
 
 // 아래미완료.
-
-로그인 검사
-파일 입출력
-
-아이디 패스워드(사용자 :int id, pw, money, room)
 
 Server
 로비서버

@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 		return -1;
 
 	HWND hWnd = CreateWindow("WSAAsyncSelectServer", "TCP ¼­¹ö", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		SCREEN_WIDTH, SCREEN_HEIGHT, NULL, (HMENU)NULL, NULL, NULL);
+		100, 100, NULL, (HMENU)NULL, NULL, NULL);
 	ShowWindow(hWnd, SW_SHOWNORMAL);
 	UpdateWindow(hWnd);
 

@@ -2,14 +2,9 @@
 #include "CommonHeader.h"
 
 
-void BadugiMain::SceneChange()
+void BadugiMain::SceneChange(int SceneNumber)
 {
-	if(IsLogin)
-		CurrentScene = ArrScene[SCENE_INDEX_LOBBY];
-	else if(isGameTable)
-		CurrentScene = ArrScene[SCENE_INDEX_ROOM];
-	else
-		CurrentScene = ArrScene[SCENE_INDEX_LOGIN];
+	CurrentScene = ArrScene[SceneNumber]->SceneChange(CurrentScene, mhWnd);
 }
 
 BadugiMain::BadugiMain()
@@ -38,56 +33,26 @@ BadugiMain::BadugiMain(HWND hWnd, SOCKET _sock)
 	hBitmap[1] = (HBITMAP)LoadImage(NULL, "..\\..\\Resource\\back_black.bmp", IMAGE_BITMAP, 0, 0
 		, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	hOld[1] = (HBITMAP)SelectObject(hMemDC[1], hBitmap[1]);
+
+	CurrentScene = nullptr;
+
 	SceneInit();
+
+	SceneChange(SCENE_INDEX_LOGIN);
 
 	ReleaseDC(hWnd,hdc);
 }
 
-void BadugiMain::SendLogin(const char * Id, const char * Pw)
+void BadugiMain::MouseLClick(LPARAM lParam)
 {
-	PACKET_LOGIN_RET packet;
-	packet.header.wIndex = PACKET_INDEX_LOGIN_RET;
-	packet.header.wLen = sizeof(packet);
-	strcpy(packet.Id, Id);
-	strcpy(packet.Pw, Pw);
-	send(sock, (const char*)&packet, sizeof(packet), 0);
-}
-
-void BadugiMain::SetId(char * Id)
-{
-	Login->SetId(Id);
-}
-
-void BadugiMain::SetPw(char * Pw)
-{
-	Login->SetPw(Pw);
-}
-
-void BadugiMain::SendRoomEnter(int RoomIndex)
-{
-	PACKET_SEND_ROOMENTER packet;
-	packet.header.wIndex = PACKET_INDEX_SEND_ROOMENTER;
-	packet.header.wLen = sizeof(packet);
-	packet.RoomIndex = RoomIndex;
-	strcpy(packet.data.Id, g_Id);
-	strcpy(packet.data.Pw, g_Pw);
-
-	send(sock, (const char*)&packet, sizeof(packet), 0);
-}
-
-void BadugiMain::SendLobbyRefresh()
-{
-	PACKET_HEADER packet;
-	packet.wIndex = PACKET_INDEX_SEND_LOBBYREFRESH;
-	packet.wLen = sizeof(packet);
-	send(sock, (const char*)&packet, sizeof(packet), 0);
+	CurrentScene->MouseLClick(lParam);
 }
 
 void BadugiMain::SceneInit()
 {
-	Lobby = new LobbyScene(mhWnd);
+	Lobby = new LobbyScene(mhWnd, sock);
 	Login = new LoginScene(mhWnd, sock);
-	GameTable = new GameTableScene(mhWnd);
+	GameTable = new GameTableScene(mhWnd, sock);
 
 	ArrScene[SCENE_INDEX_LOGIN] = Login;
 	ArrScene[SCENE_INDEX_LOBBY] = Lobby;
@@ -113,6 +78,7 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 			g_iIndex = packet.data.iIndex;
 			Player * pNew = new Player(packet.data.Id, packet.data.Money);
 			g_mapPlayer.insert(make_pair(g_iIndex, pNew));
+			SceneChange(SCENE_INDEX_LOBBY);
 		}
 	}
 	break;
@@ -121,48 +87,19 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 		PACKET_SEND_LOBBYDATA packet;
 		memcpy(&packet, szBuf, header.wLen);
 
-		for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); iter++)
-		{
-			delete iter->second;
-		}
-		RoomInfo.clear();
-
-		for (int i = 0; i < packet.LobbySize; ++i)
-		{
-			LOBBY_DATA * pNew = new LOBBY_DATA;
-			pNew->iIndex = packet.data[i].iIndex;
-			pNew->IsStart = packet.data[i].IsStart;
-			pNew->UserSize = packet.data[i].UserSize;
-
-			RoomInfo.insert((make_pair(pNew->iIndex,pNew)));
-		}
+		Lobby->RoomInfoRefresh(packet);
 
 	}
 	break;
-	case PACKET_INDEX_USER_DATA:
+	case PACKET_INDEX_SEND_ROOMENTER_RES:
 	{
-		PACKET_USER_DATA packet;
+		PACKET_SEND_ROOMENTER_RES packet;
 		memcpy(&packet, szBuf, header.wLen);
-
-		for (auto iter = g_mapPlayer.begin(); iter != g_mapPlayer.end(); iter++)
+		isGameTable = packet.isRoomEnter;
+		if (isGameTable)
 		{
-			delete iter->second;
+			SceneChange(SCENE_INDEX_ROOM);
 		}
-		g_mapPlayer.clear();
-
-		for (int i = 0; i < packet.wCount; i++)
-		{
-
-		}
-	}
-	break;
-	case PACKET_INDEX_SEND_POS:
-	{
-		PACKET_SEND_POS packet;
-		memcpy(&packet, szBuf, header.wLen);
-
-		//g_mapPlayer[packet.data.iIndex]->x = packet.data.wX;
-		//g_mapPlayer[packet.data.iIndex]->y = packet.data.wY;
 	}
 	break;
 	}
@@ -178,8 +115,9 @@ void BadugiMain::Updata()
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
 
-	SceneChange();
 
+
+	CurrentScene->Update();
 	OperateInput();
 	Render();
 
@@ -189,19 +127,19 @@ void BadugiMain::OperateInput()
 {
 	if (GetAsyncKeyState(VK_LEFT) & 0x0001)
 	{
-		SendRoomEnter(1);
+
 	}
 	else if (GetAsyncKeyState(VK_UP) & 0x0001)
 	{
-		SendRoomEnter(2);
+
 	}
 	else if (GetAsyncKeyState(VK_RIGHT) & 0x0001)
 	{
-		Login->SendLogin();
+		
 	}
 	else if (GetAsyncKeyState(VK_DOWN) & 0x0001)
 	{
-		SendLobbyRefresh();
+	
 	}
 }
 
@@ -227,4 +165,9 @@ BadugiMain::~BadugiMain()
 		delete iter->second;
 	}
 	g_mapPlayer.clear();
+	for (int i = 0; i < 3; ++i)
+	{
+		delete ArrScene[i];
+		ArrScene[i] = nullptr;
+	}
 }

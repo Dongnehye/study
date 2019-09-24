@@ -4,9 +4,7 @@
 #include "CommonHeader.h"
 #include <windows.h>
 
-#define ID_EDIT 1
-#define PW_EDIT 2
-#define CHEAT_EDIT 3
+
 
 using namespace std;
 
@@ -14,13 +12,6 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 HINSTANCE g_hInst;
 char g_szClassName[256] = "Hello World!!";
-char Idstr[20];
-char Pwstr[20];
-char Cheatstr[BUFSIZE];
-
-HWND IdEdit;
-HWND PwEdit;
-HWND CheatEdit;
 
 BadugiMain * MainGame;
 
@@ -107,56 +98,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	switch (iMessage)
 	{
 	case WM_CREATE:
-		POINT Id;
-		POINT Pw;
-		POINT Cheat;
-
-		Id.x = 465;
-		Id.y = 520;
-		Pw.x = 465;
-		Pw.y = 597;	
-		Cheat.x = 30;
-		Cheat.y = 850;
-
-		IdEdit = CreateWindow("edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
-			ES_AUTOHSCROLL, Id.x, Id.y, 301, 60, hWnd, (HMENU)ID_EDIT, g_hInst, NULL);
-		PwEdit = CreateWindow("edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
-			ES_AUTOHSCROLL, Pw.x, Pw.y, 301, 60, hWnd, (HMENU)PW_EDIT, g_hInst, NULL);
-		CheatEdit = CreateWindow("edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
-			ES_AUTOHSCROLL, Cheat.x, Cheat.y, 350, 30, hWnd, (HMENU)CHEAT_EDIT, g_hInst, NULL);
 		return 0;
 	case WM_SOCKET:
 		ProcessSocketMessage(hWnd, iMessage, wParam, lParam);
 		InvalidateRect(hWnd, NULL, true);
 		return 0;
-	case WM_COMMAND:
-		switch (LOWORD(wParam))
-		{
-		case ID_EDIT:
-			switch (HIWORD(wParam)) 
-			{
-			case EN_CHANGE:
-				GetWindowText(IdEdit, Idstr, 128);
-				MainGame->SetId(Idstr);
-			}
-			break;
-		case PW_EDIT:
-			switch (HIWORD(wParam))
-			{
-			case EN_CHANGE:
-				GetWindowText(PwEdit, Pwstr, 128);
-				MainGame->SetPw(Pwstr);
-			}
-			break;
-		case CHEAT_EDIT:
-			switch (HIWORD(wParam))
-			{
-			case EN_CHANGE:
-				GetWindowText(CheatEdit, Cheatstr, 128);
-
-			}
-			break;
-		}
+	case WM_LBUTTONDOWN:
+		MainGame->MouseLClick(lParam);
 		return 0;
 	case WM_DESTROY:
 		PostQuitMessage(0);

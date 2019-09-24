@@ -19,13 +19,15 @@ using namespace std;
 class BadugiMain
 {
 	HWND mhWnd;
+
+	HWND mCheatEdit;
+
 	HDC hMemDC[2];
 	HBITMAP hBitmap[2];
 	HBITMAP hOld[2];
 
 	SOCKET sock;
 	map<int, Player*> g_mapPlayer;
-	map<int, LOBBY_DATA*> RoomInfo;
 	int g_iIndex = 0;
 	
 	chrono::system_clock::time_point m_LastTime;
@@ -37,28 +39,23 @@ class BadugiMain
 	LoginScene * Login;
 	GameTableScene * GameTable;
 
-	const char * g_Id = "123";
-	const char * g_Pw = "456";
-
-	void SceneChange();
+	void SceneInit();
+	void SceneChange(int SceneNumber);
 	bool IsLogin;
 	bool IsLobby;
 	bool isGameTable;
 
+	void OperateInput();
+	void Render();
+
 	BadugiMain();
 public:
 	BadugiMain(HWND hWnd,SOCKET _sock);
-	void SendLogin(const char * Id, const char * Pw);
-	void SetId(char * Id);
-	void SetPw(char * Pw);
-	void SendRoomEnter(int RoomIndex);
-	void SendLobbyRefresh();
 
-	void SceneInit();
+	void MouseLClick(LPARAM lParam);
+
 	void ProcessPacket(char* szBuf, int len);
 
 	void Updata();
-	void OperateInput();
-	void Render();
 	virtual ~BadugiMain();
 };

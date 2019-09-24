@@ -4,3 +4,5 @@
 
 #define BUFSIZE 512
 #define WM_SOCKET (WM_USER+1)
+
+#define ROOMSIZE 8

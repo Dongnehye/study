@@ -1,14 +1,43 @@
 #pragma once
 #include "Scene.h"
+#include "CommonHeader.h"
+#include <windows.h>
+#include <map>
+
+#define CHEAT_EDIT 3
 
 class LobbyScene 
 	: public Scene
 {
 	LobbyScene();
+	
+	std::map<int, LOBBY_DATA*> RoomInfo;
+	std::map<int, const char*> RoomUserSize;
+
+	HWND CheatEdit;
+	char Cheatstr[BUFSIZE];
+
+	POINT CheatEditPos{ 30,850 };
+
+	SIZE CHEATEditSize{ 350,30 };
+
+	Button * RoomButton[ROOMSIZE];
+	RECT RoomEnterButton[ROOMSIZE];
+	void RectRoomInit(HDC hdc);
+
+	void SendRoomEnter(int RoomIndex);
+	void SendLobbyRefresh();
+
 public:
-	LobbyScene(HWND hWnd);
+	LobbyScene(HWND hWnd, SOCKET _sock);
 	virtual ~LobbyScene();
 
+	void RoomInfoRefresh(PACKET_SEND_LOBBYDATA packet);
+	virtual void Update();
 	virtual void Draw(HDC hdc);
+	virtual void MouseLClick(LPARAM lParam);
+	virtual void SceneStart(HWND hWnd);
+	virtual void SceneEnd(HWND hWnd);
+
 };
 
