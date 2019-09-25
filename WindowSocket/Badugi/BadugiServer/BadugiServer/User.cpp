@@ -9,6 +9,7 @@ User::User()
 	SceneIndex = 0;
 	RoomIndex = 0;
 	Money = 0;
+	IsHost = false;
 }
 
 

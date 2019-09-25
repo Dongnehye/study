@@ -1,6 +1,8 @@
 #include "GameTableScene.h"
 #include <iostream>
 
+#define HANDCARD 4
+
 using namespace std;
 
 void GameTableScene::CardBitmapInit(HDC hdc)
@@ -38,41 +40,57 @@ void GameTableScene::CardDraw(HDC hdc,int x, int y, int CardNumber)
 }
 
 
+void GameTableScene::HostGameStart()
+{
+
+	if (mapPlayer.size() == ROOMPLAYERSIZE)
+	{
+		SendRoomGameStart();
+		IsGameStart = true;
+	}
+	
+}
+
+void GameTableScene::SendRoomGameStart()
+{
+	PACKET_SEND_GAMESTART packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_GAMESTART;
+	packet.header.wLen = sizeof(packet.header);
+
+	send(sock, (const char *)&packet, sizeof(packet), 0);
+}
+
 void GameTableScene::BattingButtonActive(POINT MousePoint)
 {
-	if (IsBattingTurn)
+
+	if (Call->ButtonPress(MousePoint))
 	{
-		if (Call->ButtonPress(MousePoint))
-		{
 
-		}
-		if (Half->ButtonPress(MousePoint))
-		{
-
-		}
-		if (Die->ButtonPress(MousePoint))
-		{
-
-		}
-		if (Check->ButtonPress(MousePoint))
-		{
-
-		}
 	}
+	if (Half->ButtonPress(MousePoint))
+	{
+
+	}
+	if (Die->ButtonPress(MousePoint))
+	{
+
+	}
+	if (Check->ButtonPress(MousePoint))
+	{
+
+	}
+
 }
 
 void GameTableScene::ExChangeButtonActive(POINT MousePoint)
 {
-	if (IsChangeTurn)
+	if (Change->ButtonPress(MousePoint))
 	{
-		if (Change->ButtonPress(MousePoint))
-		{
-			cout << "Change" << endl;
-		}
-		if (Pass->ButtonPress(MousePoint))
-		{
-			cout << "a" << endl;
-		}
+		cout << "Change" << endl;
+	}
+	if (Pass->ButtonPress(MousePoint))
+	{
+		cout << "a" << endl;
 	}
 }
 
@@ -94,14 +112,7 @@ void GameTableScene::PlayerInfoDraw(HDC hdc)
 {
 	for (auto iter = mapPlayer.begin(); iter != mapPlayer.end(); ++iter)
 	{
-		if (iter->first == MyIndex)
-		{
-			// 나
-		}
-		else
-		{
-			//왼쪽 오른쪽
-		}
+		TextOut(hdc, iter->second->x, iter->second->y, iter->second->Id, strlen(iter->second->Id));
 	}
 }
 
@@ -111,8 +122,38 @@ void GameTableScene::RoomUserInit(int _MyIndex, PACKET_SEND_ROOMENTER_RES &packe
 	UserSIze = packet.UserSize;
 	for (int i = 0; i < UserSIze; ++i)
 	{
+		if (packet.data[i].iIndex == MyIndex)
+		{
+			IsHost = packet.data[i].IsHost;
+		}
 		Player * pNew = new Player(packet.data[i].Id, packet.data[i].Money);
 		mapPlayer.insert(make_pair(packet.data[i].iIndex, pNew));
+	}
+	int i = 0;
+	for (auto iter = mapPlayer.begin(); iter != mapPlayer.end(); ++iter)
+	{
+		if (iter->first == MyIndex)
+		{
+			iter->second->SetPosition(340, 600);
+		}
+		else
+		{
+			iter->second->SetPosition(10 + i * 890, 250);
+			++i;
+		}
+	}
+}
+
+void GameTableScene::CardRefresh(PACKET_SEND_CARD & packet)
+{
+	for (int i = 0; i < ROOMPLAYERSIZE; ++i)
+	{
+		for (int j = 0; j < HANDCARD; ++j)
+		{
+			mapPlayer[packet.data[i].iIndex]->card.push_back(packet.data[i].Card[j]);
+			if (packet.data[i].iIndex == MyIndex)
+				printf("%d card ", packet.data[i].Card[j]);
+		}
 	}
 }
 
@@ -160,7 +201,8 @@ GameTableScene::GameTableScene(HWND hWnd, SOCKET _sock)
 	MyPanelSize.cx = 600;
 	MyPanelSize.cy = 300;
 
-	IsChangeTurn = true;
+	IsGameStart = false;
+	IsChangeTurn = false;
 	IsBattingTurn = false;
 
 	ReleaseDC(hWnd, hdc);
@@ -190,9 +232,15 @@ GameTableScene::~GameTableScene()
 
 void GameTableScene::Update()
 {
+	if (IsGameStart)
+	{
 
+	}
+	else if (IsHost)
+	{
+		HostGameStart();
+	}
 }
-
 void GameTableScene::Draw(HDC hdc)
 {
 	BackGroundDraw(hdc);
@@ -205,7 +253,17 @@ void GameTableScene::Draw(HDC hdc)
 	{
 		BattingButtonDraw(hdc);
 	}
+	PlayerInfoDraw(hdc);
 
+	int i = 10;
+	for (auto iter = mapPlayer.begin(); iter != mapPlayer.end(); iter++)
+	{
+		for (auto Carditer = iter->second->card.begin(); Carditer != iter->second->card.end(); Carditer++)
+		{
+			CardDraw(hdc, i, 300, (*Carditer));
+			i += 10;
+		}
+	}
 	//CardBack->BufferDraw(hdc, 100, 100);
 	//CardDraw(hdc, 200, 300, CARDS_48_SPADES);
 	//CardDraw(hdc, 215, 300, CARDS_49_SPADES);
@@ -218,13 +276,19 @@ void GameTableScene::MouseLClick(LPARAM lParam)
 	POINT MousePoint;
 	MousePoint.x = LOWORD(lParam);
 	MousePoint.y = HIWORD(lParam);
-	BattingButtonActive(MousePoint);
-	ExChangeButtonActive(MousePoint);
+	if (IsBattingTurn)
+	{
+		BattingButtonActive(MousePoint);
+	}
+	else if (IsChangeTurn)
+	{
+		ExChangeButtonActive(MousePoint);
+	}
+
 }
 
 void GameTableScene::SceneStart(HWND hWnd)
 {
-
 
 
 }

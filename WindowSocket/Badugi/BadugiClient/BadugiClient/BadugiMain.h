@@ -27,7 +27,6 @@ class BadugiMain
 	HBITMAP hOld[2];
 
 	SOCKET sock;
-	map<int, Player*> g_mapPlayer;
 	int g_iIndex = 0;
 	
 	chrono::system_clock::time_point m_LastTime;

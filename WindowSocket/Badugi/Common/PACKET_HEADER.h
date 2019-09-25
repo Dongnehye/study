@@ -1,6 +1,9 @@
 #pragma once
 #include <Windows.h>
 #pragma pack(1)
+
+#define ROOMPLAYERSIZE 3
+
 enum CARD
 {
 	CARDS_00_DIAMONDS,
@@ -73,7 +76,9 @@ enum PACKET_INDEX
 	PACKET_INDEX_SEND_LOBBYREFRESH,
 	PACKET_INDEX_SEND_ROOMENTER,
 	PACKET_INDEX_SEND_ROOMENTER_RES,
-	PACKET_INDEX_SEND_Chat,
+	PACKET_INDEX_SEND_GAMESTART,
+	PACKET_INDEX_SEND_CARD,
+	PACKET_INDEX_SEND_CHAT,
 	PACKET_INDEX_SEND_READY,
 	PACKET_INDEX_SEND_EXCHANGE,
 	PACKET_INDEX_SEND_BETTING,
@@ -97,6 +102,12 @@ struct USER_ROOM_DATA
 	int iIndex;
 	char Id[10];
 	WORD Money;
+	bool IsHost;
+};
+struct USER_CARD_DATA
+{
+	int iIndex;
+	WORD Card[4];
 };
 struct LOBBY_DATA
 {
@@ -141,8 +152,17 @@ struct PACKET_SEND_ROOMENTER_RES
 {
 	PACKET_HEADER header;
 	WORD RoomIndex;
-	USER_ROOM_DATA data[3];
+	USER_ROOM_DATA data[ROOMPLAYERSIZE];
 	int UserSize;
 	bool isRoomEnter;
+};
+struct PACKET_SEND_GAMESTART
+{
+	PACKET_HEADER header;
+};
+struct PACKET_SEND_CARD
+{
+	PACKET_HEADER header;
+	USER_CARD_DATA data[ROOMPLAYERSIZE];
 };
 #pragma pack()

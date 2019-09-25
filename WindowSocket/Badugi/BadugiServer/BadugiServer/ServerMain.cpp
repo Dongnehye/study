@@ -7,25 +7,12 @@ using namespace std;
 
 void ServerMain::RoomInit()
 {
-	//for (int i = 0; i < ROOMSIZE; ++i)
-	//{
-	//	Room * pNew = new Room();
-	//	VecRoom.push_back(pNew);
-	//}
 	mLobby = new Lobby();
-	mLobby->UserSIze = 8;
 	for (int i = 1; i <= ROOMSIZE; ++i)
 	{
 		GameTable * pGameTableNew = new GameTable();
-
-		if (i == 8)
-			pGameTableNew->UserSIze = 0;
-		else
-			pGameTableNew->UserSIze = 3;
-
 		VecRoom.insert(make_pair( i,pGameTableNew));
 	}
-
 }
 
 ServerMain::ServerMain()
@@ -273,9 +260,12 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 				packet.header.wLen = sizeof(PACKET_HEADER) + sizeof(WORD) +
 					sizeof(USER_ROOM_DATA) * ROOMPLAYERSIZE + sizeof(int) + sizeof(bool);
 				packet.RoomIndex = g_mapUser[sock]->RoomIndex;
-				
 				packet.isRoomEnter = IsRoomEnter;
 
+				if (VecRoom[WantRoomIndex]->UserSIze == 0)
+					g_mapUser[sock]->IsHost = true;
+				else
+					g_mapUser[sock]->IsHost = false;
 				int i = 0;
 				for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
 				{
@@ -284,6 +274,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 						packet.data[i].iIndex = iter->second->index;
 						strcpy(packet.data[i].Id, iter->second->Id);
 						packet.data[i].Money = iter->second->Money;
+						packet.data[i].IsHost = iter->second->IsHost;
 						++i;
 					}
 				}
@@ -295,16 +286,52 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 						send(iter->first, (const char*)&packet, packet.header.wLen, 0);
 					}
 				}
+
+				VecRoom[WantRoomIndex]->UserSIze += 1;
+
 			}
 			else
 			{
 				printf("[TCP 서버] 클라이언트 방 접속실패 : RoomIndex = %d 인원수 초과\n",
 					WantRoomIndex);
 				IsRoomEnter = false;
-
+				// ERRor message
 				//send(sock, (const char*)&packet, packet.header.wLen, 0);
 			}
 		}
+	}
+	break;
+	case PACKET_INDEX_SEND_GAMESTART:
+	{
+		VecRoom[pUser->RoomIndex]->GameStart(g_mapUser);
+
+		PACKET_SEND_CARD packet;
+		packet.header.wIndex = PACKET_INDEX_SEND_CARD;
+		packet.header.wLen = sizeof(PACKET_HEADER) + sizeof(USER_CARD_DATA) * ROOMPLAYERSIZE;
+
+		int i = 0;
+		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+		{
+			if (iter->second->RoomIndex == pUser->RoomIndex)
+			{
+				packet.data[i].iIndex = iter->second->index;
+				int j = 0;
+				for (auto iterCard = iter->second->card.begin(); iterCard != iter->second->card.end(); ++iterCard, ++j)
+				{
+					packet.data[i].Card[j] = (*iterCard);
+				}
+				++i;
+			}
+		}
+
+		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+		{
+			if (iter->second->RoomIndex == pUser->RoomIndex)
+			{
+				send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+			}
+		}
+
 	}
 	break;
 	}

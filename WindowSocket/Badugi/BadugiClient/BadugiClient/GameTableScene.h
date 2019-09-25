@@ -9,6 +9,7 @@ class GameTableScene :
 	std::map<int, Player*> mapPlayer;
 	int MyIndex;
 	int UserSIze;
+	bool IsHost;
 
 	//Batting
 	Button * Check;
@@ -38,11 +39,13 @@ class GameTableScene :
 	SIZE MyPanelSize;
 	POINT testP;
 
-	void BackGroundDraw(HDC hdc);
-	void CardDraw(HDC hdc , int x, int y, int CardNumber);
-
+	bool IsGameStart;
 	bool IsChangeTurn;
 	bool IsBattingTurn;
+	void HostGameStart();
+	void GameStart();
+
+	void SendRoomGameStart();
 
 	void BattingButtonActive(POINT MousePoint);
 	void ExChangeButtonActive(POINT MousePoint);
@@ -51,6 +54,8 @@ class GameTableScene :
 	void ExChangeButtonDraw(HDC hdc);
 	
 	void PlayerInfoDraw(HDC hdc);
+	void BackGroundDraw(HDC hdc);
+	void CardDraw(HDC hdc, int x, int y, int CardNumber);
 
 	GameTableScene();
 public:
@@ -58,11 +63,11 @@ public:
 	virtual ~GameTableScene();
 
 	void RoomUserInit(int MyIndex ,PACKET_SEND_ROOMENTER_RES &packet);
+	void CardRefresh(PACKET_SEND_CARD &packet);
 	virtual void Update();
 	virtual void Draw(HDC hdc);
 	virtual void MouseLClick(LPARAM lParam);
 	virtual void SceneStart(HWND hWnd);
 	virtual void SceneEnd(HWND hWnd);
-
 };
 

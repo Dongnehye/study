@@ -4,6 +4,7 @@
 
 Room::Room()
 {
+	UserSIze = 0;
 }
 
 

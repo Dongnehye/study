@@ -76,8 +76,6 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 		if (IsLogin)
 		{
 			g_iIndex = packet.data.iIndex;
-			Player * pNew = new Player(packet.data.Id, packet.data.Money);
-			g_mapPlayer.insert(make_pair(g_iIndex, pNew));
 			SceneChange(SCENE_INDEX_LOBBY);
 		}
 	}
@@ -101,6 +99,15 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 			GameTable->RoomUserInit(g_iIndex, packet);
 			SceneChange(SCENE_INDEX_ROOM);
 		}
+	}
+	break;
+	case PACKET_INDEX_SEND_CARD:
+	{
+		PACKET_SEND_CARD packet;
+		memcpy(&packet, szBuf, header.wLen);
+		
+		GameTable->CardRefresh(packet);
+
 	}
 	break;
 	}
@@ -161,11 +168,6 @@ void BadugiMain::Render()
 
 BadugiMain::~BadugiMain()
 {
-	for (auto iter = g_mapPlayer.begin(); iter != g_mapPlayer.end(); iter++)
-	{
-		delete iter->second;
-	}
-	g_mapPlayer.clear();
 	for (int i = 0; i < 3; ++i)
 	{
 		delete ArrScene[i];

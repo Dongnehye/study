@@ -15,7 +15,7 @@ class ServerMain
 {
 	int g_iIndex = 0;
 	std::map<SOCKET, User*> g_mapUser;
-	std::map<int,Room*> VecRoom;
+	std::map<int, GameTable*> VecRoom;
 	Lobby * mLobby;
 	void RoomInit();
 

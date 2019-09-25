@@ -1,5 +1,9 @@
 #pragma once
 #include "CommonHeader.h"
+#include <list>
+
+using namespace std;
+
 class User
 {
 
@@ -10,8 +14,10 @@ public:
 	int len;
 	int SceneIndex;
 	int RoomIndex;
-
 	int Money;
+	bool IsHost;
+
+	list<int> card;
 
 	User();
 	virtual ~User();
