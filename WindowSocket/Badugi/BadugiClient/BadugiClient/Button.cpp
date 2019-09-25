@@ -16,6 +16,19 @@ Button::Button(HDC hdc, POINT _Pos, SIZE _ButtonSIze, const char * FileStr)
 	RectButton = {Pos.x,Pos.y , Pos.x + ButtonSize.cx , Pos.y + ButtonSize.cy};
 }
 
+Button::Button(HDC hdc, int x, int y, int SizeW, int SizeH, const char * FileStr)
+{
+	Pos.x = x;
+	Pos.y = y;
+
+	ButtonSize.cx = SizeW;
+	ButtonSize.cy = SizeH;
+
+	ButtonBItmap = new Bitmap(hdc, FileStr);
+
+	RectButton = { Pos.x,Pos.y , Pos.x + ButtonSize.cx , Pos.y + ButtonSize.cy };
+}
+
 Button::~Button()
 {
 	delete ButtonBItmap;
@@ -47,6 +60,6 @@ bool Button::ButtonPress(POINT MousePoint)
 
 void Button::Draw(HDC hdc)
 {
-	Rectangle(hdc, RectButton.left, RectButton.top, RectButton.right, RectButton.bottom);
+	//Rectangle(hdc, RectButton.left, RectButton.top, RectButton.right, RectButton.bottom);
 	ButtonBItmap->BufferDraw(hdc, Pos.x, Pos.y, ButtonSize);
 }

@@ -11,7 +11,8 @@ class Button
 
 	Button();
 public:
-	Button(HDC hdc, POINT Pos, SIZE ButtonSIze, const char * FileStr);
+	Button(HDC hdc, POINT Pos, SIZE ButtonRectSIze, const char * FileStr);
+	Button(HDC hdc, int x, int y , int RectSizeW, int RectSizeH , const char * FileStr);
 	virtual ~Button();
 
 	POINT GetPos();

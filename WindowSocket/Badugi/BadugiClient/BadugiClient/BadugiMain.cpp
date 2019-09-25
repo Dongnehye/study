@@ -39,7 +39,7 @@ BadugiMain::BadugiMain(HWND hWnd, SOCKET _sock)
 	SceneInit();
 
 	SceneChange(SCENE_INDEX_LOGIN);
-
+	//SceneChange(SCENE_INDEX_ROOM);
 	ReleaseDC(hWnd,hdc);
 }
 
@@ -88,7 +88,7 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 		memcpy(&packet, szBuf, header.wLen);
 
 		Lobby->RoomInfoRefresh(packet);
-
+		
 	}
 	break;
 	case PACKET_INDEX_SEND_ROOMENTER_RES:
@@ -98,6 +98,7 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 		isGameTable = packet.isRoomEnter;
 		if (isGameTable)
 		{
+			GameTable->RoomUserInit(g_iIndex, packet);
 			SceneChange(SCENE_INDEX_ROOM);
 		}
 	}

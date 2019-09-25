@@ -1,3 +1,4 @@
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "msimg32.lib")
 #include "BadugiMain.h"

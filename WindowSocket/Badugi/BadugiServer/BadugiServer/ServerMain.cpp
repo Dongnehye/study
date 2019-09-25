@@ -21,7 +21,7 @@ void ServerMain::RoomInit()
 		if (i == 8)
 			pGameTableNew->UserSIze = 0;
 		else
-			pGameTableNew->UserSIze = 4;
+			pGameTableNew->UserSIze = 3;
 
 		VecRoom.insert(make_pair( i,pGameTableNew));
 	}
@@ -263,23 +263,47 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 			if (VecRoom[WantRoomIndex]->UserSIze < ROOMPLAYERSIZE)
 			{
 				g_mapUser[sock]->RoomIndex = packet.RoomIndex;
+				g_mapUser[sock]->SceneIndex = SCENE_INDEX_ROOM;
 				printf("[TCP 서버] 클라이언트 방 접속 : RoomIndex = %d\n",
 					g_mapUser[sock]->RoomIndex);
 				IsRoomEnter = true;
+
+				PACKET_SEND_ROOMENTER_RES packet;
+				packet.header.wIndex = PACKET_INDEX_SEND_ROOMENTER_RES;
+				packet.header.wLen = sizeof(PACKET_HEADER) + sizeof(WORD) +
+					sizeof(USER_ROOM_DATA) * ROOMPLAYERSIZE + sizeof(int) + sizeof(bool);
+				packet.RoomIndex = g_mapUser[sock]->RoomIndex;
+				
+				packet.isRoomEnter = IsRoomEnter;
+
+				int i = 0;
+				for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+				{
+					if (iter->second->RoomIndex == WantRoomIndex)
+					{
+						packet.data[i].iIndex = iter->second->index;
+						strcpy(packet.data[i].Id, iter->second->Id);
+						packet.data[i].Money = iter->second->Money;
+						++i;
+					}
+				}
+				packet.UserSize = i;
+				for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+				{
+					if (iter->second->RoomIndex == WantRoomIndex)
+					{
+						send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+					}
+				}
 			}
 			else
 			{
 				printf("[TCP 서버] 클라이언트 방 접속실패 : RoomIndex = %d 인원수 초과\n",
 					WantRoomIndex);
 				IsRoomEnter = false;
-			}
 
-			PACKET_SEND_ROOMENTER_RES packet;
-			packet.header.wIndex = PACKET_INDEX_SEND_ROOMENTER_RES;
-			packet.header.wLen = sizeof(PACKET_HEADER) + sizeof(WORD) + sizeof(bool);
-			packet.RoomIndex = g_mapUser[sock]->RoomIndex;
-			packet.isRoomEnter = IsRoomEnter;
-			send(sock, (const char*)&packet, packet.header.wLen, 0);
+				//send(sock, (const char*)&packet, packet.header.wLen, 0);
+			}
 		}
 	}
 	break;
@@ -308,14 +332,13 @@ bool ServerMain::CheckLogin(const char * Id, const char * pw, int & Money)
 		{
 			in >> StrId;
 			in >> StrPw;
-
+			in >> IMoney;
 			if (strcmp(StrId.c_str(), Id) == 0
 				&& strcmp(StrPw.c_str(), pw) == 0)
 			{
 				Money = IMoney;
 				return true;
 			}
-			in >> IMoney;
 		}
 	}
 	return false;
