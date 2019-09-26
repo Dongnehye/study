@@ -14,7 +14,7 @@ public:
 	Scene();
 	virtual ~Scene();
 
-	virtual void Update() = 0;
+	virtual void Update(float ElapseTime) = 0;
 	virtual void Draw(HDC hdc) = 0;
 	virtual void MouseLClick(LPARAM lParam) = 0;
 	virtual void SceneStart(HWND hWnd) = 0;

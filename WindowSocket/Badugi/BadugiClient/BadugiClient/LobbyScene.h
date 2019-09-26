@@ -33,7 +33,7 @@ public:
 	virtual ~LobbyScene();
 
 	void RoomInfoRefresh(PACKET_SEND_LOBBYDATA packet);
-	virtual void Update();
+	virtual void Update(float ElapseTime);
 	virtual void Draw(HDC hdc);
 	virtual void MouseLClick(LPARAM lParam);
 	virtual void SceneStart(HWND hWnd);

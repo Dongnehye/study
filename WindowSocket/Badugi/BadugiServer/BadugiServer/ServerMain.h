@@ -15,9 +15,11 @@ class ServerMain
 {
 	int g_iIndex = 0;
 	std::map<SOCKET, User*> g_mapUser;
-	std::map<int, GameTable*> VecRoom;
+	std::map<int, GameTable*> mapRoom;
 	Lobby * mLobby;
 	void RoomInit();
+
+	void SendCardRefresh(User * pUser);
 
 public:
 	ServerMain();

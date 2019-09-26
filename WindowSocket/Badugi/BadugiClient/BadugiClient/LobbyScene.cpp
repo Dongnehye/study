@@ -90,7 +90,7 @@ LobbyScene::~LobbyScene()
 	}
 }
 
-void LobbyScene::Update()
+void LobbyScene::Update(float ElapseTime)
 { 
 	GetWindowText(CheatEdit, Cheatstr, 128);
 

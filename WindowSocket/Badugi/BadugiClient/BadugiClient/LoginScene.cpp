@@ -53,7 +53,7 @@ void LoginScene::SetPw(char * _Pw)
 	Pw = _Pw;
 }
 
-void LoginScene::Update()
+void LoginScene::Update(float ElapseTime)
 {
 	GetWindowText(IdEdit, Idstr, 128);
 	GetWindowText(PwEdit, Pwstr, 128);

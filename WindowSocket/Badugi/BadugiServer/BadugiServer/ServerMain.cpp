@@ -11,7 +11,36 @@ void ServerMain::RoomInit()
 	for (int i = 1; i <= ROOMSIZE; ++i)
 	{
 		GameTable * pGameTableNew = new GameTable();
-		VecRoom.insert(make_pair( i,pGameTableNew));
+		mapRoom.insert(make_pair( i,pGameTableNew));
+	}
+}
+
+void ServerMain::SendCardRefresh(User * pUser)
+{
+	PACKET_SEND_CARD packetCard;
+	packetCard.header.wIndex = PACKET_INDEX_SEND_CARD;
+	packetCard.header.wLen = sizeof(PACKET_HEADER) + sizeof(USER_CARD_DATA) * ROOMPLAYERSIZE;
+
+	int i = 0;
+	for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+	{
+		if (iter->second->RoomIndex == pUser->RoomIndex)
+		{
+			packetCard.data[i].iIndex = iter->second->index;
+			int j = 0;
+			for (auto iterCard = iter->second->card.begin(); iterCard != iter->second->card.end(); ++iterCard, ++j)
+			{
+				packetCard.data[i].Card[j] = (*iterCard);
+			}
+			++i;
+		}
+	}
+	for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+	{
+		if (iter->second->RoomIndex == pUser->RoomIndex)
+		{
+			send(iter->first, (const char*)&packetCard, packetCard.header.wLen, 0);
+		}
 	}
 }
 
@@ -23,11 +52,11 @@ ServerMain::ServerMain()
 
 ServerMain::~ServerMain()
 {
-	for (auto iter = VecRoom.begin(); iter != VecRoom.end(); ++iter)
+	for (auto iter = mapRoom.begin(); iter != mapRoom.end(); ++iter)
 	{
 		delete iter->second;
 	}
-	VecRoom.clear();
+	mapRoom.clear();
 }
 
 void ServerMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -215,20 +244,20 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 	{
 		PACKET_SEND_LOBBYDATA Lobbypacket;
 		Lobbypacket.header.wIndex = PACKET_INDEX_SEND_LOBBY;
-		Lobbypacket.header.wLen = sizeof(PACKET_HEADER) + sizeof(WORD) + sizeof(LOBBY_DATA) * VecRoom.size();
-		Lobbypacket.LobbySize = VecRoom.size();
+		Lobbypacket.header.wLen = sizeof(PACKET_HEADER) + sizeof(WORD) + sizeof(LOBBY_DATA) * mapRoom.size();
+		Lobbypacket.LobbySize = mapRoom.size();
 
 		printf("[TCP 서버] 로비 정보 : 로비 접속자 = %d \n",
 			mLobby->GetUserSize());
 		int i = 1;
-		for (auto iter = VecRoom.begin(); iter != VecRoom.end(); ++iter, ++i)
+		for (auto iter = mapRoom.begin(); iter != mapRoom.end(); ++iter, ++i)
 		{
 			printf("[TCP 서버] 클라이언트 방 정보 : RoomIndex = %d, 방접속자 = %d \n",
 					i, iter->second->GetUserSize());	
 		}
 
 		i = 0;
-		for (auto iter = VecRoom.begin(); iter != VecRoom.end(); ++iter, ++i)
+		for (auto iter = mapRoom.begin(); iter != mapRoom.end(); ++iter, ++i)
 		{
 			Lobbypacket.data[i].iIndex = 1 + i;
 			Lobbypacket.data[i].IsStart = false;
@@ -247,7 +276,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		bool IsRoomEnter = false;
 		if (g_mapUser[sock]->SceneIndex == SCENE_INDEX_LOBBY)
 		{
-			if (VecRoom[WantRoomIndex]->UserSIze < ROOMPLAYERSIZE)
+			if (mapRoom[WantRoomIndex]->UserSIze < ROOMPLAYERSIZE)
 			{
 				g_mapUser[sock]->RoomIndex = packet.RoomIndex;
 				g_mapUser[sock]->SceneIndex = SCENE_INDEX_ROOM;
@@ -262,7 +291,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 				packet.RoomIndex = g_mapUser[sock]->RoomIndex;
 				packet.isRoomEnter = IsRoomEnter;
 
-				if (VecRoom[WantRoomIndex]->UserSIze == 0)
+				if (mapRoom[WantRoomIndex]->UserSIze == 0)
 					g_mapUser[sock]->IsHost = true;
 				else
 					g_mapUser[sock]->IsHost = false;
@@ -287,7 +316,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 					}
 				}
 
-				VecRoom[WantRoomIndex]->UserSIze += 1;
+				mapRoom[WantRoomIndex]->UserSIze += 1;
 
 			}
 			else
@@ -301,34 +330,66 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		}
 	}
 	break;
-	case PACKET_INDEX_SEND_GAMESTART:
+	case PACKET_INDEX_SEND_READY:
 	{
-		VecRoom[pUser->RoomIndex]->GameStart(g_mapUser);
+		PACKET_SEND_READY packet;
+		memcpy(&packet, szBuf, header.wLen);
 
-		PACKET_SEND_CARD packet;
-		packet.header.wIndex = PACKET_INDEX_SEND_CARD;
-		packet.header.wLen = sizeof(PACKET_HEADER) + sizeof(USER_CARD_DATA) * ROOMPLAYERSIZE;
+		int RoomIndex = g_mapUser[sock]->RoomIndex;
+		g_mapUser[sock]->IsReady = packet.IsReady;
 
-		int i = 0;
+		int ReadySIze = 0;
 		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
 		{
 			if (iter->second->RoomIndex == pUser->RoomIndex)
 			{
-				packet.data[i].iIndex = iter->second->index;
-				int j = 0;
-				for (auto iterCard = iter->second->card.begin(); iterCard != iter->second->card.end(); ++iterCard, ++j)
+				if (iter->second->IsReady)
 				{
-					packet.data[i].Card[j] = (*iterCard);
+					++ReadySIze;	
 				}
-				++i;
 			}
 		}
+		if (ReadySIze >= ROOMPLAYERSIZE)
+		{
+			mapRoom[RoomIndex]->GameStart(g_mapUser);
+			PACKET_SEND_GAMESTART GameStartPacket;
+			GameStartPacket.header.wIndex = PACKET_INDEX_SEND_GAMESTART;
+			GameStartPacket.header.wLen = sizeof(GameStartPacket.header) + sizeof(WORD);
+			GameStartPacket.FirstTurnIndex = mapRoom[RoomIndex]->TurnPlayerIndex;
+
+			for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+			{
+				if (iter->second->RoomIndex == pUser->RoomIndex)
+				{
+					send(iter->first, (const char*)&GameStartPacket, GameStartPacket.header.wLen, 0);
+				}
+			}
+		}
+	}
+	break;
+	case PACKET_INDEX_SEND_TURN:
+	{
+		PACKET_SEND_TURN packet;
+		memcpy(&packet, szBuf, header.wLen);
+		int Turn = 0;
+
+		if (packet.TURN == GAME_TURN_CARD_DIVISION)
+		{
+			SendCardRefresh(pUser);
+		}
+		
+		packet.TURN = GAME_TURN_STAY;
+		send(sock, (const char *)&packet, packet.header.wLen, 0);
+
+		Turn = mapRoom[g_mapUser[sock]->RoomIndex]->NextTurn(g_mapUser[sock]->index, packet.TURN);
+		packet.TURN = Turn;
+
 
 		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
 		{
-			if (iter->second->RoomIndex == pUser->RoomIndex)
+			if (iter->second->index == mapRoom[g_mapUser[sock]->RoomIndex]->GetNextPlayerIndex())
 			{
-				send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+				send(sock, (const char*)&packet, sizeof(packet.header.wLen), 0);
 			}
 		}
 

@@ -16,6 +16,7 @@ public:
 	int RoomIndex;
 	int Money;
 	bool IsHost;
+	bool IsReady;
 
 	list<int> card;
 

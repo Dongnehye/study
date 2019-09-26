@@ -110,6 +110,23 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 
 	}
 	break;
+	case PACKET_INDEX_SEND_GAMESTART:
+	{
+		PACKET_SEND_GAMESTART packet;
+		memcpy(&packet, szBuf, header.wLen);
+
+		GameTable->SetFirstTurn(packet.FirstTurnIndex);
+	}
+	break;
+	case PACKET_INDEX_SEND_TURN:
+	{
+		PACKET_SEND_TURN packet;
+		memcpy(&packet, szBuf, header.wLen);
+
+		GameTable->ActiveTurn();
+	}
+
+	break;
 	}
 }
 
@@ -123,9 +140,8 @@ void BadugiMain::Updata()
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
 
+	CurrentScene->Update(m_fElapseTime);
 
-
-	CurrentScene->Update();
 	OperateInput();
 	Render();
 

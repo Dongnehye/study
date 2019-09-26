@@ -14,7 +14,13 @@ class GameTable :
 public:
 	int DeckSize; //MAX 52.
 	vector<int> Deck;
-	vector<int> PlayingPlayerIndex;
+
+	map<int,bool> PlayingPlayerIndex;
+
+	int TurnPlayerIndex;
+	int CurrentTurn;
+
+	int CurrentPlayer;
 
 public:
 	GameTable();
@@ -22,6 +28,10 @@ public:
 	int GetUserSize();
 
 	void GameStart(map<SOCKET, User*> &mapUser);
+
+	int NextTurn(int Index, int Turn);
+
+	int GetNextPlayerIndex();
 
 	void CardSwing(map<SOCKET, User*> &mapUser);
 

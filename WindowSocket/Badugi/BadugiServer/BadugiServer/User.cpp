@@ -10,6 +10,7 @@ User::User()
 	RoomIndex = 0;
 	Money = 0;
 	IsHost = false;
+	IsReady = false;
 }
 
 

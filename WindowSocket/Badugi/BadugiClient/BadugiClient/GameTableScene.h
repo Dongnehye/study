@@ -9,7 +9,12 @@ class GameTableScene :
 	std::map<int, Player*> mapPlayer;
 	int MyIndex;
 	int UserSIze;
+	int CurrentTurn;
+	
 	bool IsHost;
+	bool IsReady;
+	bool MyTurn;
+	
 
 	//Batting
 	Button * Check;
@@ -19,6 +24,9 @@ class GameTableScene :
 	//ExChange
 	Button * Pass;
 	Button * Change;
+
+	Button * Ready;
+	Button * Readying;
 
 	Bitmap * BattingBoard;
 	int TotalBattingGold;
@@ -40,21 +48,26 @@ class GameTableScene :
 	POINT testP;
 
 	bool IsGameStart;
-	bool IsChangeTurn;
-	bool IsBattingTurn;
-	void HostGameStart();
+	bool BlindBatting;
+
 	void GameStart();
 
-	void SendRoomGameStart();
+
+	void SendRoomReady();
+	void SendCardRefresh();
 
 	void BattingButtonActive(POINT MousePoint);
 	void ExChangeButtonActive(POINT MousePoint);
+	void ReadyButtonActive(POINT MousePoint);
 
 	void BattingButtonDraw(HDC hdc);
 	void ExChangeButtonDraw(HDC hdc);
+	void ReadyButtonDraw(HDC hdc);
 	
 	void PlayerInfoDraw(HDC hdc);
 	void BackGroundDraw(HDC hdc);
+
+	void PlayerCardDraw(HDC hdc);
 	void CardDraw(HDC hdc, int x, int y, int CardNumber);
 
 	GameTableScene();
@@ -64,7 +77,10 @@ public:
 
 	void RoomUserInit(int MyIndex ,PACKET_SEND_ROOMENTER_RES &packet);
 	void CardRefresh(PACKET_SEND_CARD &packet);
-	virtual void Update();
+	void SetFirstTurn(int Index);
+	void ActiveTurn();
+
+	virtual void Update(float ElapseTime);
 	virtual void Draw(HDC hdc);
 	virtual void MouseLClick(LPARAM lParam);
 	virtual void SceneStart(HWND hWnd);

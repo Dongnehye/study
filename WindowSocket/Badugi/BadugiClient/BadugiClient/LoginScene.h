@@ -33,7 +33,7 @@ public:
 
 	void SendLogin();
 
-	virtual void Update();
+	virtual void Update(float ElapseTime);
 	virtual void Draw(HDC hdc);
 	virtual void MouseLClick(LPARAM lParam);
 	virtual void SceneStart(HWND hWnd);

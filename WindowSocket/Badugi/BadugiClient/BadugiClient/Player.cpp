@@ -19,6 +19,7 @@ Player::Player(char * _id, int _Money)
 {
 	strcpy(Id, _id);
 	Money = _Money;
+	IsDie = false;
 }
 
 
