@@ -13,6 +13,7 @@ public:
 	char Id[IDPWSIZE];
 	int Money;
 	bool IsDie = false;
+	bool IsTurn = false;
 	std::list<int> card;
 
 	void SetPosition(int x, int y);

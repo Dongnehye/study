@@ -10,12 +10,11 @@ class GameTableScene :
 	int MyIndex;
 	int UserSIze;
 	int CurrentTurn;
-	
+	int TotalMoney;
+
 	bool IsHost;
 	bool IsReady;
-	bool MyTurn;
 	
-
 	//Batting
 	Button * Check;
 	Button * Die;
@@ -33,6 +32,7 @@ class GameTableScene :
 	int TotalCallGold;
 
 	Bitmap * MyPannel;
+	Bitmap * MyTurnRect;
 	Bitmap * PlayerPanelLeft;
 	Bitmap * PlayerPanelRight;
 
@@ -55,6 +55,8 @@ class GameTableScene :
 
 	void SendRoomReady();
 	void SendCardRefresh();
+	void SendBatting(int Batting);
+	void SendExchange();
 
 	void BattingButtonActive(POINT MousePoint);
 	void ExChangeButtonActive(POINT MousePoint);
@@ -78,8 +80,12 @@ public:
 	void RoomUserInit(int MyIndex ,PACKET_SEND_ROOMENTER_RES &packet);
 	void CardRefresh(PACKET_SEND_CARD &packet);
 	void SetFirstTurn(int Index);
-	void ActiveTurn();
+	void ActiveTurn(int Index, int Turn);
+	void RefreshScene(int Index,int Turn);
+	void SetTotalMoney(int Money);
+	void SetMoney(int Index, int Money);
 
+	int GetMyIndex();
 	virtual void Update(float ElapseTime);
 	virtual void Draw(HDC hdc);
 	virtual void MouseLClick(LPARAM lParam);

@@ -11,11 +11,12 @@ void ServerMain::RoomInit()
 	for (int i = 1; i <= ROOMSIZE; ++i)
 	{
 		GameTable * pGameTableNew = new GameTable();
+		pGameTableNew->Index = i;
 		mapRoom.insert(make_pair( i,pGameTableNew));
 	}
 }
 
-void ServerMain::SendCardRefresh(User * pUser)
+void ServerMain::SendCardRefresh(SOCKET sock ,User * pUser)
 {
 	PACKET_SEND_CARD packetCard;
 	packetCard.header.wIndex = PACKET_INDEX_SEND_CARD;
@@ -35,13 +36,7 @@ void ServerMain::SendCardRefresh(User * pUser)
 			++i;
 		}
 	}
-	for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
-	{
-		if (iter->second->RoomIndex == pUser->RoomIndex)
-		{
-			send(iter->first, (const char*)&packetCard, packetCard.header.wLen, 0);
-		}
-	}
+	send(sock, (const char*)&packetCard, packetCard.header.wLen, 0);
 }
 
 ServerMain::ServerMain()
@@ -253,7 +248,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		for (auto iter = mapRoom.begin(); iter != mapRoom.end(); ++iter, ++i)
 		{
 			printf("[TCP 서버] 클라이언트 방 정보 : RoomIndex = %d, 방접속자 = %d \n",
-					i, iter->second->GetUserSize());	
+				i, iter->second->GetUserSize());
 		}
 
 		i = 0;
@@ -345,7 +340,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 			{
 				if (iter->second->IsReady)
 				{
-					++ReadySIze;	
+					++ReadySIze;
 				}
 			}
 		}
@@ -367,36 +362,92 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		}
 	}
 	break;
-	case PACKET_INDEX_SEND_TURN:
+	case PACKET_INDEX_SEND_CARD:
 	{
 		PACKET_SEND_TURN packet;
 		memcpy(&packet, szBuf, header.wLen);
-		int Turn = 0;
 
-		if (packet.TURN == GAME_TURN_CARD_DIVISION)
-		{
-			SendCardRefresh(pUser);
-		}
-		
-		packet.TURN = GAME_TURN_STAY;
-		send(sock, (const char *)&packet, packet.header.wLen, 0);
-
-		Turn = mapRoom[g_mapUser[sock]->RoomIndex]->NextTurn(g_mapUser[sock]->index, packet.TURN);
-		packet.TURN = Turn;
-
-
-		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
-		{
-			if (iter->second->index == mapRoom[g_mapUser[sock]->RoomIndex]->GetNextPlayerIndex())
-			{
-				send(sock, (const char*)&packet, sizeof(packet.header.wLen), 0);
-			}
-		}
+		SendCardRefresh(sock, pUser);
 
 	}
 	break;
-	}
+	case PACKET_INDEX_SEND_BETTING:
+	{
+		PACKET_SEND_BATTING packet;
+		memcpy(&packet, szBuf, header.wLen);
 
+		auto Room = mapRoom[g_mapUser[sock]->RoomIndex];
+		Room->Batting(g_mapUser[sock]->index, g_mapUser[sock], packet.BATTING);
+
+		PACKET_SEND_BATTING_RES ResPacket;
+		ResPacket.header.wIndex = PACKET_INDEX_SEND_BETTING;
+		ResPacket.header.wLen = sizeof(ResPacket.header) + sizeof(int) + sizeof(WORD) + sizeof(int) + sizeof(int);
+		ResPacket.Index = g_mapUser[sock]->index;
+		ResPacket.BATTING = g_mapUser[sock]->BatState;
+		ResPacket.Money = pUser->Money;
+		ResPacket.TotalMoney = Room->TotalMoney;
+
+		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+		{
+			if (iter->second->RoomIndex == Room->Index)
+			{
+				send(sock, (const char *)&ResPacket, ResPacket.header.wLen, 0);
+			}
+		}
+	}
+	break;
+	case PACKET_INDEX_SEND_CARD_RESPOND:
+	{
+		PACKET_HEADER ResPacket;
+		memcpy(&ResPacket, szBuf, header.wLen);
+
+		auto Room = mapRoom[g_mapUser[sock]->RoomIndex];
+
+		int Turn = Room->CheckNextTurn(g_mapUser[sock]->index);
+
+		PACKET_SEND_TURN RetPacket;
+		RetPacket.header.wIndex = PACKET_INDEX_SEND_TURN;
+		RetPacket.header.wLen = sizeof(RetPacket.header) + sizeof(int) +sizeof(WORD);
+		RetPacket.TURN = Turn;
+
+		int NextPalyerIndex = Room->GetNextPlayerIndex();
+
+		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+		{
+			if (iter->second->RoomIndex == Room->Index)
+			{
+				RetPacket.Index = NextPalyerIndex;
+				send(iter->first, (const char*)&RetPacket, RetPacket.header.wLen, 0);
+			}
+		}
+	}
+	break;
+	case PACKET_INDEX_SEND_BETTING_RESPOND:
+	{
+		PACKET_HEADER ResPacket;
+		memcpy(&ResPacket, szBuf, header.wLen);
+
+		auto Room = mapRoom[g_mapUser[sock]->RoomIndex];
+
+		int Turn = Room->CheckNextTurn(g_mapUser[sock]->index);
+
+		PACKET_SEND_BATTING_RES RetPacket;
+		RetPacket.header.wIndex = PACKET_INDEX_SEND_BETTING_RESPOND;
+		RetPacket.header.wLen = sizeof(RetPacket.header) + sizeof(int) + sizeof(WORD) + sizeof(int) + sizeof(int);
+
+		int NextPalyerIndex = Room->GetNextPlayerIndex();
+
+		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+		{
+			if (iter->second->RoomIndex == Room->Index)
+			{
+				RetPacket.Index = NextPalyerIndex;
+				send(iter->first, (const char*)&RetPacket, RetPacket.header.wLen, 0);
+			}
+		}
+	}
+	break;
+	}
 	memcpy(&pUser->szBuf, &pUser->szBuf[header.wLen], pUser->len - header.wLen);
 	pUser->len -= header.wLen;
 

@@ -19,7 +19,7 @@ class ServerMain
 	Lobby * mLobby;
 	void RoomInit();
 
-	void SendCardRefresh(User * pUser);
+	void SendCardRefresh(SOCKET sock,User * pUser);
 
 public:
 	ServerMain();

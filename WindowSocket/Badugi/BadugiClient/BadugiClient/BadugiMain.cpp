@@ -86,7 +86,7 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 		memcpy(&packet, szBuf, header.wLen);
 
 		Lobby->RoomInfoRefresh(packet);
-		
+
 	}
 	break;
 	case PACKET_INDEX_SEND_ROOMENTER_RES:
@@ -101,15 +101,6 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 		}
 	}
 	break;
-	case PACKET_INDEX_SEND_CARD:
-	{
-		PACKET_SEND_CARD packet;
-		memcpy(&packet, szBuf, header.wLen);
-		
-		GameTable->CardRefresh(packet);
-
-	}
-	break;
 	case PACKET_INDEX_SEND_GAMESTART:
 	{
 		PACKET_SEND_GAMESTART packet;
@@ -118,16 +109,54 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 		GameTable->SetFirstTurn(packet.FirstTurnIndex);
 	}
 	break;
+	case PACKET_INDEX_SEND_CARD:
+	{
+		PACKET_SEND_CARD packet;
+		memcpy(&packet, szBuf, header.wLen);
+		GameTable->CardRefresh(packet);
+
+		PACKET_HEADER ResPacket;
+		ResPacket.wIndex = PACKET_INDEX_SEND_CARD_RESPOND;
+		ResPacket.wLen = sizeof(ResPacket);
+
+		send(sock, (const char *)&ResPacket, ResPacket.wLen, 0);
+	}
+	break;
+	case PACKET_INDEX_SEND_BETTING:
+	{
+		PACKET_SEND_BATTING_RES packet;
+		memcpy(&packet, szBuf, header.wLen);
+
+		GameTable->RefreshScene(packet.Index, GAME_TURN_BATTING);
+		GameTable->SetTotalMoney(packet.TotalMoney);
+		GameTable->SetMoney(packet.Index, packet.Money);
+
+		if (packet.Index == GameTable->GetMyIndex())
+		{
+			PACKET_HEADER ResPacket;
+			ResPacket.wIndex = PACKET_INDEX_SEND_CARD_RESPOND;
+			ResPacket.wLen = sizeof(ResPacket);
+
+			send(sock, (const char *)&ResPacket, ResPacket.wLen, 0);
+		}
+	}
+	break;
 	case PACKET_INDEX_SEND_TURN:
 	{
 		PACKET_SEND_TURN packet;
 		memcpy(&packet, szBuf, header.wLen);
-
-		GameTable->ActiveTurn();
+		if (GameTable->GetMyIndex() == packet.Index)
+		{
+			GameTable->ActiveTurn(packet.Index, packet.TURN);
+		}
+		else
+		{
+			GameTable->RefreshScene(packet.Index, packet.TURN);
+		}
 	}
-
 	break;
 	}
+
 }
 
 void BadugiMain::Updata()

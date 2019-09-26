@@ -1,14 +1,14 @@
 ﻿  ServerMain.cpp
-c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(247): warning C4267: '=': 'size_t'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(248): warning C4267: '=': 'size_t'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(206): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(242): warning C4267: '=': 'size_t'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(243): warning C4267: '=': 'size_t'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(201): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(207): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(202): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(213): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(208): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(304): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(299): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(440): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'LPVOID'입니다.
-c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(449): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'LPVOID'입니다.
-  BadugiServer.vcxproj -> C:\Users\Administrator\Documents\repo\study\WindowSocket\Badugi\BadugiServer\x64\Debug\BadugiServer.exe
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(491): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'LPVOID'입니다.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\servermain.cpp(500): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'LPVOID'입니다.
+  BadugiServer.vcxproj -> D:\Neople\study\WindowSocket\Badugi\BadugiServer\x64\Debug\BadugiServer.exe

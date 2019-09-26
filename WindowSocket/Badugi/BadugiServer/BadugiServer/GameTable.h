@@ -10,9 +10,10 @@ using namespace std;
 class GameTable :
 	public Room
 {
-	int Index;
 public:
-	int DeckSize; //MAX 52.
+	int Index;
+	int TotalMoney;
+
 	vector<int> Deck;
 
 	map<int,bool> PlayingPlayerIndex;
@@ -29,13 +30,15 @@ public:
 
 	void GameStart(map<SOCKET, User*> &mapUser);
 
-	int NextTurn(int Index, int Turn);
+	int CheckNextTurn(int Index);
 
 	int GetNextPlayerIndex();
 
 	void CardSwing(map<SOCKET, User*> &mapUser);
 
-	void CardChange(map<SOCKET, User*> &mapUser);
+	void CardChange(int Index, User * mapUser);
+
+	void Batting(int Index, User * mapUser,int Bat);
 
 	void CardCombin(map<SOCKET, User*> &mapUser);
 
