@@ -21,6 +21,8 @@ BadugiMain::BadugiMain(HWND hWnd, SOCKET _sock)
 	IsLobby = false;
 	isGameTable = false;
 
+	RecvLen = 0;
+
 	std::chrono::duration<float> sec = std::chrono::system_clock::now() - m_LastTime;
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
@@ -60,11 +62,75 @@ void BadugiMain::SceneInit()
 	// room
 }
 
-void BadugiMain::ProcessPacket(char * szBuf, int len)
+void BadugiMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	PACKET_HEADER header;
+	SOCKET client_sock;
+	SOCKADDR_IN clientaddr;
+	int addrlen = 0;
+	int retval = 0;
 
+
+	if (WSAGETSELECTERROR(lParam))
+	{
+		int err_code = WSAGETSELECTERROR(lParam);
+		//err_display(WSAGETSELECTERROR(lParam));
+		return;
+	}
+
+	switch (WSAGETSELECTEVENT(lParam))
+	{
+	case FD_READ:
+	{
+		char szBuf[BUFSIZE];
+
+		retval = recv(wParam, szBuf, BUFSIZE, 0);
+		if (retval == SOCKET_ERROR)
+		{
+			if (WSAGetLastError() != WSAEWOULDBLOCK)
+			{
+				//cout << "err on recv!!" << endl;
+			}
+		}
+
+		while (true)
+		{
+			if (!ProcessPacket(szBuf, retval))
+			{
+				Sleep(100);
+				break;
+			}
+			else
+			{
+				if (RecvLen < sizeof(PACKET_HEADER))
+					break;
+			}
+		}
+	}
+	break;
+	case FD_CLOSE:
+
+		closesocket(wParam);
+		break;
+	}
+}
+bool BadugiMain::ProcessPacket(char * szBuf, int len)
+{
+	if (len > 0)
+	{
+		memcpy(&RecvBuf[RecvLen], szBuf, len);
+		RecvLen += len;
+		len = 0;
+	}
+	if (RecvLen < sizeof(PACKET_HEADER))
+		return false;
+
+
+
+	PACKET_HEADER header;
 	memcpy(&header, szBuf, sizeof(header));
+
+	if (RecvLen < header.wLen)
+		return false;
 
 	switch (header.wIndex)
 	{
@@ -116,10 +182,19 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 		GameTable->CardRefresh(packet);
 
 		PACKET_HEADER ResPacket;
-		ResPacket.wIndex = PACKET_INDEX_SEND_CARD_RESPOND;
+		ResPacket.wIndex = PACKET_INDEX_SEND_TURN_RESPOND;
 		ResPacket.wLen = sizeof(ResPacket);
 
 		send(sock, (const char *)&ResPacket, ResPacket.wLen, 0);
+	}
+	break;
+	case PACKET_INDEX_SEND_ALLCARD:
+	{
+		PACKET_ALL_SEND_CARD packet;
+		memcpy(&packet, szBuf, header.wLen);
+
+		GameTable->CardRefresh(packet.Index,packet);
+
 	}
 	break;
 	case PACKET_INDEX_SEND_BETTING:
@@ -130,11 +205,12 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 		GameTable->RefreshScene(packet.Index, GAME_TURN_BATTING);
 		GameTable->SetTotalMoney(packet.TotalMoney);
 		GameTable->SetMoney(packet.Index, packet.Money);
+		GameTable->SetPlayerBatting(packet.Index, packet.BATTING);
 
 		if (packet.Index == GameTable->GetMyIndex())
 		{
 			PACKET_HEADER ResPacket;
-			ResPacket.wIndex = PACKET_INDEX_SEND_CARD_RESPOND;
+			ResPacket.wIndex = PACKET_INDEX_SEND_TURN_RESPOND;
 			ResPacket.wLen = sizeof(ResPacket);
 
 			send(sock, (const char *)&ResPacket, ResPacket.wLen, 0);
@@ -157,6 +233,10 @@ void BadugiMain::ProcessPacket(char * szBuf, int len)
 	break;
 	}
 
+	memcpy(&RecvBuf, &RecvBuf[header.wLen], RecvLen - header.wLen);
+	RecvLen -= header.wLen;
+
+	return true;
 }
 
 void BadugiMain::Updata()

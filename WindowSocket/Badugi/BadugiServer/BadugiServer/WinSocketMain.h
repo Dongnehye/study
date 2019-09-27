@@ -15,10 +15,10 @@ class WinSocketMain
 
 	bool InitWSAdata();
 	bool InitListen_scok();
-	bool mWSAAsyncSelect(HWND hWnd);
+	bool InitWSAAsyncSelect(HWND hWnd);
 
-	bool mbind();
-	bool mlisten();
+	bool Socketbind();
+	bool Socketlisten();
 	
 public:
 	WinSocketMain();

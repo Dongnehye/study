@@ -21,6 +21,8 @@ class ServerMain
 
 	void SendCardRefresh(SOCKET sock,User * pUser);
 
+	void SendAllCardRefresh(SOCKET sock, User * pUser);
+
 public:
 	ServerMain();
 	virtual ~ServerMain();

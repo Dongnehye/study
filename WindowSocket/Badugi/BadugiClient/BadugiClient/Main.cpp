@@ -10,7 +10,6 @@
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 HINSTANCE g_hInst;
 char g_szClassName[256] = "Hello World!!";
 
@@ -101,7 +100,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		return 0;
 	case WM_SOCKET:
-		ProcessSocketMessage(hWnd, iMessage, wParam, lParam);
+		MainGame->ProcessSocketMessage(hWnd, iMessage, wParam, lParam);
 		InvalidateRect(hWnd, NULL, true);
 		return 0;
 	case WM_LBUTTONDOWN:
@@ -112,44 +111,4 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		return 0;
 	}
 	return(DefWindowProc(hWnd, iMessage, wParam, lParam));
-}
-
-void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	SOCKET client_sock;
-	SOCKADDR_IN clientaddr;
-	int addrlen = 0;
-	int retval = 0;
-
-
-	if (WSAGETSELECTERROR(lParam))
-	{
-		int err_code = WSAGETSELECTERROR(lParam);
-		//err_display(WSAGETSELECTERROR(lParam));
-		return;
-	}
-
-	switch (WSAGETSELECTEVENT(lParam))
-	{
-	case FD_READ:
-	{
-		char szBuf[BUFSIZE];
-
-		retval = recv(wParam, szBuf, BUFSIZE, 0);
-		if (retval == SOCKET_ERROR)
-		{
-			if (WSAGetLastError() != WSAEWOULDBLOCK)
-			{
-				//cout << "err on recv!!" << endl;
-			}
-		}
-
-		MainGame->ProcessPacket(szBuf, retval);
-	}
-	break;
-	case FD_CLOSE:
-
-		closesocket(wParam);
-		break;
-	}
 }

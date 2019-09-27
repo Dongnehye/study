@@ -1,5 +1,4 @@
 ﻿  BadugiMain.cpp
-  GameTableScene.cpp
-d:\neople\study\windowsocket\badugi\badugiclient\badugiclient\gametablescene.cpp(228): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  코드를 생성하고 있습니다...
-  BadugiClient.vcxproj -> D:\Neople\study\WindowSocket\Badugi\BadugiClient\x64\Debug\BadugiClient.exe
+c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiclient\badugiclient\badugimain.cpp(67): warning C4101: 'client_sock' :참조되지 않은 지역 변수입니다.
+c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiclient\badugiclient\badugimain.cpp(68): warning C4101: 'clientaddr' :참조되지 않은 지역 변수입니다.
+  BadugiClient.vcxproj -> C:\Users\Administrator\Documents\repo\study\WindowSocket\Badugi\BadugiClient\x64\Debug\BadugiClient.exe

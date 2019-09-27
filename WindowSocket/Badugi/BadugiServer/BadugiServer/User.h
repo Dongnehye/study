@@ -1,6 +1,6 @@
 #pragma once
 #include "CommonHeader.h"
-#include <list>
+#include <vector>
 
 using namespace std;
 
@@ -20,7 +20,7 @@ public:
 	bool IsReady;
 	int BatState;
 
-	list<int> card;
+	vector<int> card;
 
 	User();
 	virtual ~User();

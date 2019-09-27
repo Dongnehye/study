@@ -28,6 +28,18 @@ Button::Button(HDC hdc, int x, int y, int SizeW, int SizeH, const char * FileStr
 
 	RectButton = { Pos.x,Pos.y , Pos.x + ButtonSize.cx , Pos.y + ButtonSize.cy };
 }
+Button::Button(HDC hdc, int x, int y, int SizeW, int SizeH)
+{
+	Pos.x = x;
+	Pos.y = y;
+
+	ButtonSize.cx = SizeW;
+	ButtonSize.cy = SizeH;
+
+	ButtonBItmap = new Bitmap(hdc, "");
+
+	RectButton = { Pos.x,Pos.y , Pos.x + ButtonSize.cx , Pos.y + ButtonSize.cy };
+}
 
 Button::~Button()
 {

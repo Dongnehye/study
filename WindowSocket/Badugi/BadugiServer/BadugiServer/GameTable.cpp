@@ -1,5 +1,5 @@
 #include "GameTable.h"
-#include <algorithm>
+
 #include <random>
 
 #define HANDCARD 4
@@ -13,6 +13,18 @@ GameTable::GameTable()
 GameTable::~GameTable()
 {
 }
+template < typename T > 
+void shuffle(std::list<T>& lst)
+{
+
+	vector< std::reference_wrapper< const T > > vec(lst.begin(), lst.end());
+
+	shuffle(vec.begin(), vec.end(), std::mt19937{ std::random_device{}() });
+
+	list<T> shuffled_list{ vec.begin(), vec.end() };
+
+	lst.swap(shuffled_list);
+}
 
 void GameTable::GameStart(std::map<SOCKET, User*>& mapUser)
 {
@@ -21,8 +33,8 @@ void GameTable::GameStart(std::map<SOCKET, User*>& mapUser)
 		Deck.push_back(i);
 	}
 	auto rng = default_random_engine{};
-	shuffle(begin(Deck), end(Deck), rng);
-
+	shuffle(Deck);
+	
 
 	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 	{
@@ -109,6 +121,19 @@ void GameTable::Batting(int Index, User * mapUser, int Bat)
 	else if (Bat == BATTING_DIE)
 	{
 		mapUser->BatState = BATTING_DIE;
+	}
+}
+
+void GameTable::CardChange(int Index, User * mapUser, bool * SelectCard)
+{
+	for (int i = 0; i < CARDSIZE; ++i)
+	{
+		if (SelectCard[i])
+		{
+			Deck.push_front(mapUser->card[i]);
+			mapUser->card[i] = Deck.back();
+			Deck.pop_back();
+		}
 	}
 }
 

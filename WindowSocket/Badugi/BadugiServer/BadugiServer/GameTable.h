@@ -3,18 +3,19 @@
 #include "User.h"
 #include "PACKET_HEADER.h"
 #include <vector>
+#include <list>
 #include <map>
 
 using namespace std;
 
-class GameTable :
-	public Room
+class GameTable
 {
 public:
+	int UserSIze;
 	int Index;
 	int TotalMoney;
 
-	vector<int> Deck;
+	list<int> Deck;
 
 	map<int,bool> PlayingPlayerIndex;
 
@@ -36,9 +37,9 @@ public:
 
 	void CardSwing(map<SOCKET, User*> &mapUser);
 
-	void CardChange(int Index, User * mapUser);
-
 	void Batting(int Index, User * mapUser,int Bat);
+
+	void CardChange(int Index, User * mapUser, bool * SelectCard);
 
 	void CardCombin(map<SOCKET, User*> &mapUser);
 

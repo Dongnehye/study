@@ -20,6 +20,9 @@ class BadugiMain
 {
 	HWND mhWnd;
 
+	char RecvBuf[BUFSIZE];
+	int RecvLen;
+
 	HWND mCheatEdit;
 
 	HDC hMemDC[2];
@@ -52,8 +55,8 @@ public:
 	BadugiMain(HWND hWnd,SOCKET _sock);
 
 	void MouseLClick(LPARAM lParam);
-
-	void ProcessPacket(char* szBuf, int len);
+	void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	bool ProcessPacket(char* szBuf, int len);
 
 	void Updata();
 	virtual ~BadugiMain();

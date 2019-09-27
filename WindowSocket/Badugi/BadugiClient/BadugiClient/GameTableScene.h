@@ -3,6 +3,9 @@
 #include "Player.h"
 #include <map>
 
+#define HANDCARD 4
+#define PLAYERCARDPOSY 60
+
 class GameTableScene :
 	public Scene
 {
@@ -15,14 +18,23 @@ class GameTableScene :
 	bool IsHost;
 	bool IsReady;
 	
+	char szBuf[BUFSIZE];
+
 	//Batting
 	Button * Check;
 	Button * Die;
 	Button * Half;
 	Button * Call;
+	//Batting Mark
+	Bitmap * DieMark;
+	Bitmap * HalfMark;
+	Bitmap * CallMark;
 	//ExChange
 	Button * Pass;
 	Button * Change;
+
+	bool CardSelect[HANDCARD];
+	Button * CardSelectButton[HANDCARD];
 
 	Button * Ready;
 	Button * Readying;
@@ -40,6 +52,7 @@ class GameTableScene :
 
 	Bitmap * Card;
 	Bitmap * CardBack;
+	Bitmap * SelectCard;
 	void CardBitmapInit(HDC hdc);
 
 	SIZE CardSize;
@@ -48,15 +61,20 @@ class GameTableScene :
 	POINT testP;
 
 	bool IsGameStart;
+	bool IsSendFirstTurn;
+	bool IsCardReciveOver;
+
 	bool BlindBatting;
 
 	void GameStart();
 
 
 	void SendRoomReady();
-	void SendCardRefresh();
+	void SendFristTurn();
+	void SendCardRefreshOver();
 	void SendBatting(int Batting);
 	void SendExchange();
+	void SendPass();
 
 	void BattingButtonActive(POINT MousePoint);
 	void ExChangeButtonActive(POINT MousePoint);
@@ -68,8 +86,10 @@ class GameTableScene :
 	
 	void PlayerInfoDraw(HDC hdc);
 	void BackGroundDraw(HDC hdc);
+	void TotalMoneyDraw(HDC hdc);
 
 	void PlayerCardDraw(HDC hdc);
+	void PlayerBattingDraw(HDC hdc);
 	void CardDraw(HDC hdc, int x, int y, int CardNumber);
 
 	GameTableScene();
@@ -79,11 +99,13 @@ public:
 
 	void RoomUserInit(int MyIndex ,PACKET_SEND_ROOMENTER_RES &packet);
 	void CardRefresh(PACKET_SEND_CARD &packet);
+	void CardRefresh(int Index, PACKET_ALL_SEND_CARD & packet);
 	void SetFirstTurn(int Index);
 	void ActiveTurn(int Index, int Turn);
 	void RefreshScene(int Index,int Turn);
 	void SetTotalMoney(int Money);
 	void SetMoney(int Index, int Money);
+	void SetPlayerBatting(int Index, int Batting);
 
 	int GetMyIndex();
 	virtual void Update(float ElapseTime);

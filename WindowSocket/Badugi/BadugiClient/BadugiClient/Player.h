@@ -12,6 +12,7 @@ public:
 
 	char Id[IDPWSIZE];
 	int Money;
+	int Batting;
 	bool IsDie = false;
 	bool IsTurn = false;
 	std::list<int> card;

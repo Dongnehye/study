@@ -21,7 +21,7 @@ bool WinSocketMain::InitListen_scok()
 	return true;
 }
 
-bool WinSocketMain::mWSAAsyncSelect(HWND hWnd)
+bool WinSocketMain::InitWSAAsyncSelect(HWND hWnd)
 {
 	retval = WSAAsyncSelect(listen_sock, hWnd, WM_SOCKET, FD_ACCEPT | FD_CLOSE);
 	if (retval == SOCKET_ERROR)
@@ -32,7 +32,7 @@ bool WinSocketMain::mWSAAsyncSelect(HWND hWnd)
 	return true;
 }
 
-bool WinSocketMain::mbind()
+bool WinSocketMain::Socketbind()
 {
 	SOCKADDR_IN serveraddr;
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
@@ -48,7 +48,7 @@ bool WinSocketMain::mbind()
 	return true;
 }
 
-bool WinSocketMain::mlisten()
+bool WinSocketMain::Socketlisten()
 {
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR)
@@ -70,11 +70,11 @@ bool WinSocketMain::CreateSocket(HWND hWnd)
 		return false;
 	if (!InitListen_scok())
 		return false;
-	if (!mWSAAsyncSelect(hWnd))
+	if (!InitWSAAsyncSelect(hWnd))
 		return false;
-	if (!mbind())
+	if (!Socketbind())
 		return false;
-	if (!mlisten())
+	if (!Socketlisten())
 		return false;
 	return true;
 }
