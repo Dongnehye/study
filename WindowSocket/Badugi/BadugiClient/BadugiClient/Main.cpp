@@ -5,8 +5,6 @@
 #include "CommonHeader.h"
 #include <windows.h>
 
-
-
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

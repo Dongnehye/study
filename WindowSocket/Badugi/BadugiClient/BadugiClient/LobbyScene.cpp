@@ -67,8 +67,7 @@ void LobbyScene::RoomInfoRefresh(PACKET_SEND_LOBBYDATA packet)
 		pNew->UserSize = packet.data[i].UserSize;
 
 		RoomInfo.insert((make_pair(pNew->iIndex, pNew)));
-		
-
+	
 	}
 }
 

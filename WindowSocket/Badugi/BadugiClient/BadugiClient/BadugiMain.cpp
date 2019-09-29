@@ -150,7 +150,6 @@ bool BadugiMain::ProcessPacket(char * szBuf, int & len)
 		memcpy(&packet, szBuf, header.wLen);
 
 		Lobby->RoomInfoRefresh(packet);
-
 	}
 	break;
 	case PACKET_INDEX_SEND_ROOMENTER_RES:
