@@ -56,7 +56,7 @@ public:
 
 	void MouseLClick(LPARAM lParam);
 	void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	bool ProcessPacket(char* szBuf, int len);
+	bool ProcessPacket(char* szBuf, int & len);
 
 	void Updata();
 	virtual ~BadugiMain();

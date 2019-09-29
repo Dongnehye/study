@@ -23,7 +23,7 @@ void ServerMain::SendCardRefresh(SOCKET sock ,User * pUser)
 	packetCard.header.wLen = sizeof(PACKET_HEADER) + sizeof(USER_CARD_DATA) * ROOMPLAYERSIZE;
 
 	int i = 0;
-	for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 	{
 		if (iter->second->RoomIndex == pUser->RoomIndex)
 		{
@@ -46,7 +46,7 @@ void ServerMain::SendAllCardRefresh(SOCKET sock, User * pUser)
 	packet.header.wLen = sizeof(PACKET_HEADER) + sizeof(int) + sizeof(USER_CARD_DATA) * ROOMPLAYERSIZE;
 
 	int i = 0;
-	for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 	{
 		if (iter->second->RoomIndex == pUser->RoomIndex)
 		{
@@ -59,7 +59,7 @@ void ServerMain::SendAllCardRefresh(SOCKET sock, User * pUser)
 			++i;
 		}
 	}
-	for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 	{
 		if (iter->second->RoomIndex == pUser->RoomIndex)
 		{
@@ -123,7 +123,7 @@ void ServerMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 		User* pInfo = new User();
 		pInfo->index = g_iIndex++;
 		pInfo->len = 0;
-		g_mapUser.insert(make_pair(client_sock, pInfo));
+		mapUser.insert(make_pair(client_sock, pInfo));
 
 	}
 	break;
@@ -140,7 +140,7 @@ void ServerMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 			}
 		}
 
-		User* pUser = g_mapUser[wParam];
+		User* pUser = mapUser[wParam];
 
 		while (true)
 		{
@@ -209,9 +209,9 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 			ResPacket.data.Money = Money;
 			ResPacket.data.iIndex = pUser->index;
 
-			g_mapUser[sock]->SceneIndex = SCENE_INDEX_LOBBY;
-			strcpy(g_mapUser[sock]->Id, (const char*)RetPacket.Id);
-			g_mapUser[sock]->Money = Money;
+			mapUser[sock]->SceneIndex = SCENE_INDEX_LOBBY;
+			strcpy(mapUser[sock]->Id, (const char*)RetPacket.Id);
+			mapUser[sock]->Money = Money;
 		}
 		else
 		{
@@ -257,29 +257,29 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 
 		int WantRoomIndex = packet.RoomIndex;
 		bool IsRoomEnter = false;
-		if (g_mapUser[sock]->SceneIndex == SCENE_INDEX_LOBBY)
+		if (mapUser[sock]->SceneIndex == SCENE_INDEX_LOBBY)
 		{
 			if (mapRoom[WantRoomIndex]->UserSIze < ROOMPLAYERSIZE)
 			{
-				g_mapUser[sock]->RoomIndex = packet.RoomIndex;
-				g_mapUser[sock]->SceneIndex = SCENE_INDEX_ROOM;
+				mapUser[sock]->RoomIndex = packet.RoomIndex;
+				mapUser[sock]->SceneIndex = SCENE_INDEX_ROOM;
 				printf("[TCP 서버] 클라이언트 방 접속 : RoomIndex = %d\n",
-					g_mapUser[sock]->RoomIndex);
+					mapUser[sock]->RoomIndex);
 				IsRoomEnter = true;
 
 				PACKET_SEND_ROOMENTER_RES packet;
 				packet.header.wIndex = PACKET_INDEX_SEND_ROOMENTER_RES;
 				packet.header.wLen = sizeof(PACKET_HEADER) + sizeof(WORD) +
 					sizeof(USER_ROOM_DATA) * ROOMPLAYERSIZE + sizeof(int) + sizeof(bool);
-				packet.RoomIndex = g_mapUser[sock]->RoomIndex;
+				packet.RoomIndex = mapUser[sock]->RoomIndex;
 				packet.isRoomEnter = IsRoomEnter;
 
 				if (mapRoom[WantRoomIndex]->UserSIze == 0)
-					g_mapUser[sock]->IsHost = true;
+					mapUser[sock]->IsHost = true;
 				else
-					g_mapUser[sock]->IsHost = false;
+					mapUser[sock]->IsHost = false;
 				int i = 0;
-				for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+				for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 				{
 					if (iter->second->RoomIndex == WantRoomIndex)
 					{
@@ -291,7 +291,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 					}
 				}
 				packet.UserSize = i;
-				for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+				for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 				{
 					if (iter->second->RoomIndex == WantRoomIndex)
 					{
@@ -318,11 +318,11 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		PACKET_SEND_READY packet;
 		memcpy(&packet, szBuf, header.wLen);
 
-		int RoomIndex = g_mapUser[sock]->RoomIndex;
-		g_mapUser[sock]->IsReady = packet.IsReady;
+		int RoomIndex = mapUser[sock]->RoomIndex;
+		mapUser[sock]->IsReady = packet.IsReady;
 
 		int ReadySIze = 0;
-		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+		for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 		{
 			if (iter->second->RoomIndex == pUser->RoomIndex)
 			{
@@ -334,13 +334,13 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		}
 		if (ReadySIze >= ROOMPLAYERSIZE)
 		{
-			mapRoom[RoomIndex]->GameStart(g_mapUser);
+			mapRoom[RoomIndex]->GameStart(mapUser);
 			PACKET_SEND_GAMESTART GameStartPacket;
 			GameStartPacket.header.wIndex = PACKET_INDEX_SEND_GAMESTART;
 			GameStartPacket.header.wLen = sizeof(GameStartPacket.header) + sizeof(int);
 			GameStartPacket.FirstTurnIndex = mapRoom[RoomIndex]->TurnPlayerIndex;
 
-			for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+			for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 			{
 				if (iter->second->RoomIndex == pUser->RoomIndex)
 				{
@@ -364,18 +364,18 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		PACKET_SEND_BATTING packet;
 		memcpy(&packet, szBuf, header.wLen);
 
-		auto Room = mapRoom[g_mapUser[sock]->RoomIndex];
-		Room->Batting(g_mapUser[sock]->index, g_mapUser[sock], packet.BATTING);
+		auto Room = mapRoom[mapUser[sock]->RoomIndex];
+		Room->Batting(mapUser[sock]->index, mapUser[sock], packet.BATTING);
 
 		PACKET_SEND_BATTING_RES ResPacket;
 		ResPacket.header.wIndex = PACKET_INDEX_SEND_BETTING;
 		ResPacket.header.wLen = sizeof(ResPacket.header) + sizeof(int) + sizeof(WORD) + sizeof(int) + sizeof(int);
-		ResPacket.Index = g_mapUser[sock]->index;
-		ResPacket.BATTING = g_mapUser[sock]->BatState;
+		ResPacket.Index = mapUser[sock]->index;
+		ResPacket.BATTING = mapUser[sock]->BatState;
 		ResPacket.Money = pUser->Money;
 		ResPacket.TotalMoney = Room->TotalMoney;
 
-		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+		for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 		{
 			if (iter->second->RoomIndex == Room->Index)
 			{
@@ -389,8 +389,8 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		PACKET_SEND_EXCHANGE packet;
 		memcpy(&packet, szBuf, header.wLen);
 
-		auto Room = mapRoom[g_mapUser[sock]->RoomIndex];
-		Room->CardChange(g_mapUser[sock]->index, g_mapUser[sock], packet.Card);
+		auto Room = mapRoom[mapUser[sock]->RoomIndex];
+		Room->CardChange(mapUser[sock]->index, mapUser[sock], packet.Card);
 
 		SendAllCardRefresh(sock, pUser);
 	}
@@ -400,9 +400,9 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		PACKET_HEADER ResPacket;
 		memcpy(&ResPacket, szBuf, header.wLen);
 
-		auto Room = mapRoom[g_mapUser[sock]->RoomIndex];
+		auto Room = mapRoom[mapUser[sock]->RoomIndex];
 
-		int Turn = Room->CheckNextTurn(g_mapUser[sock]->index);
+		int Turn = Room->CheckNextTurn(mapUser[sock]->index);
 
 		PACKET_SEND_TURN RetPacket;
 		RetPacket.header.wIndex = PACKET_INDEX_SEND_TURN;
@@ -411,7 +411,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 
 		int NextPalyerIndex = Room->GetNextPlayerIndex();
 
-		for (auto iter = g_mapUser.begin(); iter != g_mapUser.end(); ++iter)
+		for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 		{
 			if (iter->second->RoomIndex == Room->Index)
 			{
@@ -426,6 +426,10 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 	pUser->len -= header.wLen;
 
 	return true;
+}
+
+void ServerMain::SwitchPacket(SOCKET sock, User * pUser, char * szBuf, int & len, WORD Index)
+{
 }
 
 bool ServerMain::CheckLogin(const char * Id, const char * pw, int & Money)

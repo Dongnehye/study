@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include <functional>
 #include <map>
 #include <vector>
 #include "PACKET_HEADER.H"
@@ -14,13 +15,13 @@
 class ServerMain
 {
 	int g_iIndex = 0;
-	std::map<SOCKET, User*> g_mapUser;
+	std::map<SOCKET, User*> mapUser;
 	std::map<int, GameTable*> mapRoom;
 	Lobby * mLobby;
+
 	void RoomInit();
-
+	bool CheckLogin(const char * Id, const char * pw, int &Money);
 	void SendCardRefresh(SOCKET sock,User * pUser);
-
 	void SendAllCardRefresh(SOCKET sock, User * pUser);
 
 public:
@@ -29,7 +30,7 @@ public:
 
 	void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	bool ProcessPacket(SOCKET sock, User* pUser, char* szBuf, int& len);
-	bool CheckLogin(const char * Id, const char * pw, int &Money);
+	void SwitchPacket(SOCKET sock, User* pUser, char* szBuf, int& len, WORD Index);
 
 	void err_display(int errcode);
 	void err_display(const char* szMsg);

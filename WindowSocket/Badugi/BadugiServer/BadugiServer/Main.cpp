@@ -7,7 +7,6 @@
 
 using namespace std;
 
-
 #define WM_SOCKET (WM_USER+1)
 
 ServerMain * Server;
@@ -51,7 +50,7 @@ int main(int argc, char* argv[])
 
 	delete WinSocket;
 	delete Server;
-	return msg.wParam;
+	return (int)msg.wParam;
 }
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

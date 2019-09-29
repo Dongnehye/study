@@ -113,7 +113,7 @@ void BadugiMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 		break;
 	}
 }
-bool BadugiMain::ProcessPacket(char * szBuf, int len)
+bool BadugiMain::ProcessPacket(char * szBuf, int & len)
 {
 	if (len > 0)
 	{
@@ -124,10 +124,8 @@ bool BadugiMain::ProcessPacket(char * szBuf, int len)
 	if (RecvLen < sizeof(PACKET_HEADER))
 		return false;
 
-
-
 	PACKET_HEADER header;
-	memcpy(&header, szBuf, sizeof(header));
+	memcpy(&header, RecvBuf, sizeof(header));
 
 	if (RecvLen < header.wLen)
 		return false;
