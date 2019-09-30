@@ -3,6 +3,7 @@
 #include "CommonHeader.h"
 #include <windows.h>
 #include <map>
+#include <list>
 
 #define CHEAT_EDIT 3
 
@@ -13,6 +14,7 @@ class LobbyScene
 	
 	std::map<int, LOBBY_DATA*> RoomInfo;
 	std::map<int, const char*> RoomUserSize;
+	std::list<std::string> Cheat;
 
 	HWND CheatEdit;
 	char Cheatstr[BUFSIZE];
@@ -35,6 +37,7 @@ public:
 	LobbyScene(HWND hWnd, SOCKET _sock);
 	virtual ~LobbyScene();
 
+	void RecvCheat(char * str);
 	void RoomInfoRefresh(PACKET_SEND_LOBBYDATA packet);
 	virtual void Update(float ElapseTime);
 	virtual void Draw(HDC hdc);

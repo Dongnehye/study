@@ -52,7 +52,6 @@ void LobbyScene::SendLobbyRefresh()
 
 void LobbyScene::SendCheat()
 {
-	printf("%s", Cheatstr);
 	if (Cheatstr[0] != '\0')
 	{
 		PACKET_SEND_CHEAT packet;
@@ -63,6 +62,17 @@ void LobbyScene::SendCheat()
 		packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(Cheatstr);
 		send(sock, (const char*)&packet, packet.header.wLen,0);
 	}
+}
+
+void LobbyScene::RecvCheat(char * str)
+{
+	if (Cheat.size() == 7)
+	{
+		Cheat.pop_front();
+	}
+	string StrCheat;
+	StrCheat = str;
+	Cheat.push_back(StrCheat);
 }
 
 void LobbyScene::RoomInfoRefresh(PACKET_SEND_LOBBYDATA packet)
@@ -128,7 +138,14 @@ void LobbyScene::Draw(HDC hdc)
 	{
 		TextOut(hdc, RoomButton[i]->GetPos().x + 40, RoomButton[i]->GetPos().y + 12, "방정보",6);
 		TextOut(hdc, RoomButton[i]->GetPos().x + 40, RoomButton[i]->GetRect().bottom - 30, "방정보",6);
+	}	
+
+	i = 1;
+	for (auto iter = Cheat.rbegin(); iter != Cheat.rend(); ++iter, ++i)
+	{
+		TextOut(hdc, CheatEditPos.x, CheatEditPos.y - 20 * i, iter->c_str(),strlen(iter->c_str()));
 	}
+	
 	CheatEnter->Draw(hdc);
 }
 void LobbyScene::MouseLClick(LPARAM lParam)

@@ -34,6 +34,30 @@ void LobbyServer::AddUser(SOCKET sock, User * user)
 	mapUser.insert(make_pair(sock, user));
 }
 
+void LobbyServer::SendCheat(SOCKET sock, char * Buf, int len)
+{
+	string StrCheat;
+	PACKET_SEND_CHEAT packet;
+	memcpy(&packet, Buf, len);
+	packet.Buf[packet.StrLen] = '\0';
+	StrCheat = " : ";
+	StrCheat += packet.Buf;
+	StrCheat.insert(0, mapUser[sock]->Id);
+
+	packet.RoomIndex = mapUser[sock]->RoomIndex;
+	packet.StrLen = strlen(StrCheat.c_str());
+	strcpy(packet.Buf, StrCheat.c_str());
+	packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(StrCheat.c_str());
+
+	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
+	{
+		if (iter->second->RoomIndex == packet.RoomIndex)
+		{
+			send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+		}
+	}
+}
+
 void LobbyServer::SendLobbyData(SOCKET sock)
 {
 	PACKET_SEND_LOBBYDATA Lobbypacket;

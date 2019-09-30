@@ -228,6 +228,23 @@ bool BadugiMain::ProcessPacket(char * szBuf, int & len)
 		}
 	}
 	break;
+	case PACKET_INDEX_SEND_CHAT:
+	{
+		PACKET_SEND_CHEAT packet;
+		memcpy(&packet, szBuf, header.wLen);
+		packet.Buf[packet.StrLen] = '\0';
+		if (packet.RoomIndex == 0)
+		{
+			Lobby->RecvCheat(packet.Buf);
+		}
+		else
+		{
+			GameTable->RecvCheat(packet.Buf);
+		}
+		
+
+	}
+	break;
 	}
 
 	memcpy(&RecvBuf, &RecvBuf[header.wLen], RecvLen - header.wLen);

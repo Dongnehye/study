@@ -2,24 +2,33 @@
 #include "Scene.h"
 #include "Player.h"
 #include <map>
+#include <list>
 
 #define HANDCARD 4
 #define PLAYERCARDPOSY 60
+#define CHEAT_EDIT 3
 
 class GameTableScene :
 	public Scene
 {
 	std::map<int, Player*> mapPlayer;
+	std::list<std::string> Cheat;
 	int MyIndex;
 	int UserSIze;
 	int CurrentTurn;
 	int TotalMoney;
 
+
 	bool IsHost;
 	bool IsReady;
 	
 	char szBuf[BUFSIZE];
+	HWND CheatEdit;
+	char Cheatstr[BUFSIZE];
 
+	POINT CheatEditPos{ 30,850 };
+
+	SIZE CHEATEditSize{ 350,30 };
 	//Batting
 	Button * Check;
 	Button * Die;
@@ -35,6 +44,8 @@ class GameTableScene :
 
 	bool CardSelect[HANDCARD];
 	Button * CardSelectButton[HANDCARD];
+
+	Button * CheatEnter;
 
 	Button * Ready;
 	Button * Readying;
@@ -53,6 +64,8 @@ class GameTableScene :
 	Bitmap * Card;
 	Bitmap * CardBack;
 	Bitmap * SelectCard;
+	void SendCheat();
+
 	void CardBitmapInit(HDC hdc);
 
 	SIZE CardSize;
@@ -95,6 +108,7 @@ public:
 	GameTableScene(HWND hWnd, SOCKET _sock);
 	virtual ~GameTableScene();
 
+	void RecvCheat(char * str);
 	void RoomUserInit(int MyIndex ,PACKET_SEND_ROOMENTER_RES &packet);
 	void CardRefresh(PACKET_SEND_CARD &packet);
 	void CardRefresh(int Index, PACKET_ALL_SEND_CARD & packet);

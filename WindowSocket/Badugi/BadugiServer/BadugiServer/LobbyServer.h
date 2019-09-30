@@ -24,6 +24,8 @@ public:
 
 	void AddUser(SOCKET sock, User* user);
 
+	void SendCheat(SOCKET sock, char * Buf, int len);
+
 	void SendLobbyData(SOCKET sock);
 	void SendRoomEnter(SOCKET sock, char * Buf, int len);
 	void CheckRoomReady(SOCKET sock, char * Buf, int len);

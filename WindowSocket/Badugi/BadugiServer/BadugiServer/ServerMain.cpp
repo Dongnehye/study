@@ -164,11 +164,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 	break;
 	case PACKET_INDEX_SEND_CHAT:
 	{
-		PACKET_SEND_CHEAT packet;
-		memcpy(&packet, szBuf, header.wLen);
-
-		printf("%s", packet.Buf);
-
+		Lobby->SendCheat(sock, szBuf, header.wLen);
 	}
 	break;
 	}

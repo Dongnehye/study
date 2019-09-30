@@ -5,6 +5,31 @@
 
 using namespace std;
 
+void GameTableScene::SendCheat()
+{
+	if (Cheatstr[0] != '\0')
+	{
+		PACKET_SEND_CHEAT packet;
+		packet.header.wIndex = PACKET_INDEX_SEND_CHAT;
+		packet.RoomIndex = 0;
+		packet.StrLen = strlen(Cheatstr);
+		strcpy(packet.Buf, Cheatstr);
+		packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(Cheatstr);
+		send(sock, (const char*)&packet, packet.header.wLen, 0);
+	}
+}
+
+void GameTableScene::RecvCheat(char * str)
+{
+	if (Cheat.size() == 7)
+	{
+		Cheat.pop_front();
+	}
+	string StrCheat;
+	StrCheat = str;
+	Cheat.push_back(StrCheat);
+}
+
 void GameTableScene::CardBitmapInit(HDC hdc)
 {
 	CardBack = new Bitmap(hdc, "..\\..\\Resource\\cards_53_backs.bmp");
@@ -431,6 +456,11 @@ GameTableScene::GameTableScene(HWND hWnd, SOCKET _sock)
 
 	Bitmap * BackTable = new Bitmap(hdc, "..\\..\\Resource\\table.bmp");
 
+	POINT CheatPos{ 400,850 };
+	SIZE CheatSize{ 90,30 };
+	CheatEnter = new Button(hdc, CheatPos, CheatSize, "..\\..\\Resource\\Input.bmp");
+
+
 	TotalMoney = 0;
 
 	CardSize.cx = 71;
@@ -544,7 +574,7 @@ void GameTableScene::Update(float ElapseTime)
 			Time = 0;
 		}
 	}
-
+	GetWindowText(CheatEdit, Cheatstr, 128);
 
 }
 void GameTableScene::Draw(HDC hdc)
@@ -567,6 +597,12 @@ void GameTableScene::Draw(HDC hdc)
 	PlayerInfoDraw(hdc);
 	PlayerCardDraw(hdc);
 	TotalMoneyDraw(hdc);
+	int i = 1;
+	for (auto iter = Cheat.rbegin(); iter != Cheat.rend(); ++iter, ++i)
+	{
+		TextOut(hdc, CheatEditPos.x, CheatEditPos.y - 20 * i, iter->c_str(), strlen(iter->c_str()));
+	}
+	CheatEnter->Draw(hdc);
 }
 
 void GameTableScene::MouseLClick(LPARAM lParam)
@@ -586,14 +622,20 @@ void GameTableScene::MouseLClick(LPARAM lParam)
 	{
 		ReadyButtonActive(MousePoint);
 	}
+	if (CheatEnter->ButtonPress(MousePoint))
+	{
+		SendCheat();
+	}
 }
 
 void GameTableScene::SceneStart(HWND hWnd)
 {
-
-
+	HINSTANCE hinst = GetModuleHandle(NULL);
+	CheatEdit = CreateWindow("edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
+		ES_AUTOHSCROLL, CheatEditPos.x, CheatEditPos.y, CHEATEditSize.cx, CHEATEditSize.cy, hWnd, (HMENU)CHEAT_EDIT, hinst, NULL);
 }
 
 void GameTableScene::SceneEnd(HWND hWnd)
 {
+	DestroyWindow(CheatEdit);
 }
