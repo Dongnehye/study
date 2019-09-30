@@ -18,6 +18,7 @@ public:
 
 	bool IsHost;
 	bool IsReady;
+	bool IsTurnActiveEnd;
 	int BatState;
 
 	vector<int> card;

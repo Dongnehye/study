@@ -9,6 +9,7 @@ GameTable::GameTable()
 	UserSIze = 0;
 	CurrentTurn = GAME_TURN_CARD_DIVISION;
 	TotalMoney = 0;
+	BattingTurn = GAME_BATTING_TURN_MORRING;
 }
 GameTable::~GameTable()
 {
@@ -35,28 +36,26 @@ void GameTable::GameStart(std::map<SOCKET, User*>& mapUser)
 	auto rng = default_random_engine{};
 	shuffle(Deck);
 	
-
 	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 	{
 		if(iter->second->RoomIndex == Index)
-			PlayingPlayerIndex.insert(make_pair(iter->second->index, false));
-
+			PlayingPlayerIndex.insert(make_pair(iter->first, iter->second));
 	}
-	TurnPlayerIndex = (*PlayingPlayerIndex.begin()).first;
+	TurnPlayerIndex = (*PlayingPlayerIndex.begin()).second->index;
 
 	CardSwing(mapUser);
 
 }
 
-int GameTable::CheckNextTurn(int Index)
+int GameTable::CheckNextTurn(SOCKET sock)
 {
 	bool IsNextTurn = true;
-
-	PlayingPlayerIndex[Index] = true;
 	
+	PlayingPlayerIndex[sock]->IsTurnActiveEnd = true;
+
 	for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
 	{
-		IsNextTurn = iter->second & IsNextTurn;
+		IsNextTurn = iter->second->IsTurnActiveEnd & IsNextTurn;
 		if (IsNextTurn == false)
 		{
 			CurrentPlayer = iter->first;
@@ -68,22 +67,36 @@ int GameTable::CheckNextTurn(int Index)
 		CurrentPlayer = PlayingPlayerIndex.begin()->first;
 		for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
 		{
-			iter->second = false;
+			iter->second->IsTurnActiveEnd = false;
 		}
-		
+
 		if (CurrentTurn == GAME_TURN_CARD_DIVISION || CurrentTurn == GAME_TURN_EXCHANGE)
 		{
 			CurrentTurn = GAME_TURN_BATTING;
 		}
 		else if (CurrentTurn == GAME_TURN_BATTING)
 		{
+			if (BattingTurn == GAME_BATTING_TURN_MORRING)
+			{
+				BattingTurn = GAME_BATTING_TURN_RUNCH;
+			}
+			else if(BattingTurn == GAME_BATTING_TURN_RUNCH)
+			{
+				BattingTurn = GAME_BATTING_TURN_DINNER;
+			}
+			else if (BattingTurn == GAME_BATTING_TURN_DINNER)
+			{
+				BattingTurn = GAME_BATTING_TURN_OVER;
+			}
 			CurrentTurn = GAME_TURN_EXCHANGE;
 		}
 	}
+
+
 	return CurrentTurn;
 }
 
-int GameTable::GetNextPlayerIndex()
+SOCKET GameTable::GetNextPlayerSocket()
 {
 	return CurrentPlayer;
 }
@@ -100,8 +113,10 @@ void GameTable::CardSwing(map<SOCKET, User*>& mapUser)
 	}
 }
 
-void GameTable::Batting(int Index, User * mapUser, int Bat)
+bool GameTable::Batting(int Index, User * mapUser, int Bat)
 {
+
+
 	if (Bat == BATTING_CALL)
 	{
 		mapUser->Money -= 10;
@@ -122,6 +137,7 @@ void GameTable::Batting(int Index, User * mapUser, int Bat)
 	{
 		mapUser->BatState = BATTING_DIE;
 	}
+	return true;
 }
 
 void GameTable::CardChange(int Index, User * mapUser, bool * SelectCard)

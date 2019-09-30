@@ -23,10 +23,13 @@ class LobbyScene
 
 	Button * RoomButton[ROOMSIZE];
 	RECT RoomEnterButton[ROOMSIZE];
+
+	Button * CheatEnter;
 	void RectRoomInit(HDC hdc);
 
 	void SendRoomEnter(int RoomIndex);
 	void SendLobbyRefresh();
+	void SendCheat();
 
 public:
 	LobbyScene(HWND hWnd, SOCKET _sock);

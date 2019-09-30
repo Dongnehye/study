@@ -70,6 +70,13 @@ enum GAME_TURN
 	GAME_TURN_BATTING,
 	GAME_TURN_GAMEOVER
 };
+enum GAME_BATTING_TURN
+{
+	GAME_BATTING_TURN_MORRING,
+	GAME_BATTING_TURN_RUNCH,
+	GAME_BATTING_TURN_DINNER,
+	GAME_BATTING_TURN_OVER
+};
 enum BATTING
 {
 	BATTING_NO, 
@@ -228,4 +235,12 @@ struct PACKET_SEND_EXCHANGE
 	int Index;
 	bool Card[CARDSIZE];
 };
+struct PACKET_SEND_CHEAT
+{
+	PACKET_HEADER header;
+	int RoomIndex;
+	int StrLen;
+	char Buf[100];
+};
+
 #pragma pack()

@@ -11,6 +11,7 @@ User::User()
 	Money = 0;
 	IsHost = false;
 	IsReady = false;
+	IsTurnActiveEnd = false;
 	BatState = NULL;
 }
 

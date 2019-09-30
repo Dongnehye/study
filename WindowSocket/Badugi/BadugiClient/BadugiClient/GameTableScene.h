@@ -66,8 +66,6 @@ class GameTableScene :
 
 	bool BlindBatting;
 
-	void GameStart();
-
 
 	void SendRoomReady();
 	void SendFristTurn();

@@ -17,12 +17,13 @@ public:
 
 	list<int> Deck;
 
-	map<int,bool> PlayingPlayerIndex;
+	map<SOCKET,User*> PlayingPlayerIndex;
 
+	int BattingTurn;
 	int TurnPlayerIndex;
 	int CurrentTurn;
 
-	int CurrentPlayer;
+	SOCKET CurrentPlayer;
 
 public:
 	GameTable();
@@ -31,13 +32,13 @@ public:
 
 	void GameStart(map<SOCKET, User*> &mapUser);
 
-	int CheckNextTurn(int Index);
+	int CheckNextTurn(SOCKET sock);
 
-	int GetNextPlayerIndex();
+	SOCKET GetNextPlayerSocket();
 
 	void CardSwing(map<SOCKET, User*> &mapUser);
 
-	void Batting(int Index, User * mapUser,int Bat);
+	bool Batting(int Index, User * mapUser,int Bat);
 
 	void CardChange(int Index, User * mapUser, bool * SelectCard);
 

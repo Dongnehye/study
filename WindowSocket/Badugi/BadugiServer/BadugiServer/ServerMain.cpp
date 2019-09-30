@@ -162,6 +162,15 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		Lobby->SendTurnRespond(sock, szBuf, header.wLen);
 	}
 	break;
+	case PACKET_INDEX_SEND_CHAT:
+	{
+		PACKET_SEND_CHEAT packet;
+		memcpy(&packet, szBuf, header.wLen);
+
+		printf("%s", packet.Buf);
+
+	}
+	break;
 	}
 	memcpy(&pUser->szBuf, &pUser->szBuf[header.wLen], pUser->len - header.wLen);
 	pUser->len -= header.wLen;

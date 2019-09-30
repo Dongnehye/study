@@ -235,7 +235,7 @@ void LobbyServer::SendBetting(SOCKET sock, char * Buf, int len)
 	{
 		if (iter->second->RoomIndex == Room->Index)
 		{
-			send(sock, (const char *)&ResPacket, ResPacket.header.wLen, 0);
+			send(iter->first, (const char *)&ResPacket, ResPacket.header.wLen, 0);
 		}
 	}
 }
@@ -258,14 +258,14 @@ void LobbyServer::SendTurnRespond(SOCKET sock, char * Buf, int len)
 
 	auto Room = mapRoom[mapUser[sock]->RoomIndex];
 
-	int Turn = Room->CheckNextTurn(mapUser[sock]->index);
+	int Turn = Room->CheckNextTurn(sock);
 
 	PACKET_SEND_TURN RetPacket;
 	RetPacket.header.wIndex = PACKET_INDEX_SEND_TURN;
 	RetPacket.header.wLen = sizeof(RetPacket.header) + sizeof(int) + sizeof(WORD);
 	RetPacket.TURN = Turn;
 
-	int NextPalyerIndex = Room->GetNextPlayerIndex();
+	int NextPalyerIndex = mapUser[Room->GetNextPlayerSocket()]->index;
 
 	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 	{

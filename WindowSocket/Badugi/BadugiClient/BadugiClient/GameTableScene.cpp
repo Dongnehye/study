@@ -201,7 +201,7 @@ void GameTableScene::SendBatting(int Batting)
 	packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(WORD);
 	packet.Index = MyIndex;
 	packet.BATTING = Batting;
-
+	
 	send(sock, (const char *)&packet, packet.header.wLen, 0);
 }
 
@@ -412,6 +412,7 @@ void GameTableScene::SetFirstTurn(int Index)
 	if (Index == MyIndex)
 	{
 		IsSendFirstTurn = true;
+
 	}
 }
 
@@ -585,7 +586,6 @@ void GameTableScene::MouseLClick(LPARAM lParam)
 	{
 		ReadyButtonActive(MousePoint);
 	}
-
 }
 
 void GameTableScene::SceneStart(HWND hWnd)

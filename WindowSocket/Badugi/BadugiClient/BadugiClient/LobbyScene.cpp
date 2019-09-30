@@ -50,6 +50,21 @@ void LobbyScene::SendLobbyRefresh()
 	send(sock, (const char*)&packet, sizeof(packet), 0);
 }
 
+void LobbyScene::SendCheat()
+{
+	printf("%s", Cheatstr);
+	if (Cheatstr[0] != '\0')
+	{
+		PACKET_SEND_CHEAT packet;
+		packet.header.wIndex = PACKET_INDEX_SEND_CHAT;
+		packet.RoomIndex = 0;
+		packet.StrLen = strlen(Cheatstr);
+		strcpy(packet.Buf, Cheatstr);
+		packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(Cheatstr);
+		send(sock, (const char*)&packet, packet.header.wLen,0);
+	}
+}
+
 void LobbyScene::RoomInfoRefresh(PACKET_SEND_LOBBYDATA packet)
 {
 	for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); iter++)
@@ -77,6 +92,11 @@ LobbyScene::LobbyScene(HWND hWnd, SOCKET _sock)
 	HDC hdc = GetDC(hWnd);
 	RectRoomInit(hdc);
 	sock = _sock;
+
+	POINT CheatPos{ 400,850 };
+	SIZE CheatSize{ 90,30 };
+
+	CheatEnter = new Button(hdc, CheatPos, CheatSize, "..\\..\\Resource\\Input.bmp");
 
 	ReleaseDC(hWnd,hdc);
 }
@@ -109,6 +129,7 @@ void LobbyScene::Draw(HDC hdc)
 		TextOut(hdc, RoomButton[i]->GetPos().x + 40, RoomButton[i]->GetPos().y + 12, "방정보",6);
 		TextOut(hdc, RoomButton[i]->GetPos().x + 40, RoomButton[i]->GetRect().bottom - 30, "방정보",6);
 	}
+	CheatEnter->Draw(hdc);
 }
 void LobbyScene::MouseLClick(LPARAM lParam)
 {
@@ -121,7 +142,10 @@ void LobbyScene::MouseLClick(LPARAM lParam)
 		if (RoomButton[i]->ButtonPress(MousePoint))
 			SendRoomEnter(i+1);
 	}
-
+	if (CheatEnter->ButtonPress(MousePoint))
+	{
+		SendCheat();
+	}
 }
 
 void LobbyScene::SceneStart(HWND hWnd)
