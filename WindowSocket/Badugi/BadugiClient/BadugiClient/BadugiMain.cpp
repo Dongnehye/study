@@ -95,7 +95,6 @@ void BadugiMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 		{
 			if (!ProcessPacket(szBuf, retval))
 			{
-				Sleep(100);
 				break;
 			}
 			else

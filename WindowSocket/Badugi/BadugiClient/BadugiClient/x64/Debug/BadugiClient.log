@@ -1,4 +1,4 @@
 ﻿  BadugiMain.cpp
-c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiclient\badugiclient\badugimain.cpp(67): warning C4101: 'client_sock' :참조되지 않은 지역 변수입니다.
-c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiclient\badugiclient\badugimain.cpp(68): warning C4101: 'clientaddr' :참조되지 않은 지역 변수입니다.
+c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiclient\badugiclient\badugimain.cpp(66): warning C4101: 'client_sock' :참조되지 않은 지역 변수입니다.
+c:\users\administrator\documents\repo\study\windowsocket\badugi\badugiclient\badugiclient\badugimain.cpp(67): warning C4101: 'clientaddr' :참조되지 않은 지역 변수입니다.
   BadugiClient.vcxproj -> C:\Users\Administrator\Documents\repo\study\WindowSocket\Badugi\BadugiClient\x64\Debug\BadugiClient.exe

@@ -83,7 +83,6 @@ void ServerMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 		{
 			if (!ProcessPacket(wParam, pUser, szBuf, retval))
 			{
-				Sleep(100);
 				//SendMessage(hWnd, uMsg, wParam, lParam);
 				break;
 			}
