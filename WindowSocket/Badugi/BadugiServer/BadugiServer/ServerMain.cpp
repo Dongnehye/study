@@ -147,11 +147,6 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 		Lobby->SendCardRefresh(sock, pUser);
 	}
 	break;
-	case PACKET_INDEX_SEND_BETTING:
-	{
-		Lobby->SendBetting(sock, szBuf, header.wLen);
-	}
-	break;
 	case PACKET_INDEX_SEND_EXCHANGE:
 	{
 		Lobby->SendExchange(sock, szBuf, header.wLen);

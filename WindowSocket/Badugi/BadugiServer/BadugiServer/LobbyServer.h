@@ -33,7 +33,6 @@ public:
 	void SendCardRefresh(SOCKET sock, User * pUser);
 	void SendAllCardRefresh(SOCKET sock, User * pUser);
 
-	void SendBetting(SOCKET sock, char * Buf, int len);
 	void SendExchange(SOCKET sock, char * Buf, int len);
 	void SendTurnRespond(SOCKET sock, char * Buf, int len);
 };

@@ -41,7 +41,6 @@ BadugiMain::BadugiMain(HWND hWnd, SOCKET _sock)
 	SceneInit();
 
 	SceneChange(SCENE_INDEX_LOGIN);
-	//SceneChange(SCENE_INDEX_ROOM);
 	ReleaseDC(hWnd,hdc);
 }
 
@@ -194,26 +193,6 @@ bool BadugiMain::ProcessPacket(char * szBuf, int & len)
 
 	}
 	break;
-	case PACKET_INDEX_SEND_BETTING:
-	{
-		PACKET_SEND_BATTING_RES packet;
-		memcpy(&packet, szBuf, header.wLen);
-
-		GameTable->RefreshScene(packet.Index, GAME_TURN_BATTING);
-		GameTable->SetTotalMoney(packet.TotalMoney);
-		GameTable->SetMoney(packet.Index, packet.Money);
-		GameTable->SetPlayerBatting(packet.Index, packet.BATTING);
-
-		if (packet.Index == GameTable->GetMyIndex())
-		{
-			PACKET_HEADER ResPacket;
-			ResPacket.wIndex = PACKET_INDEX_SEND_TURN_RESPOND;
-			ResPacket.wLen = sizeof(ResPacket);
-
-			send(sock, (const char *)&ResPacket, ResPacket.wLen, 0);
-		}
-	}
-	break;
 	case PACKET_INDEX_SEND_TURN:
 	{
 		PACKET_SEND_TURN packet;
@@ -245,8 +224,15 @@ bool BadugiMain::ProcessPacket(char * szBuf, int & len)
 
 	}
 	break;
+	case PACKET_INDEX_SEND_GAMEOVER:
+	{
+		PACKET_SEND_TURN packet;
+		memcpy(&packet, szBuf, header.wLen);
+		GameTable->SetWiiner(packet.Index);
 	}
-
+	break;
+	}
+	
 	memcpy(&RecvBuf, &RecvBuf[header.wLen], RecvLen - header.wLen);
 	RecvLen -= header.wLen;
 
@@ -272,22 +258,7 @@ void BadugiMain::Updata()
 
 void BadugiMain::OperateInput()
 {
-	if (GetAsyncKeyState(VK_LEFT) & 0x0001)
-	{
 
-	}
-	else if (GetAsyncKeyState(VK_UP) & 0x0001)
-	{
-
-	}
-	else if (GetAsyncKeyState(VK_RIGHT) & 0x0001)
-	{
-		
-	}
-	else if (GetAsyncKeyState(VK_DOWN) & 0x0001)
-	{
-	
-	}
 }
 
 void BadugiMain::Render()

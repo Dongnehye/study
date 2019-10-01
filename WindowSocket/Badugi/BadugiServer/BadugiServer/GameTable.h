@@ -37,11 +37,8 @@ public:
 
 	void CardSwing(map<SOCKET, User*> &mapUser);
 
-	bool Batting(int Index, User * mapUser,int Bat);
-
 	void CardChange(int Index, User * mapUser, bool * SelectCard);
 
-	void CardCombin(map<SOCKET, User*> &mapUser);
+	SOCKET WinnerPlayer();
 
-	int WinnerPlayer(map<SOCKET, User*> &mapUser);
 };

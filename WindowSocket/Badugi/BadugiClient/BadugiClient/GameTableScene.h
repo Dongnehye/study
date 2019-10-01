@@ -21,6 +21,8 @@ class GameTableScene :
 
 	bool IsHost;
 	bool IsReady;
+	bool IsGameOver;
+	int WinnderPlayerIndex;
 	
 	char szBuf[BUFSIZE];
 	HWND CheatEdit;
@@ -29,15 +31,7 @@ class GameTableScene :
 	POINT CheatEditPos{ 30,850 };
 
 	SIZE CHEATEditSize{ 350,30 };
-	//Batting
-	Button * Check;
-	Button * Die;
-	Button * Half;
-	Button * Call;
-	//Batting Mark
-	Bitmap * DieMark;
-	Bitmap * HalfMark;
-	Bitmap * CallMark;
+
 	//ExChange
 	Button * Pass;
 	Button * Change;
@@ -50,7 +44,6 @@ class GameTableScene :
 	Button * Ready;
 	Button * Readying;
 
-	Bitmap * BattingBoard;
 	int TotalBattingGold;
 	int TotalCallGold;
 
@@ -58,6 +51,8 @@ class GameTableScene :
 	Bitmap * MyTurnRect;
 	Bitmap * PlayerPanelLeft;
 	Bitmap * PlayerPanelRight;
+
+	Bitmap * WinnerMark;
 
 	Bitmap * Deck;
 
@@ -83,25 +78,21 @@ class GameTableScene :
 	void SendRoomReady();
 	void SendFristTurn();
 	void SendCardRefreshOver();
-	void SendBatting(int Batting);
 	void SendExchange();
 	void SendPass();
 
-	void BattingButtonActive(POINT MousePoint);
 	void ExChangeButtonActive(POINT MousePoint);
 	void ReadyButtonActive(POINT MousePoint);
 
-	void BattingButtonDraw(HDC hdc);
 	void ExChangeButtonDraw(HDC hdc);
 	void ReadyButtonDraw(HDC hdc);
 	
 	void PlayerInfoDraw(HDC hdc);
 	void BackGroundDraw(HDC hdc);
-	void TotalMoneyDraw(HDC hdc);
 
 	void PlayerCardDraw(HDC hdc);
-	void PlayerBattingDraw(HDC hdc);
 	void CardDraw(HDC hdc, int x, int y, int CardNumber);
+	void WinnerDraw(HDC hdc);
 
 	GameTableScene();
 public:
@@ -117,7 +108,7 @@ public:
 	void RefreshScene(int Index,int Turn);
 	void SetTotalMoney(int Money);
 	void SetMoney(int Index, int Money);
-	void SetPlayerBatting(int Index, int Batting);
+	void SetWiiner(int Index);
 
 	int GetMyIndex();
 	virtual void Update(float ElapseTime);

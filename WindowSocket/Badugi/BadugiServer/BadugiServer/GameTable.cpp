@@ -1,8 +1,9 @@
 #include "GameTable.h"
-
+#include <algorithm>
 #include <random>
 
 #define HANDCARD 4
+#define EQUALCARD 13
 
 GameTable::GameTable()
 {
@@ -28,6 +29,7 @@ void shuffle(std::list<T>& lst)
 
 void GameTable::GameStart(std::map<SOCKET, User*>& mapUser)
 {
+	CurrentTurn = GAME_TURN_CARD_DIVISION;
 	for (int i = 0; i < CARDS_END; ++i)
 	{
 		Deck.push_back(i);
@@ -49,7 +51,14 @@ void GameTable::GameStart(std::map<SOCKET, User*>& mapUser)
 int GameTable::CheckNextTurn(SOCKET sock)
 {
 	bool IsNextTurn = true;
-	
+
+	SOCKET Winner = WinnerPlayer();
+	if (Winner != NULL)
+	{
+		CurrentPlayer = Winner;
+		return GAME_TURN_GAMEOVER;
+	}
+
 	PlayingPlayerIndex[sock]->IsTurnActiveEnd = true;
 
 	for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
@@ -94,33 +103,6 @@ void GameTable::CardSwing(map<SOCKET, User*>& mapUser)
 	}
 }
 
-bool GameTable::Batting(int Index, User * mapUser, int Bat)
-{
-
-
-	if (Bat == BATTING_CALL)
-	{
-		mapUser->Money -= 10;
-		TotalMoney += 10;
-		mapUser->BatState = BATTING_CALL;
-	}
-	else if (Bat == BATTING_HALF)
-	{
-		mapUser->Money -= 20;
-		TotalMoney += 20;
-		mapUser->BatState = BATTING_HALF;
-	}
-	else if (Bat == BATTING_CHECK)
-	{
-		mapUser->BatState = BATTING_CHECK;
-	}
-	else if (Bat == BATTING_DIE)
-	{
-		mapUser->BatState = BATTING_DIE;
-	}
-	return true;
-}
-
 void GameTable::CardChange(int Index, User * mapUser, bool * SelectCard)
 {
 	for (int i = 0; i < CARDSIZE; ++i)
@@ -132,6 +114,39 @@ void GameTable::CardChange(int Index, User * mapUser, bool * SelectCard)
 			Deck.pop_back();
 		}
 	}
+}
+
+SOCKET GameTable::WinnerPlayer()
+{
+	bool IsWin;
+
+	for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
+	{
+		sort(iter->second->card.begin(), iter->second->card.end());
+	}
+
+	for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
+	{
+		IsWin = true;
+		vector<int>::iterator prevCard = iter->second->card.begin();
+		for (auto carditer = iter->second->card.begin(); carditer != iter->second->card.end(); ++carditer)
+		{
+			if (carditer != iter->second->card.begin() || ++carditer != iter->second->card.end())
+			{
+				if ((*prevCard) + EQUALCARD != (*carditer))
+				{
+					IsWin = false;
+				}
+				else
+				{
+					prevCard = carditer;
+				}
+			}
+		}
+		if (IsWin)
+			return iter->first;
+	}
+	return NULL;
 }
 
 int GameTable::GetUserSize()

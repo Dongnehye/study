@@ -239,31 +239,6 @@ void LobbyServer::SendAllCardRefresh(SOCKET sock, User * pUser)
 	}
 }
 
-void LobbyServer::SendBetting(SOCKET sock, char * Buf, int len)
-{
-	PACKET_SEND_BATTING packet;
-	memcpy(&packet, Buf, len);
-
-	auto Room = mapRoom[mapUser[sock]->RoomIndex];
-	Room->Batting(mapUser[sock]->index, mapUser[sock], packet.BATTING);
-
-	PACKET_SEND_BATTING_RES ResPacket;
-	ResPacket.header.wIndex = PACKET_INDEX_SEND_BETTING;
-	ResPacket.header.wLen = sizeof(ResPacket.header) + sizeof(int) + sizeof(WORD) + sizeof(int) + sizeof(int);
-	ResPacket.Index = mapUser[sock]->index;
-	ResPacket.BATTING = mapUser[sock]->BatState;
-	ResPacket.Money = mapUser[sock]->Money;
-	ResPacket.TotalMoney = Room->TotalMoney;
-
-	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
-	{
-		if (iter->second->RoomIndex == Room->Index)
-		{
-			send(iter->first, (const char *)&ResPacket, ResPacket.header.wLen, 0);
-		}
-	}
-}
-
 void LobbyServer::SendExchange(SOCKET sock, char * Buf, int len)
 {
 	PACKET_SEND_EXCHANGE packet;
@@ -285,7 +260,24 @@ void LobbyServer::SendTurnRespond(SOCKET sock, char * Buf, int len)
 	int Turn = Room->CheckNextTurn(sock);
 
 	PACKET_SEND_TURN RetPacket;
-	RetPacket.header.wIndex = PACKET_INDEX_SEND_TURN;
+
+	if (Turn == GAME_TURN_GAMEOVER)
+	{
+		RetPacket.header.wIndex = PACKET_INDEX_SEND_GAMEOVER;
+		for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
+		{
+			if (iter->second->RoomIndex == Room->Index)
+			{
+				iter->second->IsReady = false;
+				iter->second->IsTurnActiveEnd = false;
+				iter->second->card.clear();
+			}
+		}
+	}
+	else
+	{
+		RetPacket.header.wIndex = PACKET_INDEX_SEND_TURN;
+	}
 	RetPacket.header.wLen = sizeof(RetPacket.header) + sizeof(int) + sizeof(WORD);
 	RetPacket.TURN = Turn;
 

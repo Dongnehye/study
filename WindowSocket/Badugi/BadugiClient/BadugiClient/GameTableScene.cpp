@@ -39,18 +39,12 @@ void GameTableScene::CardBitmapInit(HDC hdc)
 void GameTableScene::BackGroundDraw(HDC hdc)
 {
 	Background->BufferDraw(hdc, 0, 0);
-	BattingBoard->BufferDraw(hdc, 480, 450);
 	PlayerPanelLeft->BufferDraw(hdc, 10, 250, PlayerPanelSize);
 	PlayerPanelRight->BufferDraw(hdc, 900, 250, PlayerPanelSize);
 	MyPannel->BufferDraw(hdc, 340, 600, MyPanelSize);
 	Deck->BufferDraw(hdc, 800, 0);
 }
 
-void GameTableScene::TotalMoneyDraw(HDC hdc)
-{
-
-	
-}
 
 void GameTableScene::PlayerCardDraw(HDC hdc)
 {
@@ -77,26 +71,6 @@ void GameTableScene::PlayerCardDraw(HDC hdc)
 		}
 	}
 }
-
-void GameTableScene::PlayerBattingDraw(HDC hdc)
-{
-	for (auto iter = mapPlayer.begin(); iter != mapPlayer.end(); ++iter)
-	{
-		if (iter->second->Batting == BATTING_CALL)
-		{
-			CallMark->BufferDraw(hdc, iter->second->x, iter->second->y);
-		}
-		else if (iter->second->Batting == BATTING_DIE)
-		{
-			DieMark->BufferDraw(hdc, iter->second->x, iter->second->y);
-		}
-		else if (iter->second->Batting == BATTING_HALF)
-		{
-			HalfMark->BufferDraw(hdc, iter->second->x, iter->second->y);
-		}
-	}
-}
-
 void GameTableScene::CardDraw(HDC hdc,int x, int y, int CardNumber)
 {
 	int row = CardNumber;
@@ -115,6 +89,11 @@ void GameTableScene::CardDraw(HDC hdc,int x, int y, int CardNumber)
 
 }
 
+void GameTableScene::WinnerDraw(HDC hdc)
+{
+	WinnerMark->BufferDraw(hdc, mapPlayer[WinnderPlayerIndex]->x, mapPlayer[WinnderPlayerIndex]->y);
+}
+
 void GameTableScene::ActiveTurn(int Index,int Turn)
 {
 	RefreshScene(Index, Turn);
@@ -128,10 +107,6 @@ void GameTableScene::ActiveTurn(int Index,int Turn)
 		packet.TURN = CurrentTurn;
 
 		send(sock, (const char *)&packet, packet.header.wLen, 0);
-	}
-	else if (Turn == GAME_TURN_BATTING)
-	{
-		CurrentTurn = Turn;
 	}
 	else if (Turn == GAME_TURN_EXCHANGE)
 	{
@@ -156,16 +131,10 @@ void GameTableScene::RefreshScene(int Index, int Turn)
 	{
 		
 	}
-	else if (Turn == GAME_TURN_BATTING)
-	{
-		mapPlayer[Index]->IsTurn = true;
-		cout << "GAME_TURN_BATTING" << endl;
-	}
 	else if (Turn == GAME_TURN_EXCHANGE)
 	{
 		BlindBatting = false;
 		mapPlayer[Index]->IsTurn = true;
-		cout << "GAME_TURN_EXCHANGE" << endl;
 	}
 
 }
@@ -179,12 +148,15 @@ void GameTableScene::SetMoney(int Index, int Money)
 {
 	mapPlayer[Index]->Money = Money;
 }
-
-void GameTableScene::SetPlayerBatting(int Index, int Batting)
+void GameTableScene::SetWiiner(int Index)
 {
-	mapPlayer[Index]->Batting = Batting;
-}
+	IsGameOver = true;
+	WinnderPlayerIndex = Index;
+	CurrentTurn = GAME_TURN_READY;
+	IsReady = false;
 
+
+}
 int GameTableScene::GetMyIndex()
 {
 	return MyIndex;
@@ -219,16 +191,6 @@ void GameTableScene::SendCardRefreshOver()
 	send(sock, (const char *)&ResPacket, ResPacket.wLen, 0);
 }
 
-void GameTableScene::SendBatting(int Batting)
-{
-	PACKET_SEND_BATTING packet;
-	packet.header.wIndex = PACKET_INDEX_SEND_BETTING;
-	packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(WORD);
-	packet.Index = MyIndex;
-	packet.BATTING = Batting;
-	
-	send(sock, (const char *)&packet, packet.header.wLen, 0);
-}
 
 void GameTableScene::SendExchange()
 {
@@ -260,31 +222,6 @@ void GameTableScene::SendPass()
 	send(sock, (const char *)&packet, packet.header.wLen, 0);
 }
 
-void GameTableScene::BattingButtonActive(POINT MousePoint)
-{
-
-	if (Call->ButtonPress(MousePoint))
-	{
-		cout << "Call" << endl;
-		SendBatting(BATTING_CALL);
-	}
-	if (Die->ButtonPress(MousePoint))
-	{
-		cout << "Die" << endl;
-		SendBatting(BATTING_DIE);
-	}
-	if (Check->ButtonPress(MousePoint))
-	{
-		cout << "Check" << endl;
-		SendBatting(BATTING_CHECK);
-	}
-	if (Half->ButtonPress(MousePoint))
-	{
-		cout << "Half" << endl;
-		SendBatting(BATTING_HALF);
-	}
-
-}
 
 void GameTableScene::ExChangeButtonActive(POINT MousePoint)
 {
@@ -324,13 +261,6 @@ void GameTableScene::ReadyButtonActive(POINT MousePoint)
 	}
 }
 
-void GameTableScene::BattingButtonDraw(HDC hdc)
-{
-	Check->Draw(hdc);
-	Die->Draw(hdc);
-	Half->Draw(hdc);
-	Call->Draw(hdc);
-}
 
 void GameTableScene::ExChangeButtonDraw(HDC hdc)
 {
@@ -434,6 +364,14 @@ void GameTableScene::SetFirstTurn(int Index)
 {
 	IsGameStart = true;
 	CurrentTurn = GAME_TURN_CARD_DIVISION;
+	WinnderPlayerIndex = NULL;
+	IsSendFirstTurn = false;
+	IsCardReciveOver = false;
+	IsGameOver = false;
+	for (int i = 0; i < 4; ++i)
+	{
+		CardSelect[i] = false;
+	}
 	if (Index == MyIndex)
 	{
 		IsSendFirstTurn = true;
@@ -473,12 +411,6 @@ GameTableScene::GameTableScene(HWND hWnd, SOCKET _sock)
 	MyPanelSize.cy = 300;
 
 
-
-	Call				=	new Button(hdc, 730, 650, 70, 30, "..\\..\\Resource\\Call.bmp");
-	Half				=	new Button(hdc, 730, 700, 70, 30, "..\\..\\Resource\\Half.bmp");
-	Die					=	new Button(hdc, 730, 750, 70, 30, "..\\..\\Resource\\Die.bmp");
-	Check				=	new Button(hdc, 730 ,800, 70 ,30,"..\\..\\Resource\\Check.bmp");
-	
 	POINT PlayerCardP;
 	PlayerCardP.x = 350;
 	PlayerCardP.y = 660;
@@ -496,8 +428,6 @@ GameTableScene::GameTableScene(HWND hWnd, SOCKET _sock)
 	Ready				=	new Button(hdc, 760, 680, 133, 42, "..\\..\\Resource\\ready.bmp");
 	Readying			=	new Button(hdc, 760, 680, 133, 42, "..\\..\\Resource\\readying.bmp");
 
-	BattingBoard		=	new Bitmap(hdc, "..\\..\\Resource\\BattingBoard.bmp");		
-
 	MyPannel			=	new Bitmap(hdc, "..\\..\\Resource\\MyPanel.bmp");
 	MyTurnRect			=	new Bitmap(hdc, "..\\..\\Resource\\MyTurn.bmp");
 	PlayerPanelLeft		=	new Bitmap(hdc, "..\\..\\Resource\\PlayerPanelLeft.bmp");
@@ -505,36 +435,27 @@ GameTableScene::GameTableScene(HWND hWnd, SOCKET _sock)
 	Deck				=	new Bitmap(hdc, "..\\..\\Resource\\Deck.bmp");
 	SelectCard			=	new Bitmap(hdc, "..\\..\\Resource\\SelectCard.bmp");
 
-	DieMark				=	new Bitmap(hdc, "..\\..\\Resource\\CallMark.bmp");
-	HalfMark			=	new Bitmap(hdc, "..\\..\\Resource\\HalfMark.bmp");
-	CallMark			=	new Bitmap(hdc, "..\\..\\Resource\\DieMark.bmp");
-
+	WinnerMark =	new Bitmap(hdc, "..\\..\\Resource\\Winner.bmp");
 
 	CardBitmapInit(hdc);
 
 	Background = BackTable;
 
-
+	WinnderPlayerIndex = NULL;
 	IsGameStart = false;
 	IsSendFirstTurn = false;
 	IsCardReciveOver = false; 
 	CurrentTurn = GAME_TURN_READY;
 	IsReady = false;
-	BlindBatting = true;
-
+	IsGameOver = false;
 
 	ReleaseDC(hWnd, hdc);
 }
 
 GameTableScene::~GameTableScene()
 {
-	delete Check;
-	delete Die;
-	delete Half;
-	delete Call;
 	delete Pass;
 	delete Change;
-	delete BattingBoard;
 	delete MyPannel;
 	delete PlayerPanelLeft;
 	delete PlayerPanelRight;
@@ -557,7 +478,7 @@ void GameTableScene::Update(float ElapseTime)
 	if (IsSendFirstTurn)
 	{
 		Time += ElapseTime;
-		if (Time > 0.0f)
+		if (Time > 0.1f)
 		{
 			IsSendFirstTurn = false;
 			SendFristTurn();
@@ -567,7 +488,7 @@ void GameTableScene::Update(float ElapseTime)
 	if (IsCardReciveOver)
 	{
 		Time += ElapseTime;
-		if (Time > 0.0f)
+		if (Time > 0.1f)
 		{
 			IsCardReciveOver = false;
 			SendCardRefreshOver();
@@ -585,24 +506,23 @@ void GameTableScene::Draw(HDC hdc)
 	{
 		ExChangeButtonDraw(hdc);
 	}
-	else if (CurrentTurn == GAME_TURN_BATTING)
-	{
-		BattingButtonDraw(hdc);
-		PlayerBattingDraw(hdc);
-	}
 	else if(CurrentTurn == GAME_TURN_READY)
 	{
 		ReadyButtonDraw(hdc);
 	}
 	PlayerInfoDraw(hdc);
 	PlayerCardDraw(hdc);
-	TotalMoneyDraw(hdc);
+
 	int i = 1;
 	for (auto iter = Cheat.rbegin(); iter != Cheat.rend(); ++iter, ++i)
 	{
 		TextOut(hdc, CheatEditPos.x, CheatEditPos.y - 20 * i, iter->c_str(), strlen(iter->c_str()));
 	}
 	CheatEnter->Draw(hdc);
+	if (IsGameOver)
+	{
+		WinnerDraw(hdc);
+	}
 }
 
 void GameTableScene::MouseLClick(LPARAM lParam)
@@ -610,11 +530,8 @@ void GameTableScene::MouseLClick(LPARAM lParam)
 	POINT MousePoint;
 	MousePoint.x = LOWORD(lParam);
 	MousePoint.y = HIWORD(lParam);
-	if (CurrentTurn == GAME_TURN_BATTING)
-	{
-		BattingButtonActive(MousePoint);
-	}
-	else if (CurrentTurn == GAME_TURN_EXCHANGE)
+
+	if (CurrentTurn == GAME_TURN_EXCHANGE)
 	{
 		ExChangeButtonActive(MousePoint);
 	}
