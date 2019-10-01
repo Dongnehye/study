@@ -377,6 +377,7 @@ void GameTableScene::SetFirstTurn(int Index)
 		IsSendFirstTurn = true;
 
 	}
+	cout << MyIndex << endl;
 }
 
 GameTableScene::GameTableScene()
@@ -478,7 +479,7 @@ void GameTableScene::Update(float ElapseTime)
 	if (IsSendFirstTurn)
 	{
 		Time += ElapseTime;
-		if (Time > 0.1f)
+		if (Time > 0.5f)
 		{
 			IsSendFirstTurn = false;
 			SendFristTurn();
@@ -488,7 +489,7 @@ void GameTableScene::Update(float ElapseTime)
 	if (IsCardReciveOver)
 	{
 		Time += ElapseTime;
-		if (Time > 0.1f)
+		if (Time > 0.5f)
 		{
 			IsCardReciveOver = false;
 			SendCardRefreshOver();

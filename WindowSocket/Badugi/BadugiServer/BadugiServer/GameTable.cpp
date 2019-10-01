@@ -10,6 +10,7 @@ GameTable::GameTable()
 	UserSIze = 0;
 	CurrentTurn = GAME_TURN_CARD_DIVISION;
 	TotalMoney = 0;
+	CurrentPlayerIndex = 0;
 }
 GameTable::~GameTable()
 {
@@ -29,6 +30,7 @@ void shuffle(std::list<T>& lst)
 
 void GameTable::GameStart(std::map<SOCKET, User*>& mapUser)
 {
+	CurrentPlayerIndex = 0;
 	CurrentTurn = GAME_TURN_CARD_DIVISION;
 	for (int i = 0; i < CARDS_END; ++i)
 	{
@@ -39,9 +41,14 @@ void GameTable::GameStart(std::map<SOCKET, User*>& mapUser)
 	
 	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 	{
-		if(iter->second->RoomIndex == Index)
+		if (iter->second->RoomIndex == Index)
+		{
+			iter->second->TurnIndex = CurrentPlayerIndex;
 			PlayingPlayerIndex.insert(make_pair(iter->first, iter->second));
+			++CurrentPlayerIndex;
+		}
 	}
+	CurrentPlayerIndex = 0;
 	TurnPlayerIndex = (*PlayingPlayerIndex.begin()).second->index;
 
 	CardSwing(mapUser);

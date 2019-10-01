@@ -1,6 +1,8 @@
 #include "BadugiMain.h"
 #include "CommonHeader.h"
+#include <iostream>
 
+using namespace std;
 
 void BadugiMain::SceneChange(int SceneNumber)
 {
@@ -137,7 +139,8 @@ bool BadugiMain::ProcessPacket(char * szBuf, int & len)
 		IsLogin = packet.IsLogin;
 		if (IsLogin)
 		{
-			g_iIndex = packet.data.iIndex;
+			g_iIndex = packet.Index;
+			cout << g_iIndex << endl;
 			SceneChange(SCENE_INDEX_LOBBY);
 		}
 	}

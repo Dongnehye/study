@@ -151,7 +151,7 @@ struct PACKET_LOGIN_RES
 {
 	PACKET_HEADER header;
 	bool IsLogin;
-	USER_DATA data;
+	int Index;
 };
 
 struct PACKET_USER_DATA

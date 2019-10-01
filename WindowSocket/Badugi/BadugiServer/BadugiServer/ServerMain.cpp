@@ -211,7 +211,8 @@ void ServerMain::SendLogin(SOCKET sock, char * Buf, int len)
 
 	PACKET_LOGIN_RES ResPacket;
 	ResPacket.header.wIndex = PACKET_INDEX_LOGIN_RES;
-	ResPacket.header.wLen = sizeof(ResPacket);
+	ResPacket.header.wLen = sizeof(ResPacket.header) + sizeof(bool) + sizeof(int);
+
 
 	// 로그인 검사.
 	int Money = 0;
@@ -222,11 +223,7 @@ void ServerMain::SendLogin(SOCKET sock, char * Buf, int len)
 			(const char*)RetPacket.Id, (const char*)RetPacket.Pw, Money);
 		ResPacket.IsLogin = true;
 
-		strcpy(ResPacket.data.Id, (const char*)RetPacket.Id);
-		strcpy(ResPacket.data.Pw, (const char*)RetPacket.Pw);
-
-		ResPacket.data.Money = Money;
-		ResPacket.data.iIndex = mapUser[sock]->index;
+		ResPacket.Index = mapUser[sock]->index;
 
 		mapUser[sock]->SceneIndex = SCENE_INDEX_LOBBY;
 		strcpy(mapUser[sock]->Id, (const char*)RetPacket.Id);

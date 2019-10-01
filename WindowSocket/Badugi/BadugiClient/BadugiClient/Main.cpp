@@ -51,7 +51,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	ZeroMemory(&serveraddr, sizeof(serveraddr));
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_port = htons(9000);
-	serveraddr.sin_addr.s_addr = inet_addr("10.30.10.209");
+	//serveraddr.sin_addr.s_addr = inet_addr("10.30.10.209");
+	serveraddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	int retval = connect(sock, (sockaddr*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR)
 	{

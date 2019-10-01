@@ -1,1 +1,11 @@
-﻿  BadugiServer.vcxproj -> C:\Users\Administrator\Documents\repo\study\WindowSocket\Badugi\BadugiServer\x64\Debug\BadugiServer.exe
+﻿  LobbyServer.cpp
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\lobbyserver.cpp(28): warning C4267: 'return': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\lobbyserver.cpp(48): warning C4267: '=': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\lobbyserver.cpp(50): warning C4267: '=': 'size_t'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\lobbyserver.cpp(49): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\lobbyserver.cpp(65): warning C4267: '=': 'size_t'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\lobbyserver.cpp(66): warning C4267: '=': 'size_t'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\neople\study\windowsocket\badugi\badugiserver\badugiserver\lobbyserver.cpp(122): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
+  BadugiServer.vcxproj -> D:\Neople\study\WindowSocket\Badugi\BadugiServer\x64\Debug\BadugiServer.exe

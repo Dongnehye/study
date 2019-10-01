@@ -1,6 +1,6 @@
 #include "LobbyServer.h"
-
-
+#include <iostream>
+using namespace std;
 
 void LobbyServer::RoomInit()
 {
@@ -131,6 +131,7 @@ void LobbyServer::SendRoomEnter(SOCKET sock, char * Buf, int len)
 				if (iter->second->RoomIndex == WantRoomIndex)
 				{
 					send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+					cout << iter->second->index << endl;
 				}
 			}
 

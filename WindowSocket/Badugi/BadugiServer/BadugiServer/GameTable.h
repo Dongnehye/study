@@ -14,6 +14,7 @@ public:
 	int UserSIze;
 	int Index;
 	int TotalMoney;
+	int CurrentPlayerIndex;
 
 	list<int> Deck;
 

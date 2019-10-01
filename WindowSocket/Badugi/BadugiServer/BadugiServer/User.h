@@ -15,6 +15,7 @@ public:
 	int SceneIndex;
 	int RoomIndex;
 	int Money;
+	int TurnIndex;
 
 	bool IsHost;
 	bool IsReady;
