@@ -12,7 +12,7 @@ class LobbyScene
 {
 	LobbyScene();
 	
-	std::map<int, LOBBY_DATA*> RoomInfo;
+	std::map<int, LOBBY_DATA_INFO*> RoomInfo;
 	std::map<int, const char*> RoomUserSize;
 	std::list<std::string> Cheat;
 

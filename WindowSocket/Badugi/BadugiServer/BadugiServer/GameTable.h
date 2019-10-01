@@ -19,7 +19,6 @@ public:
 
 	map<SOCKET,User*> PlayingPlayerIndex;
 
-	int BattingTurn;
 	int TurnPlayerIndex;
 	int CurrentTurn;
 

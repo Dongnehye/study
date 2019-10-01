@@ -4,6 +4,7 @@
 
 #define ROOMPLAYERSIZE 3
 #define CARDSIZE 4
+#define SHORTBUFSIZE 20
 
 enum CARD
 {
@@ -69,13 +70,6 @@ enum GAME_TURN
 	GAME_TURN_EXCHANGE,
 	GAME_TURN_BATTING,
 	GAME_TURN_GAMEOVER
-};
-enum GAME_BATTING_TURN
-{
-	GAME_BATTING_TURN_MORRING,
-	GAME_BATTING_TURN_RUNCH,
-	GAME_BATTING_TURN_DINNER,
-	GAME_BATTING_TURN_OVER
 };
 enum BATTING
 {
@@ -145,6 +139,12 @@ struct LOBBY_DATA
 {
 	int iIndex;
 	int UserSize;
+	bool IsStart;
+};
+struct LOBBY_DATA_INFO
+{
+	int iIndex;
+	char Buf[SHORTBUFSIZE];
 	bool IsStart;
 };
 

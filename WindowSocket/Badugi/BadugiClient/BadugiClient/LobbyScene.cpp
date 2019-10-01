@@ -83,16 +83,18 @@ void LobbyScene::RoomInfoRefresh(PACKET_SEND_LOBBYDATA packet)
 	}
 	RoomInfo.clear();
 
+	string StrUserSize;
 	for (int i = 0; i < packet.LobbySize; ++i)
 	{
-		LOBBY_DATA * pNew = new LOBBY_DATA;
+		LOBBY_DATA_INFO * pNew = new LOBBY_DATA_INFO();
 
 		pNew->iIndex = packet.data[i].iIndex;
 		pNew->IsStart = packet.data[i].IsStart;
-		pNew->UserSize = packet.data[i].UserSize;
+
+		StrUserSize = packet.data[i].UserSize + '0';
+		strcpy(pNew->Buf, StrUserSize.c_str());
 
 		RoomInfo.insert((make_pair(pNew->iIndex, pNew)));
-	
 	}
 }
 
@@ -136,8 +138,12 @@ void LobbyScene::Draw(HDC hdc)
 	int i = 0;
 	for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); ++iter,++i)
 	{
-		TextOut(hdc, RoomButton[i]->GetPos().x + 40, RoomButton[i]->GetPos().y + 12, "방정보",6);
-		TextOut(hdc, RoomButton[i]->GetPos().x + 40, RoomButton[i]->GetRect().bottom - 30, "방정보",6);
+		TextOut(hdc, RoomButton[i]->GetPos().x + 40, RoomButton[i]->GetPos().y + 12, "인원수 : ",strlen("인원수 : "));
+		TextOut(hdc, RoomButton[i]->GetPos().x + 130, RoomButton[i]->GetPos().y + 12, iter->second->Buf,strlen(iter->second->Buf));
+		if(iter->second->IsStart)
+			TextOut(hdc, RoomButton[i]->GetPos().x + 40, RoomButton[i]->GetRect().bottom - 30, "Start", strlen("Start"));
+		else
+			TextOut(hdc, RoomButton[i]->GetPos().x + 40, RoomButton[i]->GetRect().bottom - 30, "Wait", strlen("Wait"));
 	}	
 
 	i = 1;

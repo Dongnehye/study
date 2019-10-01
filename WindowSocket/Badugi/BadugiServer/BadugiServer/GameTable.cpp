@@ -9,7 +9,6 @@ GameTable::GameTable()
 	UserSIze = 0;
 	CurrentTurn = GAME_TURN_CARD_DIVISION;
 	TotalMoney = 0;
-	BattingTurn = GAME_BATTING_TURN_MORRING;
 }
 GameTable::~GameTable()
 {
@@ -58,7 +57,7 @@ int GameTable::CheckNextTurn(SOCKET sock)
 		IsNextTurn = iter->second->IsTurnActiveEnd & IsNextTurn;
 		if (IsNextTurn == false)
 		{
-			CurrentPlayer = iter->first;
+			CurrentPlayer = iter->first;	
 			break;
 		}
 	}
@@ -70,29 +69,11 @@ int GameTable::CheckNextTurn(SOCKET sock)
 			iter->second->IsTurnActiveEnd = false;
 		}
 
-		if (CurrentTurn == GAME_TURN_CARD_DIVISION || CurrentTurn == GAME_TURN_EXCHANGE)
+		if (CurrentTurn == GAME_TURN_CARD_DIVISION )
 		{
-			CurrentTurn = GAME_TURN_BATTING;
-		}
-		else if (CurrentTurn == GAME_TURN_BATTING)
-		{
-			if (BattingTurn == GAME_BATTING_TURN_MORRING)
-			{
-				BattingTurn = GAME_BATTING_TURN_RUNCH;
-			}
-			else if(BattingTurn == GAME_BATTING_TURN_RUNCH)
-			{
-				BattingTurn = GAME_BATTING_TURN_DINNER;
-			}
-			else if (BattingTurn == GAME_BATTING_TURN_DINNER)
-			{
-				BattingTurn = GAME_BATTING_TURN_OVER;
-			}
 			CurrentTurn = GAME_TURN_EXCHANGE;
 		}
 	}
-
-
 	return CurrentTurn;
 }
 
