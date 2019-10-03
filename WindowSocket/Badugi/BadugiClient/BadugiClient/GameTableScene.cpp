@@ -94,6 +94,10 @@ void GameTableScene::WinnerDraw(HDC hdc)
 	WinnerMark->BufferDraw(hdc, mapPlayer[WinnderPlayerIndex]->x, mapPlayer[WinnderPlayerIndex]->y);
 }
 
+void GameTableScene::GameReset()
+{
+}
+
 void GameTableScene::ActiveTurn(int Index,int Turn)
 {
 	RefreshScene(Index, Turn);
@@ -110,7 +114,6 @@ void GameTableScene::ActiveTurn(int Index,int Turn)
 	}
 	else if (Turn == GAME_TURN_EXCHANGE)
 	{
-		BlindBatting = false;
 		CurrentTurn = Turn;
 	}
 }
@@ -133,7 +136,6 @@ void GameTableScene::RefreshScene(int Index, int Turn)
 	}
 	else if (Turn == GAME_TURN_EXCHANGE)
 	{
-		BlindBatting = false;
 		mapPlayer[Index]->IsTurn = true;
 	}
 
@@ -154,8 +156,12 @@ void GameTableScene::SetWiiner(int Index)
 	WinnderPlayerIndex = Index;
 	CurrentTurn = GAME_TURN_READY;
 	IsReady = false;
-
-
+}
+void GameTableScene::SetExitPlayer(int Index)
+{
+	mapPlayer.erase(Index);
+	CurrentTurn = GAME_TURN_READY;
+	IsReady = false;
 }
 int GameTableScene::GetMyIndex()
 {
@@ -222,6 +228,15 @@ void GameTableScene::SendPass()
 	send(sock, (const char *)&packet, packet.header.wLen, 0);
 }
 
+void GameTableScene::ExitGame()
+{
+	PACKET_SEND_EXIT_PLAYER packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_EXITPLAYER;
+	packet.header.wLen = sizeof(packet.header) + sizeof(int);
+	packet.Index = MyIndex;
+
+	send(sock, (const char *)&packet, packet.header.wLen, 0);
+}
 
 void GameTableScene::ExChangeButtonActive(POINT MousePoint)
 {
@@ -233,17 +248,18 @@ void GameTableScene::ExChangeButtonActive(POINT MousePoint)
 				CardSelect[i] = false;
 			else
 				CardSelect[i] = true;
-			cout << i << endl;
 		}
 	}
 
 	if (Change->ButtonPress(MousePoint))
 	{
 		SendExchange();
+		BlindBatting = false;
 	}
 	if (Pass->ButtonPress(MousePoint))
 	{
 		SendPass();
+		BlindBatting = false;
 	}
 }
 
@@ -428,6 +444,7 @@ GameTableScene::GameTableScene(HWND hWnd, SOCKET _sock)
 
 	Ready				=	new Button(hdc, 760, 680, 133, 42, "..\\..\\Resource\\ready.bmp");
 	Readying			=	new Button(hdc, 760, 680, 133, 42, "..\\..\\Resource\\readying.bmp");
+	Exit				=		new Button(hdc, 1000, 680, 123, 52, "..\\..\\Resource\\Exit.bmp");
 
 	MyPannel			=	new Bitmap(hdc, "..\\..\\Resource\\MyPanel.bmp");
 	MyTurnRect			=	new Bitmap(hdc, "..\\..\\Resource\\MyTurn.bmp");
@@ -520,6 +537,7 @@ void GameTableScene::Draw(HDC hdc)
 		TextOut(hdc, CheatEditPos.x, CheatEditPos.y - 20 * i, iter->c_str(), strlen(iter->c_str()));
 	}
 	CheatEnter->Draw(hdc);
+	Exit->Draw(hdc);
 	if (IsGameOver)
 	{
 		WinnerDraw(hdc);
@@ -543,6 +561,11 @@ void GameTableScene::MouseLClick(LPARAM lParam)
 	if (CheatEnter->ButtonPress(MousePoint))
 	{
 		SendCheat();
+	}
+	if (Exit->ButtonPress(MousePoint))
+	{
+		cout << "Exit" << endl;
+		ExitGame();
 	}
 }
 

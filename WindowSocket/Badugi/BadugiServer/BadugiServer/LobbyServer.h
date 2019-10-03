@@ -35,4 +35,7 @@ public:
 
 	void SendExchange(SOCKET sock, char * Buf, int len);
 	void SendTurnRespond(SOCKET sock, char * Buf, int len);
+
+	void DisconnectPlayer(SOCKET sock);
+	void ExitPlayer(SOCKET sock);
 };

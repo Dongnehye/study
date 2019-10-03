@@ -222,8 +222,6 @@ bool BadugiMain::ProcessPacket(char * szBuf, int & len)
 		{
 			GameTable->RecvCheat(packet.Buf);
 		}
-		
-
 	}
 	break;
 	case PACKET_INDEX_SEND_GAMEOVER:
@@ -231,6 +229,21 @@ bool BadugiMain::ProcessPacket(char * szBuf, int & len)
 		PACKET_SEND_TURN packet;
 		memcpy(&packet, szBuf, header.wLen);
 		GameTable->SetWiiner(packet.Index);
+	}
+	break;
+	case PACKET_INDEX_SEND_EXITPLAYER:
+	{
+		PACKET_SEND_EXIT_PLAYER packet;
+		memcpy(&packet, szBuf, header.wLen);
+		cout << packet.Index << endl;
+		GameTable->SetExitPlayer(packet.Index);
+		
+		if (GameTable->GetMyIndex() == packet.Index)
+		{
+			SceneChange(SCENE_INDEX_LOBBY);
+			cout << GameTable->GetMyIndex() << endl;
+			cout << packet.Index << endl;
+		}
 	}
 	break;
 	}

@@ -43,6 +43,7 @@ class GameTableScene :
 
 	Button * Ready;
 	Button * Readying;
+	Button * Exit;
 
 	int TotalBattingGold;
 	int TotalCallGold;
@@ -80,6 +81,7 @@ class GameTableScene :
 	void SendCardRefreshOver();
 	void SendExchange();
 	void SendPass();
+	void ExitGame();
 
 	void ExChangeButtonActive(POINT MousePoint);
 	void ReadyButtonActive(POINT MousePoint);
@@ -93,6 +95,8 @@ class GameTableScene :
 	void PlayerCardDraw(HDC hdc);
 	void CardDraw(HDC hdc, int x, int y, int CardNumber);
 	void WinnerDraw(HDC hdc);
+
+	void GameReset();
 
 	GameTableScene();
 public:
@@ -109,6 +113,7 @@ public:
 	void SetTotalMoney(int Money);
 	void SetMoney(int Index, int Money);
 	void SetWiiner(int Index);
+	void SetExitPlayer(int Index);
 
 	int GetMyIndex();
 	virtual void Update(float ElapseTime);

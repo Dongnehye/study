@@ -30,6 +30,8 @@ public:
 	virtual ~GameTable();
 	int GetUserSize();
 
+	void GameEnter(map<SOCKET, User*> &mapUser);
+
 	void GameStart(map<SOCKET, User*> &mapUser);
 
 	int CheckNextTurn(SOCKET sock);
@@ -40,6 +42,10 @@ public:
 
 	void CardChange(int Index, User * mapUser, bool * SelectCard);
 
+	void DisconnectPlayer(SOCKET sock);
+	void ExitPlayer(SOCKET sock);
+
 	SOCKET WinnerPlayer();
 
+	void GameOver();
 };

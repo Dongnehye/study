@@ -1,5 +1,6 @@
 #include "GameTable.h"
 #include <algorithm>
+#include <iostream>
 #include <random>
 
 #define HANDCARD 4
@@ -38,21 +39,17 @@ void GameTable::GameStart(std::map<SOCKET, User*>& mapUser)
 	}
 	auto rng = default_random_engine{};
 	shuffle(Deck);
-	
-	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
+
+	for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
 	{
-		if (iter->second->RoomIndex == Index)
+		if (iter->second->TurnIndex == TurnPlayerIndex)
 		{
-			iter->second->TurnIndex = CurrentPlayerIndex;
-			PlayingPlayerIndex.insert(make_pair(iter->first, iter->second));
-			++CurrentPlayerIndex;
+			CurrentPlayer = iter->first;
+			break;
 		}
 	}
-	CurrentPlayerIndex = 0;
-	TurnPlayerIndex = (*PlayingPlayerIndex.begin()).second->index;
 
 	CardSwing(mapUser);
-
 }
 
 int GameTable::CheckNextTurn(SOCKET sock)
@@ -67,27 +64,22 @@ int GameTable::CheckNextTurn(SOCKET sock)
 	}
 
 	PlayingPlayerIndex[sock]->IsTurnActiveEnd = true;
-
-	for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
+	TurnPlayerIndex++;
+	if (TurnPlayerIndex >= ROOMPLAYERSIZE)
 	{
-		IsNextTurn = iter->second->IsTurnActiveEnd & IsNextTurn;
-		if (IsNextTurn == false)
-		{
-			CurrentPlayer = iter->first;	
-			break;
-		}
-	}
-	if (IsNextTurn == true)
-	{
-		CurrentPlayer = PlayingPlayerIndex.begin()->first;
-		for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
-		{
-			iter->second->IsTurnActiveEnd = false;
-		}
+		TurnPlayerIndex = 0;
 
 		if (CurrentTurn == GAME_TURN_CARD_DIVISION )
 		{
 			CurrentTurn = GAME_TURN_EXCHANGE;
+		}
+	}
+	for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
+	{
+		if (iter->second->TurnIndex == TurnPlayerIndex)
+		{
+			CurrentPlayer = iter->first;
+			break;
 		}
 	}
 	return CurrentTurn;
@@ -123,6 +115,38 @@ void GameTable::CardChange(int Index, User * mapUser, bool * SelectCard)
 	}
 }
 
+void GameTable::DisconnectPlayer(SOCKET sock)
+{
+	PACKET_SEND_EXIT_PLAYER packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_EXITPLAYER;
+	packet.header.wLen = sizeof(packet.header) + sizeof(int);
+	packet.Index = PlayingPlayerIndex[sock]->index;
+	PlayingPlayerIndex.erase(sock);
+
+	GameOver();
+
+	for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
+	{
+		send(iter->first, (const char *)&packet, packet.header.wLen, 0);
+	}
+}
+
+void GameTable::ExitPlayer(SOCKET sock)
+{
+	PACKET_SEND_EXIT_PLAYER packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_EXITPLAYER;
+	packet.header.wLen = sizeof(packet.header) + sizeof(int);
+	packet.Index = PlayingPlayerIndex[sock]->index;
+	cout << packet.Index << endl;
+	GameOver();
+
+	for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
+	{
+		send(iter->first, (const char *)&packet, packet.header.wLen, 0);
+	}
+	PlayingPlayerIndex.erase(sock);
+}
+
 SOCKET GameTable::WinnerPlayer()
 {
 	bool IsWin;
@@ -156,7 +180,38 @@ SOCKET GameTable::WinnerPlayer()
 	return NULL;
 }
 
+void GameTable::GameOver()
+{
+	for (auto iter = PlayingPlayerIndex.begin(); iter != PlayingPlayerIndex.end(); ++iter)
+	{
+		iter->second->IsReady = false;
+		iter->second->IsTurnActiveEnd = false;
+		iter->second->card.clear();	
+	}
+}
+
 int GameTable::GetUserSize()
 {
 	return UserSIze;
+}
+
+void GameTable::GameEnter(map<SOCKET, User*>& mapUser)
+{
+	PlayingPlayerIndex.clear();
+	CurrentPlayerIndex = 0;
+	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
+	{
+		if (iter->second->RoomIndex == Index)
+		{
+			iter->second->TurnIndex = CurrentPlayerIndex;
+			PlayingPlayerIndex.insert(make_pair(iter->first, iter->second));
+			++CurrentPlayerIndex;
+		}
+	}
+	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
+	{
+		cout << iter->first << " : " << iter->second->index << endl;
+	}
+	CurrentPlayerIndex = 0;
+	TurnPlayerIndex = (*PlayingPlayerIndex.begin()).second->TurnIndex;
 }

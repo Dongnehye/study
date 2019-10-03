@@ -96,6 +96,7 @@ void ServerMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARA
 	}
 	break;
 	case FD_CLOSE:
+		Lobby->DisconnectPlayer(wParam);
 		closesocket(wParam);
 		break;
 	}
@@ -159,6 +160,11 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * szBuf, int & le
 	case PACKET_INDEX_SEND_CHAT:
 	{
 		Lobby->SendCheat(sock, szBuf, header.wLen);
+	}
+	break;
+	case PACKET_INDEX_SEND_EXITPLAYER:
+	{
+		Lobby->ExitPlayer(sock);
 	}
 	break;
 	}

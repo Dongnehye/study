@@ -1,6 +1,9 @@
 #include "LobbyServer.h"
 #include <iostream>
+
 using namespace std;
+
+#define LOBBYROOMINDEX 0
 
 void LobbyServer::RoomInit()
 {
@@ -30,7 +33,6 @@ int LobbyServer::GetUserSize()
 
 void LobbyServer::AddUser(SOCKET sock, User * user)
 {
-	user->index = Index++;
 	mapUser.insert(make_pair(sock, user));
 }
 
@@ -136,7 +138,7 @@ void LobbyServer::SendRoomEnter(SOCKET sock, char * Buf, int len)
 			}
 
 			mapRoom[WantRoomIndex]->UserSIze += 1;
-
+			mapRoom[WantRoomIndex]->GameEnter(mapUser);
 		}
 		else
 		{
@@ -171,19 +173,25 @@ void LobbyServer::CheckRoomReady(SOCKET sock, char * Buf, int len)
 	}
 	if (ReadySIze >= ROOMPLAYERSIZE)
 	{
+		SOCKET pHost;
+
 		mapRoom[RoomIndex]->GameStart(mapUser);
 		PACKET_SEND_GAMESTART GameStartPacket;
 		GameStartPacket.header.wIndex = PACKET_INDEX_SEND_GAMESTART;
 		GameStartPacket.header.wLen = sizeof(GameStartPacket.header) + sizeof(int);
-		GameStartPacket.FirstTurnIndex = mapRoom[RoomIndex]->TurnPlayerIndex;
-
+		GameStartPacket.FirstTurnIndex = mapUser[mapRoom[RoomIndex]->GetNextPlayerSocket()]->index;
 		for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 		{
-			if (iter->second->RoomIndex == RoomIndex)
+			if (iter->second->RoomIndex == RoomIndex && iter->second->index != GameStartPacket.FirstTurnIndex)
 			{
 				send(iter->first, (const char*)&GameStartPacket, GameStartPacket.header.wLen, 0);
 			}
+			else if (iter->second->RoomIndex == RoomIndex && iter->second->index == GameStartPacket.FirstTurnIndex)
+			{
+				pHost = iter->first;
+			}
 		}
+		send(pHost, (const char*)&GameStartPacket, GameStartPacket.header.wLen, 0);
 	}
 }
 
@@ -233,11 +241,12 @@ void LobbyServer::SendAllCardRefresh(SOCKET sock, User * pUser)
 	}
 	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 	{
-		if (iter->second->RoomIndex == pUser->RoomIndex)
+		if (iter->second->RoomIndex == pUser->RoomIndex && iter->first != sock)
 		{
 			send(iter->first, (const char*)&packet, packet.header.wLen, 0);
 		}
 	}
+	send(sock, (const char*)&packet, packet.header.wLen, 0);
 }
 
 void LobbyServer::SendExchange(SOCKET sock, char * Buf, int len)
@@ -265,15 +274,7 @@ void LobbyServer::SendTurnRespond(SOCKET sock, char * Buf, int len)
 	if (Turn == GAME_TURN_GAMEOVER)
 	{
 		RetPacket.header.wIndex = PACKET_INDEX_SEND_GAMEOVER;
-		for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
-		{
-			if (iter->second->RoomIndex == Room->Index)
-			{
-				iter->second->IsReady = false;
-				iter->second->IsTurnActiveEnd = false;
-				iter->second->card.clear();
-			}
-		}
+		Room->GameOver();
 	}
 	else
 	{
@@ -283,13 +284,36 @@ void LobbyServer::SendTurnRespond(SOCKET sock, char * Buf, int len)
 	RetPacket.TURN = Turn;
 
 	int NextPalyerIndex = mapUser[Room->GetNextPlayerSocket()]->index;
+	SOCKET NextPalyerSocket = Room->GetNextPlayerSocket();
 
+	RetPacket.Index = NextPalyerIndex;
 	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
 	{
-		if (iter->second->RoomIndex == Room->Index)
+		if (iter->second->RoomIndex == Room->Index && iter->first != NextPalyerSocket)
 		{
-			RetPacket.Index = NextPalyerIndex;
 			send(iter->first, (const char*)&RetPacket, RetPacket.header.wLen, 0);
 		}
 	}
+	send(NextPalyerSocket, (const char*)&RetPacket, RetPacket.header.wLen, 0);
+}
+
+void LobbyServer::DisconnectPlayer(SOCKET sock)
+{
+	mapRoom[mapUser[sock]->RoomIndex]->DisconnectPlayer(sock);
+	mapRoom[mapUser[sock]->RoomIndex]->UserSIze -= 1;
+	delete mapUser[sock];
+	mapUser.erase(sock);
+}
+
+void LobbyServer::ExitPlayer(SOCKET sock)
+{
+	for (auto iter = mapUser.begin(); iter != mapUser.end(); ++iter)
+	{
+		cout << iter->first << " : " << iter->second->index << endl;
+	}
+	cout << sock  << endl;
+	mapRoom[mapUser[sock]->RoomIndex]->ExitPlayer(sock);
+	mapRoom[mapUser[sock]->RoomIndex]->UserSIze -= 1;
+	mapUser[sock]->RoomIndex = LOBBYROOMINDEX;
+	mapUser[sock]->SceneIndex = SCENE_INDEX_LOBBY;
 }
