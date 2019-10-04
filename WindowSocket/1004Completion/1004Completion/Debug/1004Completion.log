@@ -1,0 +1,23 @@
+﻿  Server.cpp
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(52): error C2664: 'void err_quit(char *)': 인수 1을(를) 'const char [9]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(52): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(62): error C2664: 'void err_quit(char *)': 인수 1을(를) 'const char [7]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(62): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(67): error C2664: 'void err_quit(char *)': 인수 1을(를) 'const char [9]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(67): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(80): error C2664: 'void err_display(char *)': 인수 1을(를) 'const char [9]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(80): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(104): error C2664: 'void err_display(char *)': 인수 1을(를) 'const char [10]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(104): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(83): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1848): note: 'inet_ntoa' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(137): error C2664: 'void err_display(char *)': 인수 1을(를) 'const char [25]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(137): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(169): error C2664: 'void err_display(char *)': 인수 1을(를) 'const char [10]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(169): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(188): error C2664: 'void err_display(char *)': 인수 1을(를) 'const char [10]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(188): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(140): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1848): note: 'inet_ntoa' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\windowsocket\1004completion\1004completion\server.cpp(150): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1848): note: 'inet_ntoa' 선언을 참조하십시오.

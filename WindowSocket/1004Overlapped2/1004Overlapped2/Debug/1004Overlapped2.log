@@ -1,0 +1,29 @@
+﻿  Server.cpp
+c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(43): error C2664: 'void err_quit(char *)': 인수 1을(를) 'const char [9]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(43): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(53): error C2664: 'void err_quit(char *)': 인수 1을(를) 'const char [7]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(53): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(58): error C2664: 'void err_quit(char *)': 인수 1을(를) 'const char [9]'에서 'char *'(으)로 변환할 수 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(58): note: 문자열 리터럴로부터의 변환은 const 한정자가 손실됩니다(/Zc:strictStrings 참조).
+c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(79): error C2665: 'err_display': 2개의 오버로드 중 모든 인수 형식을 변환할 수 있는 오버로드가 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(31): note: 'void err_display(int)'일 수 있습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(30): note: 또는       'void err_display(char *)'
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(79): note: 인수 목록 '(const char [9])'을(를) 일치시키는 동안
+c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(129): error C2665: 'err_display': 2개의 오버로드 중 모든 인수 형식을 변환할 수 있는 오버로드가 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(31): note: 'void err_display(int)'일 수 있습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(30): note: 또는       'void err_display(char *)'
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(129): note: 인수 목록 '(const char [10])'을(를) 일치시키는 동안
+c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(106): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1848): note: 'inet_ntoa' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(181): error C2665: 'err_display': 2개의 오버로드 중 모든 인수 형식을 변환할 수 있는 오버로드가 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(31): note: 'void err_display(int)'일 수 있습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(30): note: 또는       'void err_display(char *)'
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(181): note: 인수 목록 '(const char [10])'을(를) 일치시키는 동안
+c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(200): error C2665: 'err_display': 2개의 오버로드 중 모든 인수 형식을 변환할 수 있는 오버로드가 없습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(31): note: 'void err_display(int)'일 수 있습니다.
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(30): note: 또는       'void err_display(char *)'
+  c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(200): note: 인수 목록 '(const char [10])'을(를) 일치시키는 동안
+c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(154): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1848): note: 'inet_ntoa' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\windowsocket\1004overlapped2\1004overlapped2\server.cpp(163): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1848): note: 'inet_ntoa' 선언을 참조하십시오.
