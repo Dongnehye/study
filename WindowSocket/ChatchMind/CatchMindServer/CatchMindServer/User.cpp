@@ -4,7 +4,7 @@
 
 User::User()
 {
-
+	len = 0;
 }
 
 

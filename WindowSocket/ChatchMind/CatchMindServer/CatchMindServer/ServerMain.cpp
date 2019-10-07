@@ -1,4 +1,25 @@
 #include "ServerMain.h"
+#include <iostream>
+
+using namespace std;
+
+void ServerMain::err_display(int errcode)
+{
+	LPVOID lpMsgBuf;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+	printf("[¿À·ù]%s", lpMsgBuf);
+	LocalFree(lpMsgBuf);
+}
+
+void ServerMain::err_display(const char * szMsg)
+{
+	LPVOID lpMsgBuf;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+	printf("[%s]%s\n", szMsg, lpMsgBuf);
+	LocalFree(lpMsgBuf);
+}
 
 bool ServerMain::AddUser(SOCKET sock)
 {
@@ -67,4 +88,43 @@ void ServerMain::AcceptSocket(SOCKET ClientSock, HANDLE hcp)
 			continue;
 		}
 	}
+}
+
+bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & len)
+{
+	if (len > 0)
+	{
+		pUser->len += len;
+		len = 0;
+	}
+	if (pUser->len < sizeof(PACKET_HEADER))
+		return false;
+
+	PACKET_HEADER header;
+	memcpy(&header, pUser->buf, sizeof(header));
+
+	if (pUser->len < header.wLen)
+		return false;
+
+	switch (header.wIndex)
+	{
+	case PACKET_INDEX_SEND_LOGIN:
+	{
+		PACKET_LOGIN packet;
+		memcpy(&packet, Buf, header.wLen);
+		cout << packet.id << endl;
+
+		DWORD sendbytes;
+
+		ZeroMemory(&pUser->overlapped, sizeof(pUser->overlapped));
+
+		WSASend(sock, &pUser->wsabuf,1,&sendbytes, 0,&pUser->overlapped,NULL);
+	}
+	break;
+	}
+	memcpy(&pUser->buf, &pUser->buf[header.wLen], pUser->len - header.wLen);
+	pUser->len -= header.wLen;
+
+	return true;
+
 }

@@ -5,14 +5,14 @@ class User
 {
 
 public:
-	int Index;
 	WSAOVERLAPPED overlapped;
 	char buf[BUFSIZE + 1];
-	int recvbytes;
 	WSABUF wsabuf;
+	int recvbytes;
+	int Index;
+	int len;
 
 	User();
 	virtual ~User();
 
-	void 
 };

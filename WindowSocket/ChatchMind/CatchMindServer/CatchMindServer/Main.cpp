@@ -1,6 +1,9 @@
 #pragma comment(lib,"ws2_32")
 #include <stdlib.h>
 #include <stdio.h>
+#include <thread>
+#include <iostream>
+#include <process.h>
 #include "WinSocketMain.h"
 #include "ServerMain.h"
 #include "User.h"
@@ -9,6 +12,25 @@
 DWORD WINAPI WorkerThread(LPVOID arg);
 
 ServerMain * Server;
+
+
+void err_display(int errcode)
+{
+	LPVOID lpMsgBuf;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+	printf("[오류]%s", lpMsgBuf);
+	LocalFree(lpMsgBuf);
+}
+
+void err_display(const char * szMsg)
+{
+	LPVOID lpMsgBuf;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, WSAGetLastError(),
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+	printf("[%s]%s\n", szMsg, lpMsgBuf);
+	LocalFree(lpMsgBuf);
+}
 
 int main(int argc, char * args[])
 {
@@ -26,8 +48,9 @@ int main(int argc, char * args[])
 
 	HANDLE hThread;
 	for (int i = 0; i < (int)si.dwNumberOfProcessors * 2; i++)
+	//for (int i = 0; i < 2; i++)
 	{
-		hThread = CreateThread(NULL, 0, WorkerThread, hcp, 0, NULL);
+		hThread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)WorkerThread, hcp, 0, NULL);
 		if (hThread == NULL)
 			return 1;
 		CloseHandle(hThread);
@@ -51,56 +74,41 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 	{
 		DWORD cbTranferred;
 		SOCKET client_sock;
-		SOCKETINFO *ptr;
+		SOCKETINFO * ptr;
 		retval = GetQueuedCompletionStatus(hcp, &cbTranferred,
 			(LPDWORD)&client_sock, (LPOVERLAPPED*)&ptr, INFINITE);
 		SOCKADDR_IN clientaddr;
 		int addrlen = sizeof(clientaddr);
-		getpeername(ptr->sock, (SOCKADDR*)&clientaddr, &addrlen);
+		getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 		if (retval == 0 || cbTranferred == 0)
 		{
 			if (retval == 0)
 			{
 				DWORD temp1, temp2;
-				WSAGetOverlappedResult(ptr->sock, &ptr->overlapped,
+				WSAGetOverlappedResult(client_sock, &ptr->overlapped,
 					&temp1, FALSE, &temp2);
 				err_display("WSAGetOverlappedResult()");
 			}
-			closesocket(ptr->sock);
+			closesocket(client_sock);
 			printf("[TCP 서버] 클라이언트 종료 : IP 주소 = %s, 포트 번호 = %d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 			delete ptr;
+			
 			continue;
 		}
-		if (ptr->recvbytes == 0)
-		{
-			ptr->recvbytes = cbTranferred;
-			ptr->buf[ptr->recvbytes] = '\0';
-			printf("[TCP%s:%d]%s\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port), ptr->buf);
-			//packet 처리.
-		}
+		User * pUser = Server->GetUser(client_sock);
 
-		if (ptr->recvbytes > 0)
+		while (true)
 		{
-
-		}
-		else
-		{
-			ptr->recvbytes = 0;
-			ZeroMemory(&ptr->overlapped, sizeof(ptr->overlapped));
-			ptr->wsabuf.buf = ptr->buf;
-			ptr->wsabuf.len = BUFSIZE;
-
-			DWORD recvbytes;
-			DWORD flags = 0;
-			retval = WSARecv(ptr->sock, &ptr->wsabuf, 1, &recvbytes, &flags, &ptr->overlapped, NULL);
-			if (retval == SOCKET_ERROR)
+			//cout << this_thread::get_id() << endl;
+			if (Server->ProcessPacket(client_sock,pUser,ptr->buf, cbTranferred))
 			{
-				if (WSAGetLastError() != WSA_IO_PENDING)
-				{
-					err_display("WSARecv()");
-				}
-				continue;
+				break;
+			}
+			else
+			{
+				if (pUser->len < sizeof(PACKET_HEADER))
+					break;
 			}
 		}
 	}
