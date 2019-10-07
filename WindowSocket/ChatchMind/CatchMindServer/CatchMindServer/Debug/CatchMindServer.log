@@ -1,14 +1,13 @@
 ﻿  Main.cpp
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\catchmindserver\catchmindserver\main.cpp(22): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'LPVOID'입니다.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\catchmindserver\catchmindserver\main.cpp(31): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'LPVOID'입니다.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\catchmindserver\catchmindserver\main.cpp(37): warning C4101: 'retval' :참조되지 않은 지역 변수입니다.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\catchmindserver\catchmindserver\main.cpp(94): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+d:\neople\study\windowsocket\chatchmind\catchmindserver\catchmindserver\main.cpp(22): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'LPVOID'입니다.
+d:\neople\study\windowsocket\chatchmind\catchmindserver\catchmindserver\main.cpp(31): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'LPVOID'입니다.
+d:\neople\study\windowsocket\chatchmind\catchmindserver\catchmindserver\main.cpp(37): warning C4101: 'retval' :참조되지 않은 지역 변수입니다.
+d:\neople\study\windowsocket\chatchmind\catchmindserver\catchmindserver\main.cpp(94): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1848): note: 'inet_ntoa' 선언을 참조하십시오.
   ServerMain.cpp
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\catchmindserver\catchmindserver\servermain.cpp(11): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'LPVOID'입니다.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\catchmindserver\catchmindserver\servermain.cpp(20): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'LPVOID'입니다.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\catchmindserver\catchmindserver\servermain.cpp(72): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+d:\neople\study\windowsocket\chatchmind\catchmindserver\catchmindserver\servermain.cpp(11): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'LPVOID'입니다.
+d:\neople\study\windowsocket\chatchmind\catchmindserver\catchmindserver\servermain.cpp(20): warning C4477: 'printf' : 서식 문자열 '%s'에 'char *' 형식의 인수가 필요하지만 variadic 인수 2의 형식이 'LPVOID'입니다.
+d:\neople\study\windowsocket\chatchmind\catchmindserver\catchmindserver\servermain.cpp(72): warning C4996: 'inet_ntoa': Use inet_ntop() or InetNtop() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1848): note: 'inet_ntoa' 선언을 참조하십시오.
-  User.cpp
   코드를 생성하고 있습니다...
-  CatchMindServer.vcxproj -> C:\Users\Administrator\Documents\repo\study\WindowSocket\ChatchMind\CatchMindServer\Debug\CatchMindServer.exe
+  CatchMindServer.vcxproj -> D:\Neople\study\WindowSocket\ChatchMind\CatchMindServer\Debug\CatchMindServer.exe

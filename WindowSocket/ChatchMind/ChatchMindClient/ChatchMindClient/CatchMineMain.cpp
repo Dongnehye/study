@@ -5,7 +5,7 @@ using namespace std;
 
 void CatchMineMain::OperateInput()
 {
-	if (GetKeyState(VK_LEFT) & 0x8000)
+	if (GetAsyncKeyState('Z') & 0x0001)
 	{
 		PACKET_LOGIN packet;
 		packet.header.wIndex = PACKET_INDEX_SEND_LOGIN;

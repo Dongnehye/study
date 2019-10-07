@@ -26,6 +26,6 @@ public:
 	void AcceptSocket(SOCKET ClientSock, HANDLE hcp);
 	bool ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & len);
 
-	void EraseSocket();
+	void EraseSocket(SOCKET sock);
 };
 

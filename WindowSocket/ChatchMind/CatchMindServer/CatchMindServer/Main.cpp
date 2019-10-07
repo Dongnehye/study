@@ -92,15 +92,18 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 			}
 			closesocket(client_sock);
 			printf("[TCP 서버] 클라이언트 종료 : IP 주소 = %s, 포트 번호 = %d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-			delete ptr;
-			
+			Server->EraseSocket(client_sock);
 			continue;
 		}
+		ZeroMemory(&ptr->overlapped, sizeof(ptr->overlapped));
+		ptr->wsabuf.buf = ptr->buf;
+		ptr->wsabuf.len = BUFSIZE;
+
 		User * pUser = Server->GetUser(client_sock);
 
 		while (true)
 		{
-			//cout << this_thread::get_id() << endl;
+			cout << this_thread::get_id() << endl;
 			if (Server->ProcessPacket(client_sock,pUser,ptr->buf, cbTranferred))
 			{
 				break;
@@ -110,6 +113,17 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 				if (pUser->len < sizeof(PACKET_HEADER))
 					break;
 			}
+		}
+		DWORD recvbytes;
+		DWORD flags = 0;
+		retval = WSARecv(client_sock, &ptr->wsabuf, 1,
+			&recvbytes, &flags, &ptr->overlapped, NULL);
+		if (retval == SOCKET_ERROR)
+		{
+			if (WSAGetLastError() != WSA_IO_PENDING) {
+				err_display("WSARecv()");
+			}
+			continue;
 		}
 	}
 	return 0;

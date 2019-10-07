@@ -114,11 +114,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & le
 		memcpy(&packet, Buf, header.wLen);
 		cout << packet.id << endl;
 
-		DWORD sendbytes;
-
-		ZeroMemory(&pUser->overlapped, sizeof(pUser->overlapped));
-
-		WSASend(sock, &pUser->wsabuf,1,&sendbytes, 0,&pUser->overlapped,NULL);
+		send(sock, (const char *)&packet,packet.header.wLen,0);
 	}
 	break;
 	}
@@ -127,4 +123,10 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & le
 
 	return true;
 
+}
+
+void ServerMain::EraseSocket(SOCKET sock)
+{
+	delete MapUser[sock];
+	MapUser.erase(sock);
 }
