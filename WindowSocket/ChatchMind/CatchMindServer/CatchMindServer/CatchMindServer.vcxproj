@@ -141,7 +141,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LobbyServer.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="ServerMain.cpp" />
     <ClCompile Include="User.cpp" />
     <ClCompile Include="WinSocketMain.cpp" />
@@ -149,6 +151,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\Common\PACKET_HEADER.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="LobbyServer.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="ServerMain.h" />
     <ClInclude Include="User.h" />
     <ClInclude Include="WinSocketMain.h" />

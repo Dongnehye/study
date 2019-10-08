@@ -109,51 +109,32 @@ bool WinSocketMain::CreateSocket()
 	return true;
 }
 
-bool WinSocketMain::CreateWSAAsyncClientSocket(HWND hWnd)
+bool WinSocketMain::CreateClientSocket(HWND hWnd)
 {
-	//if (!InitWSAdata())
-	//	return false;
-	//if (!InitListen_scok())
-	//	return false;
-	//if (!InitWSAAsyncSelect(hWnd))
-	//	return false;
-
-	WSADATA wsa;
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-		return -1;
-
-	listen_sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (listen_sock == INVALID_SOCKET)
-	{
-		//cout << "err on socket" << endl;
-		return -1;
-	}
-
-	SOCKADDR_IN serveraddr;
-	ZeroMemory(&serveraddr, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	serveraddr.sin_port = htons(9000);
-	//serveraddr.sin_addr.s_addr = inet_addr("10.30.10.209");
-	serveraddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	int retval = connect(listen_sock, (sockaddr*)&serveraddr, sizeof(serveraddr));
-	if (retval == SOCKET_ERROR)
-	{
-		//cout << "err on connect" << endl;
-		return -1;
-	}
-
-	retval = WSAAsyncSelect(listen_sock, hWnd, WM_SOCKET, FD_READ | FD_CLOSE);
-	if (retval == SOCKET_ERROR)
-	{
-		return -1;
-	}
-
+	if (!InitWSAdata())
+		return false;
+	if (!InitListen_scok())
+		return false;
 	return true;
 }
 
-bool WinSocketMain::ConnectServer(HWND hWnd)
+bool WinSocketMain::WSAAsyncClientSocket(HWND hWnd)
 {
+	retval = WSAAsyncSelect(listen_sock, hWnd, WM_SOCKET, FD_READ | FD_CLOSE);
+	if (retval == SOCKET_ERROR)
+	{
+		return false;
+	}
+	return true;
+}
+
+bool WinSocketMain::CreateWSAAsyncClientSocket(HWND hWnd)
+{
+	if (!CreateClientSocket(hWnd))
+		return false;
 	if (!SocketConnect())
+		return false;
+	if (!WSAAsyncClientSocket(hWnd))
 		return false;
 	return true;
 }

@@ -18,16 +18,18 @@ class WinSocketMain
 	bool InitWSAAsyncSelect(HWND hWnd);
 
 	bool Socketbind();
-	bool SocketConnect();
+	bool CreateSocket();
 	bool Socketlisten();
 	
+	bool CreateClientSocket(HWND hWnd);
+	bool SocketConnect();
+	bool WSAAsyncClientSocket(HWND hWnd);
+
 public:
 	WinSocketMain();
 	bool CreateWSAAsyncSocket(HWND hWnd);
-	bool CreateSocket();
 
 	bool CreateWSAAsyncClientSocket(HWND hWnd);
-	bool ConnectServer(HWND hWnd);
 	SOCKET GetListenSock();
 
 	virtual ~WinSocketMain();

@@ -1,7 +1,53 @@
 #include "ServerMain.h"
 #include <iostream>
+#include <fstream>
+#include <string>
 
-using namespace std;
+bool ServerMain::CheckLogin(const char * Id, const char * pw)
+{
+	ifstream in("DataBase.txt");
+	string StrId;
+	string StrPw;
+
+	if (!in.is_open())
+	{
+		return false;
+	}
+	else
+	{
+		while (in)
+		{
+			in >> StrId;
+			in >> StrPw;
+			if (strcmp(StrId.c_str(), Id) == 0
+				&& strcmp(StrPw.c_str(), pw) == 0)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void ServerMain::SendLogin(SOCKET sock, bool _IsLogin)
+{
+	PACKET_LOGIN_RES ResPacket;
+	ResPacket.header.wIndex = PACKET_INDEX_SEND_LOGIN;
+	ResPacket.header.wLen = sizeof(ResPacket);
+	ResPacket.IsLogin = _IsLogin;
+	ResPacket.Myindex = MapUser[sock]->Index;
+
+	if(_IsLogin)
+	{
+		printf("[TCP 서버] 클라이언트 접속 : SOCK = %d\n", sock);
+	}
+	else
+	{
+		printf("[TCP 서버] 클라이언트 로그인 실패 : SOCK = %d\n", sock);
+	}
+
+	send(sock, (const char *)&ResPacket, ResPacket.header.wLen, 0);
+}
 
 void ServerMain::err_display(int errcode)
 {
@@ -45,6 +91,7 @@ User * ServerMain::GetUser(SOCKET sock)
 ServerMain::ServerMain()
 {
 	gIndex = 0;
+	Lobby = new LobbyServer();
 }
 
 
@@ -111,10 +158,19 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & le
 	case PACKET_INDEX_SEND_LOGIN:
 	{
 		PACKET_LOGIN packet;
-		memcpy(&packet, Buf, header.wLen);
-		cout << packet.id << endl;
+		memcpy(&packet, pUser->buf, pUser->len);
 
-		send(sock, (const char *)&packet,packet.header.wLen,0);
+		if (CheckLogin(packet.id, packet.pw))
+		{
+			SendLogin(sock, true);
+			strcpy(MapUser[sock]->id, packet.id);
+			Lobby->AddUser(sock, pUser);
+		}
+	}
+	break;
+	default:
+	{
+		Lobby->ProcessPacket(sock, pUser, header.wIndex);
 	}
 	break;
 	}

@@ -39,8 +39,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	WinSocketMain * WinSocket = new WinSocketMain();
 	if (!WinSocket->CreateWSAAsyncClientSocket(hWnd))
 		return -1;
-	//if (!WinSocket->ConnectServer(hWnd))
-	//	return -1;
 
 	MainGame = new CatchMineMain(hWnd, WinSocket->GetListenSock());
 

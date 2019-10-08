@@ -1,8 +1,8 @@
 #pragma once
 #include <WinSock2.h>
-#include <stdio.h>
 
 #define BUFSIZE 512
+#define SHORT_BUFSIZE 20
 
 struct SOCKETINFO
 {

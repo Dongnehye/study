@@ -3,13 +3,15 @@
 #include <chrono>
 #include "PACKET_HEADER.h"
 #include "Common.h"
-
-
+#include "Scene.h"
+#include "LoginScene.h"
+#include "LobbyScene.h"
+#include "RoomScene.h"
 
 class CatchMineMain
 {
 	HWND mhWnd;
-	SOCKET MyScok;
+	SOCKET MySock;
 
 	char RecvBuf[BUFSIZE];
 	int RecvLen;
@@ -20,10 +22,16 @@ class CatchMineMain
 	HBITMAP hBitmap[2];
 	HBITMAP hOld[2];
 
+	Scene * ArrScene[SCENE_INDEX_END];
+	Scene * CurrentScene;
+	void SceneChange(int SceneNumber);
+	void InitScene();
+
 	std::chrono::system_clock::time_point m_LastTime;
 	float m_fElapseTime;
 
 	void OperateInput();
+	void Render();
 
 	CatchMineMain();
 public:

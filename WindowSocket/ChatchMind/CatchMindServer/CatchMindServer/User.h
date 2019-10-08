@@ -12,6 +12,9 @@ public:
 	int Index;
 	int len;
 
+	int RoomIndex;
+	char id[SHORT_BUFSIZE];
+
 	User();
 	virtual ~User();
 

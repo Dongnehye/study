@@ -1,30 +1,43 @@
 #include "CatchMineMain.h"
 #include <iostream>
-
 using namespace std;
+
+void CatchMineMain::SceneChange(int SceneNumber)
+{
+	CurrentScene = ArrScene[SceneNumber]->SceneChange(CurrentScene, mhWnd);
+}
+
+void CatchMineMain::InitScene()
+{
+	ArrScene[SCENE_INDEX_LOGIN] = new LoginScene(mhWnd,MySock);
+	ArrScene[SCENE_INDEX_LOBBY] = new LobbyScene(mhWnd,MySock);
+	ArrScene[SCENE_INDEX_ROOM] = new RoomScene(mhWnd,MySock);
+
+	CurrentScene = nullptr;
+
+	SceneChange(SCENE_INDEX_LOGIN);
+}
 
 void CatchMineMain::OperateInput()
 {
-	if (GetAsyncKeyState('Z') & 0x0001)
+	if (GetAsyncKeyState(VK_RETURN) & 0x0001)
 	{
-		PACKET_LOGIN packet;
-		packet.header.wIndex = PACKET_INDEX_SEND_LOGIN;
-		packet.header.wLen = sizeof(packet);
-		packet.id = 123;
-		send(MyScok, (const char*)&packet, packet.header.wLen, 0);
+		CurrentScene->OperateInput(INPUT_KEY_ENTER);
 	}
-	else if (GetKeyState(VK_UP) & 0x8000)
-	{
+}
 
-	}
-	else if (GetKeyState(VK_RIGHT) & 0x8000)
-	{
+void CatchMineMain::Render()
+{
+	HDC hdc = GetDC(mhWnd);
 
-	}
-	else if (GetKeyState(VK_DOWN) & 0x8000)
-	{
+	BitBlt(hMemDC[0], 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, hMemDC[1], 0, 0, SRCCOPY);
 
-	}
+	CurrentScene->Draw(hMemDC[0]);
+
+	BitBlt(hdc, 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, hMemDC[0], 0, 0, SRCCOPY);
+
+	ReleaseDC(mhWnd, hdc);
+
 }
 
 CatchMineMain::CatchMineMain()
@@ -35,8 +48,27 @@ CatchMineMain::CatchMineMain()
 CatchMineMain::CatchMineMain(HWND hWnd, SOCKET sock)
 {
 	mhWnd = hWnd;
-	MyScok = sock;
+	MySock = sock;
 	RecvLen = 0;
+
+	HDC hdc = GetDC(hWnd);
+
+	std::chrono::duration<float> sec = std::chrono::system_clock::now() - m_LastTime;
+	m_fElapseTime = sec.count();
+	m_LastTime = std::chrono::system_clock::now();
+
+	hMemDC[0] = CreateCompatibleDC(hdc);
+	hBitmap[0] = CreateCompatibleBitmap(hdc, SCREEN_WIDTH, SCREEN_HEIGHT);
+	hOld[0] = (HBITMAP)SelectObject(hMemDC[0], hBitmap[0]);
+
+	hMemDC[1] = CreateCompatibleDC(hMemDC[0]);
+	hBitmap[1] = (HBITMAP)LoadImage(NULL, "..\\Resource\\back_black.bmp", IMAGE_BITMAP, 0, 0
+		, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
+	hOld[1] = (HBITMAP)SelectObject(hMemDC[1], hBitmap[1]);
+
+
+	InitScene();
+	ReleaseDC(hWnd, hdc);
 }
 
 CatchMineMain::~CatchMineMain()
@@ -45,6 +77,7 @@ CatchMineMain::~CatchMineMain()
 
 void CatchMineMain::MouseLClick(LPARAM lParam)
 {
+	CurrentScene->MouseLClick(lParam);
 }
 
 void CatchMineMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -115,10 +148,16 @@ bool CatchMineMain::ProcessPacket(char * szBuf, int & len)
 	{
 	case PACKET_INDEX_SEND_LOGIN:
 	{
-		PACKET_LOGIN packet;
-		memcpy(&packet, szBuf, header.wLen);
-		cout << packet.id << endl;
+		PACKET_LOGIN_RES packet;
+		memcpy(&packet, RecvBuf, RecvLen);
+		cout << packet.IsLogin << endl;
+		cout << packet.Myindex << endl;
+		if (packet.IsLogin)
+			SceneChange(SCENE_INDEX_LOBBY);
 	}
+	break;
+	default:
+		CurrentScene->ProcessPacket(RecvBuf,RecvLen, header.wIndex);
 	break;
 	}
 
@@ -138,7 +177,9 @@ void CatchMineMain::Updata()
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
 
+	CurrentScene->Update(m_fElapseTime);
 
 	OperateInput();
+	Render();
 
 }
