@@ -2,13 +2,16 @@
 
 Room::Room()
 {
-	strcpy(RoomName,"한수");
+
 }
 
 
 Room::Room(int _index)
 {
 	index = _index;
+	strcpy(RoomName, "한수");
+	strcpy(HostId, "기본");
+	IsStart = false;
 }
 
 Room::~Room()

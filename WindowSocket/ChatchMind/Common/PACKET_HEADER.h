@@ -3,7 +3,7 @@
 #include <Windows.h>
 
 #define SHORT_BUFSIZE 20
-#define BUFSIZE 200
+#define LONG_BUFSIZE 200
 
 enum SCENE_INDEX
 {
@@ -17,6 +17,7 @@ enum PACKET_INDEX
 	PACKET_INDEX_SEND_LOGIN = 1,
 	PACKET_INDEX_SEND_DRAW_POINT,
 	PACKET_INDEX_SEND_LOBBY,
+	PACKET_INDEX_SEND_USER,
 	PACKET_INDEX_SEND_CHEAT,
 };
 enum CHARACTER_INDEX
@@ -31,15 +32,15 @@ struct PACKET_HEADER
 struct USER_DATA
 {
 	int index;
-	char id[SHORT_BUFSIZE];
 	int CharacterIndex;
+	char id[SHORT_BUFSIZE];
 };
 struct LOBBY_DATA
 {
 	int RoomIndex;
 	int UserSize;
 	bool IsStart;
-	char Title[BUFSIZE];
+	char Title[SHORT_BUFSIZE];
 	char Hostid[SHORT_BUFSIZE];
 };
 
@@ -59,18 +60,29 @@ struct PACKET_LOBBY_ENTER
 {
 	PACKET_HEADER header;
 };
+struct PACKET_USER_REQUEST
+{
+	PACKET_HEADER header;
+};
 struct PACKET_LOBBY_REFRESH
 {
 	PACKET_HEADER header;
-	USER_DATA User[SHORT_BUFSIZE];
+	int LobbySize;
 	LOBBY_DATA data[SHORT_BUFSIZE];
+};
+struct PACKET_ROOM_USER
+{
+	PACKET_HEADER header;
+	int MyIndex;
+	int UserSize;
+	USER_DATA User[SHORT_BUFSIZE];
 };
 struct PACKET_SEND_CHEAT
 {
 	PACKET_HEADER header;
 	int RoomIndex;
 	int StrLen;
-	char Buf[BUFSIZE];
+	char Buf[LONG_BUFSIZE];
 };
 
 #pragma pack()

@@ -1,4 +1,5 @@
 #include "LobbyScene.h"
+#include <iostream>
 #include <string>
 
 using namespace std;
@@ -26,7 +27,7 @@ void LobbyScene::RectRoomInit(HDC hdc)
 }
 void LobbyScene::RecvCheat(char * str)
 {
-	if (Cheat.size() == 7)
+	if (Cheat.size() == 10)
 	{
 		Cheat.pop_front();
 	}
@@ -49,6 +50,22 @@ void LobbyScene::SendCheat()
 	}
 }
 
+void LobbyScene::SendRequestLobbyData()
+{
+	PACKET_LOBBY_ENTER packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_LOBBY;
+	packet.header.wLen = sizeof(packet);
+	send(sock, (const char *)&packet, packet.header.wLen, 0);
+}
+
+void LobbyScene::SendRequestUserData()
+{
+	PACKET_USER_REQUEST packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_USER;
+	packet.header.wLen = sizeof(packet);
+	send(sock, (const char *)&packet, packet.header.wLen, 0);
+}
+
 
 LobbyScene::LobbyScene()
 {
@@ -66,7 +83,7 @@ LobbyScene::LobbyScene(HWND hWnd, SOCKET _sock)
 
 	//CheatEnter = new Button(hdc, CheatPos, CheatSize, "..\\..\\Resource\\Input.bmp");
 
-	Bitmap * LobbyScreen = new Bitmap(hdc, "..\\..\\Resource\\.bmp");
+	Bitmap * LobbyScreen = new Bitmap(hdc, "..\\Resource\\LobbyBackground.bmp");
 
 	Background = LobbyScreen;
 
@@ -96,9 +113,31 @@ void LobbyScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
 		}
 	}
 	break;
+	case PACKET_INDEX_SEND_LOBBY:
+	{
+		PACKET_LOBBY_REFRESH packet;
+		memcpy(&packet, szBuf, len);                                                
+		
+	
+
+	}
+	break;	
+	case PACKET_INDEX_SEND_USER:
+	{
+		PACKET_ROOM_USER packet;
+		memcpy(&packet, szBuf, len);                                                
+		
+		for (int i = 0; i < packet.UserSize; ++i)
+		{
+			User * pNew = new User(packet.User[i].index,packet.User[i].id);
+			UserInfo.insert(make_pair(packet.User[i].index,pNew));
+		}
+	}
+	break;
+
 	}
 
-}
+ }
 
 void LobbyScene::Update(float ElapseTime)
 {
@@ -107,6 +146,13 @@ void LobbyScene::Update(float ElapseTime)
 
 void LobbyScene::Draw(HDC hdc)
 {
+	Background->BufferDraw(hdc, 0, 0);
+
+	int i = 1;
+	for (auto iter = Cheat.rbegin(); iter != Cheat.rend(); ++iter, ++i)
+	{
+		TextOut(hdc, CheatEditPos.x, CheatEditPos.y - 20 * i, iter->c_str(), strlen(iter->c_str()));
+	}
 }
 
 void LobbyScene::MouseLClick(LPARAM lParam)
@@ -118,7 +164,9 @@ void LobbyScene::SceneStart(HWND hWnd)
 	HINSTANCE hinst = GetModuleHandle(NULL);
 	CheatEdit = CreateWindow("edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
 		ES_AUTOHSCROLL, CheatEditPos.x, CheatEditPos.y, CHEATEditSize.cx, CHEATEditSize.cy, hWnd, (HMENU)CHEAT_EDIT, hinst, NULL);
-
+	
+	SendRequestLobbyData();
+	SendRequestUserData();
 }
 
 void LobbyScene::SceneEnd(HWND hWnd)
@@ -128,4 +176,12 @@ void LobbyScene::SceneEnd(HWND hWnd)
 
 void LobbyScene::OperateInput(int InputKey)
 {
+	switch (InputKey)
+	{
+	case INPUT_KEY_ENTER:
+	{
+		SendCheat();
+	}
+	break;
+	}
 }

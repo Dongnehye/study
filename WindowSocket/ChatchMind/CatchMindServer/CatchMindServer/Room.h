@@ -7,9 +7,12 @@ using namespace std;
 
 class Room
 {
+public:
 	int index;
 	char RoomName[SHORT_BUFSIZE];
+	char HostId[SHORT_BUFSIZE];
 	
+	bool IsStart;
 	map<SOCKET, User*> MapUser;
 	Room();
 public:

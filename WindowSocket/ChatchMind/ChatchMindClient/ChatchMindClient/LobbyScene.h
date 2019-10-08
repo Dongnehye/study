@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "PACKET_HEADER.h"
+#include "User.h"
 #include <map>
 #include <list>
 
@@ -10,19 +11,23 @@ class LobbyScene :
 	public Scene
 {
 	std::list<std::string> Cheat;
+	//std::map<int, LOBBY_DATA_INFO*> RoomInfo;
+	std::map<int, User*> UserInfo;
 
 	HWND CheatEdit;
 	char Cheatstr[BUFSIZE];
 
-	POINT CheatEditPos{ 30,850 };
+	POINT CheatEditPos{ 70,850 };
 
-	SIZE CHEATEditSize{ 350,30 };
+	SIZE CHEATEditSize{ 650,20 };
 
 	void RectRoomInit(HDC hdc);
 
 	void RecvCheat(char * str);
 
 	void SendCheat();
+	void SendRequestLobbyData();
+	void SendRequestUserData();
 
 	LobbyScene();
 public:

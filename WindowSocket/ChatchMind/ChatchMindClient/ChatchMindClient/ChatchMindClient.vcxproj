@@ -149,6 +149,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RoomScene.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="User.cpp" />
     <ClCompile Include="WinSocketMain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -161,6 +162,7 @@
     <ClInclude Include="LoginScene.h" />
     <ClInclude Include="RoomScene.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="User.h" />
     <ClInclude Include="WinSocketMain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

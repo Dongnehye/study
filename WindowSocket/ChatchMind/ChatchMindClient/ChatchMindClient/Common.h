@@ -4,6 +4,8 @@
 #define SCREEN_HEIGHT 960
 
 #define BUFSIZE 512
+#define SHORT_BUFSIZE 20
+#define LONG_BUFSIZE 200
 
 #define FPS 60
 

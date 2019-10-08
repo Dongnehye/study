@@ -13,6 +13,7 @@ public:
 	int len;
 
 	int RoomIndex;
+	int CharacterIndex;
 	char id[SHORT_BUFSIZE];
 
 	User();

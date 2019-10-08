@@ -34,7 +34,6 @@ void err_display(const char * szMsg)
 
 int main(int argc, char * args[])
 {
-	int retval;
 	WinSocketMain * WinSocket = new WinSocketMain();
 
 	WinSocket->CreateSocket();
