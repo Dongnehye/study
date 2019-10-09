@@ -79,6 +79,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 		MainGame->MouseLClick(lParam);
 		return 0;
+	case WM_COMMAND:
+		MainGame->WindowsCommand(wParam);
+		return 0;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;

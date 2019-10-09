@@ -14,4 +14,5 @@ public:
 	virtual ~User();
 
 	void Reset();
+	char * Getid();
 };

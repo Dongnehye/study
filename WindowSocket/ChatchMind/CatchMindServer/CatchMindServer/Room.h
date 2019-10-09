@@ -1,6 +1,7 @@
 #pragma once
 #include "Common.h"
 #include "User.h"
+#include "PACKET_HEADER.h"
 #include <map>
 
 using namespace std;
@@ -19,5 +20,9 @@ public:
 	Room(int index);
 	virtual ~Room();
 
-	void AddUser(SOCKET sock, User * pUser);
+	bool AddUser(SOCKET sock, User * pUser);
+	bool ExitUser(SOCKET sock, User * pUser);
+
+	void SendUserData(SOCKET sock);
+	void AllSendUserData(SOCKET sock);
 };

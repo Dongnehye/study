@@ -34,10 +34,33 @@ void CatchMineMain::Render()
 
 	CurrentScene->Draw(hMemDC[0]);
 
+	//Debug
+	DebugRender(hMemDC[0]);
+
 	BitBlt(hdc, 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, hMemDC[0], 0, 0, SRCCOPY);
 
 	ReleaseDC(mhWnd, hdc);
 
+}
+
+void CatchMineMain::DebugMouse(LPARAM lParam)
+{
+	DebugMousePoint.x = LOWORD(lParam);
+	DebugMousePoint.y = HIWORD(lParam);
+
+	itoa(DebugMousePoint.x, MouseBufferx, 10);
+	itoa(DebugMousePoint.y, MouseBuffery, 10);
+}
+
+void CatchMineMain::DebugUpdate()
+{
+
+}
+
+void CatchMineMain::DebugRender(HDC hdc)
+{
+	TextOut(hdc, 0, 0, MouseBufferx, strlen(MouseBufferx));
+	TextOut(hdc, 0, 30, MouseBuffery, strlen(MouseBuffery));
 }
 
 CatchMineMain::CatchMineMain()
@@ -49,7 +72,8 @@ CatchMineMain::CatchMineMain(HWND hWnd, SOCKET sock)
 {
 	mhWnd = hWnd;
 	MySock = sock;
-	RecvLen = 0;
+	RecvLen = NULL;
+	MyIndex = NULL;
 
 	HDC hdc = GetDC(hWnd);
 
@@ -78,6 +102,12 @@ CatchMineMain::~CatchMineMain()
 void CatchMineMain::MouseLClick(LPARAM lParam)
 {
 	CurrentScene->MouseLClick(lParam);
+	DebugMouse(lParam);
+}
+
+void CatchMineMain::WindowsCommand(WPARAM wParam)
+{
+	CurrentScene->WindowsCommand(wParam);
 }
 
 void CatchMineMain::ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -150,10 +180,21 @@ bool CatchMineMain::ProcessPacket(char * szBuf, int & len)
 	{
 		PACKET_LOGIN_RES packet;
 		memcpy(&packet, RecvBuf, RecvLen);
-		cout << packet.IsLogin << endl;
-		cout << packet.Myindex << endl;
+		cout << packet.Myindex << ": MyIndex" << endl;
+		MyIndex = packet.Myindex;
 		if (packet.IsLogin)
+		{
 			SceneChange(SCENE_INDEX_LOBBY);
+			CurrentScene->SetMyIndex(MyIndex);
+		}
+	}
+	break;
+	case PACKET_INDEX_SEND_ENTER_ROOM:
+	{
+		PACKET_LOGIN_RES packet;
+		memcpy(&packet, RecvBuf, RecvLen);		
+		SceneChange(SCENE_INDEX_ROOM);
+		CurrentScene->SetMyIndex(MyIndex);
 	}
 	break;
 	default:
@@ -176,6 +217,8 @@ void CatchMineMain::Updata()
 	}
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
+
+
 
 	CurrentScene->Update(m_fElapseTime);
 

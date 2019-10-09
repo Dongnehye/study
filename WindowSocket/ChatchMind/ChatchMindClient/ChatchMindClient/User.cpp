@@ -26,3 +26,8 @@ void User::Reset()
 	IsTurn = false;
 	Score = 0;;
 }
+
+char * User::Getid()
+{
+	return id;
+}

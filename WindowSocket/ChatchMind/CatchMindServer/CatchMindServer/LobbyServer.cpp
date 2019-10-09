@@ -64,7 +64,7 @@ void LobbyServer::SendCheat(SOCKET sock, char * Buf, int len)
 		}
 	}
 }
-//(sizeof(USER_DATA::CharacterIndex) + sizeof(USER_DATA::index) + sizeof(char) * 20) * MapUser.size()
+
 void LobbyServer::SendLobbyData(SOCKET sock)
 {
 	PACKET_LOBBY_REFRESH packet;
@@ -89,17 +89,17 @@ void LobbyServer::SendLobbyData(SOCKET sock)
 
 void LobbyServer::SendUserData(SOCKET sock)
 {
-	PACKET_ROOM_USER packet;
-	packet.header.wIndex = PACKET_INDEX_SEND_USER;
+	PACKET_ROOM_ALLUSER packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_ALLUSER;
 	packet.header.wLen = sizeof(packet.header) +
-		(sizeof(PACKET_ROOM_USER::MyIndex) + sizeof(PACKET_ROOM_USER::UserSize)
+		(sizeof(PACKET_ROOM_ALLUSER::MyIndex) + sizeof(PACKET_ROOM_ALLUSER::UserSize)
 			+ sizeof(char) * SHORT_BUFSIZE) * MapUser.size();
 	int i = 0;
 	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter, ++i)
 	{
-		packet.User[i].index = iter->second->Index;
-		packet.User[i].CharacterIndex = iter->second->CharacterIndex;
-		strcpy(packet.User[i].id, iter->second->id);
+		packet.data[i].index = iter->second->Index;
+		packet.data[i].CharacterIndex = iter->second->CharacterIndex;
+		strcpy(packet.data[i].id, iter->second->id);
 	}
 	packet.UserSize = MapUser.size();
 	packet.MyIndex = MapUser[sock]->Index;
@@ -107,10 +107,50 @@ void LobbyServer::SendUserData(SOCKET sock)
 	send(sock, (const char*)&packet, packet.header.wLen, 0);
 }
 
+void LobbyServer::SendRoomUserData(SOCKET sock)
+{
+	Room * pRoom = MapRoom[MapUser[sock]->RoomIndex];
+	pRoom->SendUserData(sock);
+}
+
+void LobbyServer::AllSendUserData(SOCKET sock)
+{
+	PACKET_ROOM_USER packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_USER;
+	packet.header.wLen = sizeof(packet.header) +
+		(sizeof(PACKET_ROOM_USER::MyIndex) + sizeof(char) * SHORT_BUFSIZE);
+
+	packet.data.index = MapUser[sock]->Index;
+	packet.data.CharacterIndex = MapUser[sock]->CharacterIndex;
+	strcpy(packet.data.id, MapUser[sock]->id);
+	packet.MyIndex = MapUser[sock]->Index;
+
+	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+	{
+		if(iter->first != sock)
+			send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+	}
+}
+
 void LobbyServer::SendRoomEnter(SOCKET sock, char * Buf, int len)
 {
+	PACKET_SEND_ENTER_ROOM packet;
+	memcpy(&packet, Buf, len);
 
+	MapUser[sock]->RoomIndex = packet.RoomIndex;
+	Room * pRoom = MapRoom[packet.RoomIndex];
+	if (pRoom->AddUser(sock, MapUser[sock]))
+	{
+		cout << pRoom->index << ": 立加肯丰" << sock << endl;
+	}
+	else
+	{
+		cout << pRoom->index << ": 立加角菩" << sock << endl;
+	}
+	packet.RoomIndex = pRoom->index;
+	send(sock, Buf, len, 0);
 
+	pRoom->AllSendUserData(sock);
 }
 
 void LobbyServer::CheckRoomReady(SOCKET sock, char * Buf, int len)
@@ -120,12 +160,14 @@ void LobbyServer::CheckRoomReady(SOCKET sock, char * Buf, int len)
 
 void LobbyServer::DisconnectPlayer(SOCKET sock)
 {
-
+	/*MapRoom[MapUser[sock]->RoomIndex]->DisconnectPlayer(sock);
+	MapRoom[MapUser[sock]->RoomIndex]->UserSIze -= 1;*/
+	MapUser.erase(sock);
 }
 
 void LobbyServer::ExitPlayer(SOCKET sock)
 {
-
+	//MapRoom[MapUser[sock]->RoomIndex]->
 }
 
 void LobbyServer::ProcessPacket(SOCKET sock, User * pUser,DWORD PacketIndex)
@@ -140,11 +182,27 @@ void LobbyServer::ProcessPacket(SOCKET sock, User * pUser,DWORD PacketIndex)
 	case PACKET_INDEX_SEND_LOBBY:
 	{
 		SendLobbyData(sock);
+		AllSendUserData(sock);
 	}
 	break;	
-	case PACKET_INDEX_SEND_USER:
+	case PACKET_INDEX_SEND_ALLUSER:
 	{
 		SendUserData(sock);
+	}
+	break;
+	case PACKET_INDEX_SEND_ENTER_ROOM:
+	{
+		SendRoomEnter(sock, pUser->buf, pUser->len);
+	}
+	break;	
+	case PACKET_INDEX_SEND_ROOM_ALLUSER:
+	{
+		SendRoomUserData(sock);
+	}
+	break;
+	case PACKET_INDEX_SEND_EXIT_ROOM:
+	{
+		ExitPlayer(sock);
 	}
 	break;
 	}

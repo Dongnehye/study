@@ -32,6 +32,7 @@ public:
 	virtual void Update(float ElapseTime);
 	virtual void Draw(HDC hdc);
 	virtual void MouseLClick(LPARAM lParam);
+	virtual void WindowsCommand(WPARAM wParam);
 	virtual void SceneStart(HWND hWnd);
 	virtual void SceneEnd(HWND hWnd);
 

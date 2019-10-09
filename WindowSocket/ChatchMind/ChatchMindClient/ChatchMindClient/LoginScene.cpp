@@ -17,6 +17,7 @@ LoginScene::LoginScene(HWND hWnd, SOCKET _sock)
 {
 	HDC hdc = GetDC(hWnd);
 	sock = _sock;
+	SetMyIndex(NULL);
 	Idstr[SHORT_BUFSIZE] = '\0';
 	Pwstr[SHORT_BUFSIZE] = '\0';
 
@@ -61,6 +62,10 @@ void LoginScene::MouseLClick(LPARAM lParam)
 
 	if (LoginButton->ButtonPress(MousePoint))
 		SendLogin();
+}
+
+void LoginScene::WindowsCommand(WPARAM wParam)
+{
 }
 
 void LoginScene::SceneStart(HWND hWnd)

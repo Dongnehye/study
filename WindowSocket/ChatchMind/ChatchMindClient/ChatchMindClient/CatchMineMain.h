@@ -12,6 +12,7 @@ class CatchMineMain
 {
 	HWND mhWnd;
 	SOCKET MySock;
+	int MyIndex;
 
 	char RecvBuf[BUFSIZE];
 	int RecvLen;
@@ -33,12 +34,20 @@ class CatchMineMain
 	void OperateInput();
 	void Render();
 
+	char MouseBufferx[20];
+	char MouseBuffery[20];
+	POINT DebugMousePoint{0,0};
+	void DebugMouse(LPARAM lParam);
+	void DebugUpdate();
+	void DebugRender(HDC hdc);
+
 	CatchMineMain();
 public:
 	CatchMineMain(HWND hWnd, SOCKET sock);
 	~CatchMineMain();
 
 	void MouseLClick(LPARAM lParam);
+	void WindowsCommand(WPARAM wParam);
 	void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	bool ProcessPacket(char* szBuf, int & len);
 

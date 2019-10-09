@@ -4,27 +4,6 @@
 
 using namespace std;
 
-void LobbyScene::RectRoomInit(HDC hdc)
-{
-	SIZE Anchor{ 50, 100 };
-	SIZE Room{ 180,250 };
-	SIZE blank{ 10,10 };
-
-	POINT StartPos{ Anchor.cx ,Anchor.cy };
-
-	//for (int i = 0; i < ROOMSIZE; ++i)
-	//{
-	//	if (i == ROOMSIZE / 2)
-	//	{
-	//		StartPos.x = Anchor.cx;
-	//		StartPos.y += blank.cy + Room.cy;
-	//	}
-
-	//	RoomButton[i] = new Button(hdc, StartPos, Room, "..\\..\\Resource\\Room.bmp");
-
-	//	StartPos.x += (blank.cx + Room.cx);
-	//}
-}
 void LobbyScene::RecvCheat(char * str)
 {
 	if (Cheat.size() == 10)
@@ -61,9 +40,19 @@ void LobbyScene::SendRequestLobbyData()
 void LobbyScene::SendRequestUserData()
 {
 	PACKET_USER_REQUEST packet;
-	packet.header.wIndex = PACKET_INDEX_SEND_USER;
+	packet.header.wIndex = PACKET_INDEX_SEND_ALLUSER;
 	packet.header.wLen = sizeof(packet);
 	send(sock, (const char *)&packet, packet.header.wLen, 0);
+}
+
+void LobbyScene::SendRoomEnter(int RoomIndex)
+{
+	PACKET_SEND_ENTER_ROOM packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_ENTER_ROOM;
+	packet.header.wLen = sizeof(packet);
+	packet.RoomIndex = RoomIndex;
+
+	send(sock, (const char*)&packet, sizeof(packet), 0);
 }
 
 
@@ -75,13 +64,10 @@ LobbyScene::LobbyScene()
 LobbyScene::LobbyScene(HWND hWnd, SOCKET _sock)
 {
 	HDC hdc = GetDC(hWnd);
-	RectRoomInit(hdc);
 	sock = _sock;
 
 	POINT CheatPos{ 400,850 };
 	SIZE CheatSize{ 90,30 };
-
-	//CheatEnter = new Button(hdc, CheatPos, CheatSize, "..\\..\\Resource\\Input.bmp");
 
 	Bitmap * LobbyScreen = new Bitmap(hdc, "..\\Resource\\LobbyBackground.bmp");
 
@@ -118,23 +104,44 @@ void LobbyScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
 		PACKET_LOBBY_REFRESH packet;
 		memcpy(&packet, szBuf, len);                                                
 		
-	
-
+		for (int i = 0; i < packet.LobbySize; ++i)
+		{
+			LOBBY_DATA * pNew = new LOBBY_DATA;
+			strcpy(pNew->Title, packet.data[i].Title);
+			strcpy(pNew->Hostid, packet.data[i].Hostid);
+			pNew->RoomIndex = packet.data[i].RoomIndex;
+			pNew->IsStart = packet.data[i].IsStart;
+			
+			RoomInfo.insert(make_pair(packet.data[i].RoomIndex, pNew));
+			ListBoxRoomIndex.insert(make_pair(i, packet.data[i].RoomIndex));
+		}
+		for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); ++iter)
+		{
+			SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)iter->second->Title);
+		}
 	}
 	break;	
-	case PACKET_INDEX_SEND_USER:
+	case PACKET_INDEX_SEND_ALLUSER:
 	{
-		PACKET_ROOM_USER packet;
+		PACKET_ROOM_ALLUSER packet;
 		memcpy(&packet, szBuf, len);                                                
 		
 		for (int i = 0; i < packet.UserSize; ++i)
 		{
-			User * pNew = new User(packet.User[i].index,packet.User[i].id);
-			UserInfo.insert(make_pair(packet.User[i].index,pNew));
+			User * pNew = new User(packet.data[i].index,packet.data[i].id);
+			UserInfo.insert(make_pair(packet.data[i].index,pNew));
 		}
 	}
 	break;
+	case PACKET_INDEX_SEND_USER:
+	{
+		PACKET_ROOM_USER packet;
+		memcpy(&packet, szBuf, len);
 
+		User * pNew = new User(packet.data.index, packet.data.id);
+		UserInfo.insert(make_pair(packet.data.index, pNew));
+	}
+	break;
 	}
 
  }
@@ -153,10 +160,32 @@ void LobbyScene::Draw(HDC hdc)
 	{
 		TextOut(hdc, CheatEditPos.x, CheatEditPos.y - 20 * i, iter->c_str(), strlen(iter->c_str()));
 	}
+	i = 0;
+	for (auto iter = UserInfo.begin(); iter != UserInfo.end(); ++iter, ++i)
+	{
+		TextOut(hdc, PlayerListPos.x, PlayerListPos.y + 20 * i, iter->second->Getid(), strlen(iter->second->Getid()));
+	}
+	for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); ++iter, ++i)
+	{
+		TextOut(hdc, RoomListPos.x, RoomListPos.y + 20 * i, iter->second->Title, strlen(iter->second->Title));
+	}
 }
 
 void LobbyScene::MouseLClick(LPARAM lParam)
 {
+}
+
+void LobbyScene::WindowsCommand(WPARAM wParam)
+{
+	switch (LOWORD(wParam)) {
+	case ID_LISTBOX:
+		switch (HIWORD(wParam)) {
+		case LBN_DBLCLK:
+			int ListIndex = SendMessage(hList, LB_GETCURSEL, 0, 0);
+			SendRoomEnter(ListBoxRoomIndex[ListIndex]);
+			break;
+		}
+	}
 }
 
 void LobbyScene::SceneStart(HWND hWnd)
@@ -165,6 +194,10 @@ void LobbyScene::SceneStart(HWND hWnd)
 	CheatEdit = CreateWindow("edit", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
 		ES_AUTOHSCROLL, CheatEditPos.x, CheatEditPos.y, CHEATEditSize.cx, CHEATEditSize.cy, hWnd, (HMENU)CHEAT_EDIT, hinst, NULL);
 	
+	hList = CreateWindow("listbox", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
+		LBS_NOTIFY, 10, 10, 100, 200, hWnd, (HMENU)ID_LISTBOX, hinst, NULL);
+
+
 	SendRequestLobbyData();
 	SendRequestUserData();
 }
@@ -172,6 +205,7 @@ void LobbyScene::SceneStart(HWND hWnd)
 void LobbyScene::SceneEnd(HWND hWnd)
 {
 	DestroyWindow(CheatEdit);
+	DestroyWindow(hList);
 }
 
 void LobbyScene::OperateInput(int InputKey)

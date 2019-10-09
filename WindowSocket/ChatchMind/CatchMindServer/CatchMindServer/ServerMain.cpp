@@ -183,6 +183,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & le
 
 void ServerMain::EraseSocket(SOCKET sock)
 {
+	Lobby->DisconnectPlayer(sock);
 	delete MapUser[sock];
 	MapUser.erase(sock);
 }
