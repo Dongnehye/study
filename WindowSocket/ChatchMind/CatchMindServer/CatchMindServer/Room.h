@@ -14,6 +14,7 @@ public:
 	char HostId[SHORT_BUFSIZE];
 	
 	bool IsStart;
+	map<int, SOCKET> UserOrder;
 	map<SOCKET, User*> MapUser;
 	Room();
 public:

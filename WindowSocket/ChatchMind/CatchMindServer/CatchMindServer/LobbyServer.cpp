@@ -95,12 +95,14 @@ void LobbyServer::SendUserData(SOCKET sock)
 		(sizeof(PACKET_ROOM_ALLUSER::MyIndex) + sizeof(PACKET_ROOM_ALLUSER::UserSize)
 			+ sizeof(char) * SHORT_BUFSIZE) * MapUser.size();
 	int i = 0;
-	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter, ++i)
+	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
 	{
 		packet.data[i].index = iter->second->Index;
 		packet.data[i].CharacterIndex = iter->second->CharacterIndex;
 		strcpy(packet.data[i].id, iter->second->id);
+		++i;	
 	}
+
 	packet.UserSize = MapUser.size();
 	packet.MyIndex = MapUser[sock]->Index;
 
@@ -167,7 +169,7 @@ void LobbyServer::DisconnectPlayer(SOCKET sock)
 
 void LobbyServer::ExitPlayer(SOCKET sock)
 {
-	//MapRoom[MapUser[sock]->RoomIndex]->
+	MapRoom[MapUser[sock]->RoomIndex]->ExitUser(sock, MapUser[sock]);
 }
 
 void LobbyServer::ProcessPacket(SOCKET sock, User * pUser,DWORD PacketIndex)

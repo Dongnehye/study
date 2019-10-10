@@ -17,6 +17,12 @@ void Scene::SetMyIndex(int _MyIndex)
 {
 	MyIndex = _MyIndex;
 }
+void Scene::MouseMove(LPARAM lParam)
+{
+}
+void Scene::MouseLClickUp(LPARAM lParam)
+{
+}
 Scene* Scene::SceneChange(Scene * PreviousScene, HWND hWnd)
 {
 	if (PreviousScene != nullptr)

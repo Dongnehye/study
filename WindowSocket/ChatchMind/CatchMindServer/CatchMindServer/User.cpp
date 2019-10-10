@@ -4,9 +4,10 @@
 
 User::User()
 {
-	len = 0;
-	RoomIndex = 0;
+	len = NULL;
+	RoomIndex = NULL;
 	CharacterIndex = 0;
+	MyIndexRoom = NULL;
 }
 
 

@@ -12,6 +12,7 @@ public:
 	int Index;
 	int len;
 
+	int MyIndexRoom;
 	int RoomIndex;
 	int CharacterIndex;
 	char id[SHORT_BUFSIZE];

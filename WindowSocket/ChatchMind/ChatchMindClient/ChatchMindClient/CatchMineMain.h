@@ -47,6 +47,8 @@ public:
 	~CatchMineMain();
 
 	void MouseLClick(LPARAM lParam);
+	void MouseLMOVE(LPARAM lParam);
+	void MouseLClickUP(LPARAM lParam);
 	void WindowsCommand(WPARAM wParam);
 	void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	bool ProcessPacket(char* szBuf, int & len);

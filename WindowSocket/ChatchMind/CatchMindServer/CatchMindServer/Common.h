@@ -4,6 +4,8 @@
 #define BUFSIZE 512
 #define SHORT_BUFSIZE 20
 
+#define LOBBYINDEX 0
+
 struct SOCKETINFO
 {
 	WSAOVERLAPPED overlapped;

@@ -20,17 +20,47 @@ Room::~Room()
 
 bool Room::AddUser(SOCKET sock, User * pUser)
 {
-	if (MapUser.size() <= 8)
+	MapUser.insert(make_pair(sock, pUser));
+	pUser->RoomIndex = index;
+
+	int i = 0;
+	for (; i < MapUser.size(); ++i)
 	{
-		MapUser.insert(make_pair(sock, pUser));
-		pUser->RoomIndex = index;
-		return true;
+		if (UserOrder.find(i) == UserOrder.end())
+		{
+			UserOrder.insert(make_pair(i, sock));
+			MapUser[sock]->MyIndexRoom = i;
+			return true;
+		}
 	}
-	return false;
+	UserOrder.insert(make_pair(i, sock));
+
+	return true;
 }
 
 bool Room::ExitUser(SOCKET sock, User * pUser)
 {
+	if (MapUser.find(sock) != MapUser.end())
+	{
+		MapUser[sock]->RoomIndex = LOBBYINDEX;
+		UserOrder.erase(MapUser[sock]->MyIndexRoom);
+		MapUser.erase(sock);
+
+		PACKET_SEND_EXIT_ROOM packet;
+		packet.header.wIndex = PACKET_INDEX_SEND_EXIT_ROOM;
+		packet.header.wLen = sizeof(packet);
+		packet.Index = pUser->MyIndexRoom;
+		send(sock, (const char*)&packet, packet.header.wLen, 0);
+
+		packet.header.wIndex = PACKET_INDEX_SEND_OTHER_EXIT_ROOM;
+		
+		for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+		{
+			if (iter->first != sock)
+				send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+		}	
+		return true;
+	}
 	return false;
 }
 
@@ -42,15 +72,17 @@ void Room::SendUserData(SOCKET sock)
 	packet.header.wIndex = PACKET_INDEX_SEND_ALLUSER;
 	packet.header.wLen = sizeof(packet.header) + sizeof(PACKET_SEND_ENTER_ROOM_RES::UserSize)
 		+ sizeof(PACKET_SEND_ENTER_ROOM_RES::RoomIndex)
+		+ sizeof(PACKET_SEND_ENTER_ROOM_RES::MyIndex)
 		+ sizeof(USER_DATA) * UserSize;
 	packet.RoomIndex = index;
 	packet.UserSize = UserSize;
+	packet.MyIndex = MapUser[sock]->MyIndexRoom;
 
 	int i = 0;
 	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter, ++i)
 	{
 		strcpy(packet.data[i].id, iter->second->id);
-		packet.data[i].index = iter->second->Index;
+		packet.data[i].index = iter->second->MyIndexRoom;
 		packet.data[i].CharacterIndex = iter->second->CharacterIndex;
 	}
 	send(sock, (const char *)&packet, packet.header.wLen, 0);
@@ -63,10 +95,10 @@ void Room::AllSendUserData(SOCKET sock)
 	packet.header.wLen = sizeof(packet.header) +
 		(sizeof(PACKET_ROOM_USER::MyIndex) + sizeof(char) * SHORT_BUFSIZE);
 
-	packet.data.index = MapUser[sock]->Index;
+	packet.data.index = MapUser[sock]->MyIndexRoom;
 	packet.data.CharacterIndex = MapUser[sock]->CharacterIndex;
 	strcpy(packet.data.id, MapUser[sock]->id);
-	packet.MyIndex = MapUser[sock]->Index;
+	packet.MyIndex = MapUser[sock]->MyIndexRoom;
 
 	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
 	{

@@ -25,6 +25,9 @@ class LobbyScene :
 	POINT CheatEditPos{ 70,850 };
 	SIZE CHEATEditSize{ 650,20 };
 
+	POINT RoomListEditPos{ 65,169 };
+	SIZE RoomListEditSize{ 712,420 };
+
 	POINT PlayerListPos{ 920,170 };
 	POINT RoomListPos{ 200,150 };
 

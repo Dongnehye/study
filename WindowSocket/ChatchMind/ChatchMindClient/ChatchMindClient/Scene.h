@@ -23,6 +23,10 @@ public:
 	virtual void SceneStart(HWND hWnd) = 0;
 	virtual void SceneEnd(HWND hWnd) = 0;
 	virtual void OperateInput(int InputKey) = 0;
+
+	virtual void MouseMove(LPARAM lParam);
+	virtual void MouseLClickUp(LPARAM lParam);
+
 	Scene * SceneChange(Scene * PreviousScene, HWND hWnd);
 };
 

@@ -173,6 +173,7 @@ void LobbyScene::Draw(HDC hdc)
 
 void LobbyScene::MouseLClick(LPARAM lParam)
 {
+
 }
 
 void LobbyScene::WindowsCommand(WPARAM wParam)
@@ -195,7 +196,7 @@ void LobbyScene::SceneStart(HWND hWnd)
 		ES_AUTOHSCROLL, CheatEditPos.x, CheatEditPos.y, CHEATEditSize.cx, CHEATEditSize.cy, hWnd, (HMENU)CHEAT_EDIT, hinst, NULL);
 	
 	hList = CreateWindow("listbox", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
-		LBS_NOTIFY, 10, 10, 100, 200, hWnd, (HMENU)ID_LISTBOX, hinst, NULL);
+		LBS_NOTIFY, RoomListEditPos.x, RoomListEditPos.y, RoomListEditSize.cx, RoomListEditSize.cy, hWnd, (HMENU)ID_LISTBOX, hinst, NULL);
 
 
 	SendRequestLobbyData();
@@ -204,6 +205,22 @@ void LobbyScene::SceneStart(HWND hWnd)
 
 void LobbyScene::SceneEnd(HWND hWnd)
 {
+	Cheat.clear();
+
+	//for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); ++iter)
+	//{
+	//	delete iter->second;
+	//}
+	//RoomInfo.clear();
+
+	//ListBoxRoomIndex.clear();
+
+	for (auto iter = UserInfo.begin(); iter != UserInfo.end(); ++iter)
+	{
+		delete iter->second;
+	}
+	UserInfo.clear();
+
 	DestroyWindow(CheatEdit);
 	DestroyWindow(hList);
 }

@@ -105,6 +105,16 @@ void CatchMineMain::MouseLClick(LPARAM lParam)
 	DebugMouse(lParam);
 }
 
+void CatchMineMain::MouseLMOVE(LPARAM lParam)
+{
+	CurrentScene->MouseMove(lParam);
+}
+
+void CatchMineMain::MouseLClickUP(LPARAM lParam)
+{
+	CurrentScene->MouseLClickUp(lParam);
+}
+
 void CatchMineMain::WindowsCommand(WPARAM wParam)
 {
 	CurrentScene->WindowsCommand(wParam);
@@ -194,6 +204,13 @@ bool CatchMineMain::ProcessPacket(char * szBuf, int & len)
 		PACKET_LOGIN_RES packet;
 		memcpy(&packet, RecvBuf, RecvLen);		
 		SceneChange(SCENE_INDEX_ROOM);
+	}
+	break;	
+	case PACKET_INDEX_SEND_EXIT_ROOM:
+	{
+		PACKET_SEND_EXIT_ROOM packet;
+		memcpy(&packet, RecvBuf, RecvLen);		
+		SceneChange(SCENE_INDEX_LOBBY);
 		CurrentScene->SetMyIndex(MyIndex);
 	}
 	break;

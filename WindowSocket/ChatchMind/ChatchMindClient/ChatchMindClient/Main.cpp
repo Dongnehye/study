@@ -79,6 +79,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONDOWN:
 		MainGame->MouseLClick(lParam);
 		return 0;
+	case WM_MOUSEMOVE:
+		MainGame->MouseLMOVE(lParam);
+		return 0;
+	case WM_LBUTTONUP:
+		MainGame->MouseLClickUP(lParam);
+		return 0;
 	case WM_COMMAND:
 		MainGame->WindowsCommand(wParam);
 		return 0;
