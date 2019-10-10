@@ -3,6 +3,7 @@
 #include "User.h"
 #include "PACKET_HEADER.h"
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -16,6 +17,7 @@ public:
 	bool IsStart;
 	map<int, SOCKET> UserOrder;
 	map<SOCKET, User*> MapUser;
+	vector<DRAWLINE> VecLine;
 	Room();
 public:
 	Room(int index);
@@ -23,6 +25,9 @@ public:
 
 	bool AddUser(SOCKET sock, User * pUser);
 	bool ExitUser(SOCKET sock, User * pUser);
+
+	void AddLine(int x0, int y0,int x1, int y1, int Color);
+	void EchoLine(SOCKET sock, DRAWLINE Line);
 
 	void SendUserData(SOCKET sock);
 	void AllSendUserData(SOCKET sock);

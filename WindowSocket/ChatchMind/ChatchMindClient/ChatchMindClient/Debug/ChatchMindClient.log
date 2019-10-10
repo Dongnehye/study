@@ -1,37 +1,8 @@
 ﻿  CatchMineMain.cpp
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\roomscene.h(9): warning C4005: 'CHEAT_EDIT': 매크로 재정의
-  c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\lobbyscene.h(9): note: 'CHEAT_EDIT'의 이전 정의를 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\catchminemain.cpp(51): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
+d:\neople\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\roomscene.h(9): warning C4005: 'CHEAT_EDIT': 매크로 재정의
+  d:\neople\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\lobbyscene.h(9): note: 'CHEAT_EDIT'의 이전 정의를 참조하십시오.
+d:\neople\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\catchminemain.cpp(52): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdlib.h(1323): note: 'itoa' 선언을 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\catchminemain.cpp(52): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
+d:\neople\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\catchminemain.cpp(53): warning C4996: 'itoa': The POSIX name for this item is deprecated. Instead, use the ISO C and C++ conformant name: _itoa. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdlib.h(1323): note: 'itoa' 선언을 참조하십시오.
-  LobbyScene.cpp
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\lobbyscene.cpp(27): warning C4267: '=': 'size_t'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\lobbyscene.cpp(26): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\lobbyscene.cpp(110): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\lobbyscene.cpp(111): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-  LoginScene.cpp
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\loginscene.cpp(11): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\loginscene.cpp(12): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-  Main.cpp
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\roomscene.h(9): warning C4005: 'CHEAT_EDIT': 매크로 재정의
-  c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\lobbyscene.h(9): note: 'CHEAT_EDIT'의 이전 정의를 참조하십시오.
-  RoomScene.cpp
-  Scene.cpp
-  User.cpp
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\user.cpp(17): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-  WinSocketMain.cpp
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\winsocketmain.cpp(26): warning C4996: 'WSAAsyncSelect': Use WSAEventSelect() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(2679): note: 'WSAAsyncSelect' 선언을 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\winsocketmain.cpp(58): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(1830): note: 'inet_addr' 선언을 참조하십시오.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\winsocketmain.cpp(123): warning C4996: 'WSAAsyncSelect': Use WSAEventSelect() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\um\winsock2.h(2679): note: 'WSAAsyncSelect' 선언을 참조하십시오.
-  코드를 생성하고 있습니다...
-  ChatchMindClient.vcxproj -> C:\Users\Administrator\Documents\repo\study\WindowSocket\ChatchMind\ChatchMindClient\Debug\ChatchMindClient.exe
+  ChatchMindClient.vcxproj -> D:\Neople\study\WindowSocket\ChatchMind\ChatchMindClient\Debug\ChatchMindClient.exe

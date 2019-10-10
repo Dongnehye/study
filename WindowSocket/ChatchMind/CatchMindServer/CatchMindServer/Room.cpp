@@ -1,4 +1,5 @@
 #include "Room.h"
+#include <iostream>
 
 Room::Room()
 {
@@ -62,6 +63,33 @@ bool Room::ExitUser(SOCKET sock, User * pUser)
 		return true;
 	}
 	return false;
+}
+
+void Room::AddLine(int x0, int y0, int x1, int y1, int Color)
+{
+	DRAWLINE Line;
+	Line.x0 = x0;
+	Line.x1 = x1;
+	Line.y0 = y0;
+	Line.y1 = y1;
+	Line.color = Color;
+	VecLine.push_back(Line);
+	cout << VecLine.size() << endl;
+}
+
+void Room::EchoLine(SOCKET sock, DRAWLINE Line)
+{
+	PACKET_SEND_DRAW_LINE packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_DRAW_LINE;
+	packet.header.wLen = sizeof(packet);
+	packet.data = Line;
+	packet.Index = MapUser[sock]->MyIndexRoom;
+
+	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+	{
+		if (iter->first != sock)
+			send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+	}
 }
 
 void Room::SendUserData(SOCKET sock)

@@ -172,6 +172,17 @@ void LobbyServer::ExitPlayer(SOCKET sock)
 	MapRoom[MapUser[sock]->RoomIndex]->ExitUser(sock, MapUser[sock]);
 }
 
+void LobbyServer::RoomDrawLine(SOCKET sock, char * Buf, int len)
+{
+	PACKET_SEND_DRAW_LINE packet;
+	memcpy(&packet, Buf, len);
+
+	Room * pRoom = MapRoom[MapUser[sock]->RoomIndex];
+	pRoom->AddLine(packet.data.x0, packet.data.y0,
+		packet.data.x1, packet.data.y1, packet.data.color);
+	pRoom->EchoLine(sock, packet.data);
+}
+
 void LobbyServer::ProcessPacket(SOCKET sock, User * pUser,DWORD PacketIndex)
 {
 	switch (PacketIndex)
@@ -205,6 +216,11 @@ void LobbyServer::ProcessPacket(SOCKET sock, User * pUser,DWORD PacketIndex)
 	case PACKET_INDEX_SEND_EXIT_ROOM:
 	{
 		ExitPlayer(sock);
+	}
+	break;
+	case PACKET_INDEX_SEND_DRAW_LINE:
+	{
+		RoomDrawLine(sock, pUser->buf, pUser->len);
 	}
 	break;
 	}

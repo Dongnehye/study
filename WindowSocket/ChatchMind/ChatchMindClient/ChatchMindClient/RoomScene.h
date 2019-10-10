@@ -8,19 +8,39 @@
 
 #define CHEAT_EDIT 4
 
+enum PEN_STYLE
+{
+	PEN_STYLE_BLACK,
+	PEN_STYLE_RED,
+	PEN_STYLE_BLUE,
+	PEN_STYLE_GREEN,
+	PEN_STYLE_YELLOW,
+	PEN_STYLE_WHITE,
+	PEN_STYLE_ERASE,
+	PEN_STYLE_END
+};
+
 class RoomScene :
 	public Scene
 {
 	int MyIndex;
 	std::map<int, User*> MapUser;
 
-
+	RECT Sketchbook;
 	HPEN hPen, hOldPen;
 	int x0, y0;
 	int x1, y1;
+	int PenColor;
 	bool Drawing;
 	std::vector<DRAWLINE> VecLine;
+	bool DrawingEscapeSketchbook(POINT MousePoint);
 
+	Button * PenColorButton[PEN_STYLE_END];
+	void InitPenButton(HDC hdc);
+	void DeletePenButton();
+	void PenButton(POINT MousePoint);
+	void SelectPen(int Index);
+	void SendLine(DRAWLINE Line);
 
 	HWND CheatEdit;
 	char Cheatstr[BUFSIZE];
@@ -28,11 +48,10 @@ class RoomScene :
 	SIZE CHEATEditSize{ 277,28 };
 
 	Button * ExitButton;
+	void ExitGame();
 
 	void SendRequestUserData();
 	void SendCheat();
-
-	void ExitGame();
 
 	RoomScene();
 public:

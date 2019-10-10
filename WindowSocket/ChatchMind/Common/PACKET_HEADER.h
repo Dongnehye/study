@@ -26,10 +26,17 @@ enum PACKET_INDEX
 	PACKET_INDEX_SEND_OTHER_EXIT_ROOM,
 	PACKET_INDEX_SEND_ROOM_ALLUSER,
 	PACKET_INDEX_SEND_ROOM_USER,
+	PACKET_INDEX_SEND_DRAW_LINE,
 };
 enum CHARACTER_INDEX
 {
 	CHARACTER_INDEX = 1,
+};
+struct DRAWLINE
+{
+	int color;
+	int x0, y0;
+	int x1, y1;
 };
 struct PACKET_HEADER
 {
@@ -115,5 +122,10 @@ struct PACKET_SEND_EXIT_ROOM
 	PACKET_HEADER header;
 	int Index;
 };
-
+struct PACKET_SEND_DRAW_LINE
+{
+	PACKET_HEADER header;
+	int Index;
+	DRAWLINE data;
+};
 #pragma pack()

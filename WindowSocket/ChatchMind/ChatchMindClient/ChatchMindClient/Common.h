@@ -9,13 +9,6 @@
 
 #define FPS 60
 
-struct DRAWLINE
-{
-	int color;
-	int x0, y0;
-	int x1, y1;
-};
-
 enum INPUT_KEY
 {
 	INPUT_KEY_ENTER,
