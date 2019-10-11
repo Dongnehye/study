@@ -28,6 +28,7 @@ public:
 
 	void AddLine(int x0, int y0,int x1, int y1, int Color);
 	void EchoLine(SOCKET sock, DRAWLINE Line);
+	void ClearLine(SOCKET sock);
 
 	void SendUserData(SOCKET sock);
 	void AllSendUserData(SOCKET sock);

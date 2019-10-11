@@ -116,6 +116,16 @@ void CatchMineMain::MouseLClickUP(LPARAM lParam)
 	CurrentScene->MouseLClickUp(lParam);
 }
 
+void CatchMineMain::MouseRClick(LPARAM lParam)
+{
+	CurrentScene->MouseRClick(lParam);
+}
+
+void CatchMineMain::MouseRClickUP(LPARAM lParam)
+{
+	CurrentScene->MouseRClickUp(lParam);
+}
+
 void CatchMineMain::WindowsCommand(WPARAM wParam)
 {
 	CurrentScene->WindowsCommand(wParam);
@@ -175,6 +185,7 @@ bool CatchMineMain::ProcessPacket(char * szBuf, int & len)
 		memcpy(&RecvBuf[RecvLen], szBuf, len);
 		RecvLen += len;
 		len = 0;
+		cout << RecvLen << endl;
 	}
 	if (RecvLen < sizeof(PACKET_HEADER))
 		return false;
@@ -190,7 +201,7 @@ bool CatchMineMain::ProcessPacket(char * szBuf, int & len)
 	case PACKET_INDEX_SEND_LOGIN:
 	{
 		PACKET_LOGIN_RES packet;
-		memcpy(&packet, RecvBuf, RecvLen);
+		memcpy(&packet, RecvBuf, header.wLen);
 		cout << packet.Myindex << ": MyIndex" << endl;
 		MyIndex = packet.Myindex;
 		if (packet.IsLogin)
@@ -203,20 +214,20 @@ bool CatchMineMain::ProcessPacket(char * szBuf, int & len)
 	case PACKET_INDEX_SEND_ENTER_ROOM:
 	{
 		PACKET_LOGIN_RES packet;
-		memcpy(&packet, RecvBuf, RecvLen);		
+		memcpy(&packet, RecvBuf, header.wLen);
 		SceneChange(SCENE_INDEX_ROOM);
 	}
 	break;	
 	case PACKET_INDEX_SEND_EXIT_ROOM:
 	{
 		PACKET_SEND_EXIT_ROOM packet;
-		memcpy(&packet, RecvBuf, RecvLen);		
+		memcpy(&packet, RecvBuf, header.wLen);
 		SceneChange(SCENE_INDEX_LOBBY);
 		CurrentScene->SetMyIndex(MyIndex);
 	}
 	break;
 	default:
-		CurrentScene->ProcessPacket(RecvBuf,RecvLen, header.wIndex);
+		CurrentScene->ProcessPacket(RecvBuf, header.wLen, header.wIndex);
 	break;
 	}
 
@@ -235,8 +246,6 @@ void CatchMineMain::Updata()
 	}
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
-
-
 
 	CurrentScene->Update(m_fElapseTime);
 

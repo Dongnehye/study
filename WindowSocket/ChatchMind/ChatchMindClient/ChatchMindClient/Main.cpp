@@ -74,7 +74,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_SOCKET:
 		MainGame->ProcessSocketMessage(hWnd, iMessage, wParam, lParam);
-		InvalidateRect(hWnd, NULL, true);
 		return 0;
 	case WM_LBUTTONDOWN:
 		MainGame->MouseLClick(lParam);
@@ -84,6 +83,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		return 0;
 	case WM_LBUTTONUP:
 		MainGame->MouseLClickUP(lParam);
+		return 0;
+	case WM_RBUTTONDOWN:
+		MainGame->MouseRClick(lParam);
+		return 0;
+	case WM_RBUTTONUP:
+		MainGame->MouseRClickUP(lParam);
 		return 0;
 	case WM_COMMAND:
 		MainGame->WindowsCommand(wParam);

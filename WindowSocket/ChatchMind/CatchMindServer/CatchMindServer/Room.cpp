@@ -92,6 +92,19 @@ void Room::EchoLine(SOCKET sock, DRAWLINE Line)
 	}
 }
 
+void Room::ClearLine(SOCKET sock)
+{
+	VecLine.clear();
+	
+	PACKET_USER_REQUEST packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_DRAW_CLEAR;
+	packet.header.wLen = sizeof(packet);
+	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+	{
+			send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+	}
+}
+
 void Room::SendUserData(SOCKET sock)
 {
 	int UserSize = MapUser.size();

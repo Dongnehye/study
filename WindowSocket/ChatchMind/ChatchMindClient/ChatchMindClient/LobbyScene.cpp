@@ -22,11 +22,13 @@ void LobbyScene::SendCheat()
 		PACKET_SEND_CHEAT packet;
 		packet.header.wIndex = PACKET_INDEX_SEND_CHEAT;
 		packet.RoomIndex = 0;
+		packet.index = MyIndex;
 		packet.StrLen = strlen(Cheatstr);
 		strcpy(packet.Buf, Cheatstr);
-		packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(Cheatstr);
+		packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(Cheatstr);
 		send(sock, (const char*)&packet, packet.header.wLen, 0);
 	}
+	SetWindowText(CheatEdit, '\0');
 }
 
 void LobbyScene::SendRequestLobbyData()

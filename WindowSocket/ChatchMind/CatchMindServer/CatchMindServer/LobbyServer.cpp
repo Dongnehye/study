@@ -52,9 +52,10 @@ void LobbyServer::SendCheat(SOCKET sock, char * Buf, int len)
 	StrCheat.insert(0, MapUser[sock]->id);
 
 	packet.RoomIndex = MapUser[sock]->RoomIndex;
+	packet.index = MapUser[sock]->MyIndexRoom;
 	packet.StrLen = strlen(StrCheat.c_str());
 	strcpy(packet.Buf, StrCheat.c_str());
-	packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(StrCheat.c_str());
+	packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(StrCheat.c_str());
 
 	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
 	{
@@ -164,6 +165,7 @@ void LobbyServer::DisconnectPlayer(SOCKET sock)
 {
 	/*MapRoom[MapUser[sock]->RoomIndex]->DisconnectPlayer(sock);
 	MapRoom[MapUser[sock]->RoomIndex]->UserSIze -= 1;*/
+	MapRoom[MapUser[sock]->RoomIndex]->ExitUser(sock, MapUser[sock]);
 	MapUser.erase(sock);
 }
 
@@ -183,13 +185,20 @@ void LobbyServer::RoomDrawLine(SOCKET sock, char * Buf, int len)
 	pRoom->EchoLine(sock, packet.data);
 }
 
-void LobbyServer::ProcessPacket(SOCKET sock, User * pUser,DWORD PacketIndex)
+void LobbyServer::RoomDrawClear(SOCKET sock)
+{
+	Room * pRoom = MapRoom[MapUser[sock]->RoomIndex];
+	pRoom->ClearLine(sock);
+
+}
+
+void LobbyServer::ProcessPacket(SOCKET sock, User * pUser, int Len, DWORD PacketIndex)
 {
 	switch (PacketIndex)
 	{
 	case PACKET_INDEX_SEND_CHEAT:
 	{
-		SendCheat(sock, pUser->buf, pUser->len);
+		SendCheat(sock, pUser->buf, Len);
 	}
 	break;
 	case PACKET_INDEX_SEND_LOBBY:
@@ -205,7 +214,7 @@ void LobbyServer::ProcessPacket(SOCKET sock, User * pUser,DWORD PacketIndex)
 	break;
 	case PACKET_INDEX_SEND_ENTER_ROOM:
 	{
-		SendRoomEnter(sock, pUser->buf, pUser->len);
+		SendRoomEnter(sock, pUser->buf, Len);
 	}
 	break;	
 	case PACKET_INDEX_SEND_ROOM_ALLUSER:
@@ -220,7 +229,12 @@ void LobbyServer::ProcessPacket(SOCKET sock, User * pUser,DWORD PacketIndex)
 	break;
 	case PACKET_INDEX_SEND_DRAW_LINE:
 	{
-		RoomDrawLine(sock, pUser->buf, pUser->len);
+		RoomDrawLine(sock, pUser->buf, Len);
+	}
+	break;
+	case PACKET_INDEX_SEND_DRAW_CLEAR:
+	{
+		RoomDrawClear(sock);
 	}
 	break;
 	}

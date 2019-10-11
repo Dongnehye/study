@@ -37,6 +37,7 @@ public:
 	void ExitPlayer(SOCKET sock);
 
 	void RoomDrawLine(SOCKET sock, char * Buf, int len);
+	void RoomDrawClear(SOCKET sock);
 
-	void ProcessPacket(SOCKET sock, User * pUser,DWORD PacketIndex);
+	void ProcessPacket(SOCKET sock, User * pUser,int Len,DWORD PacketIndex);
 };

@@ -127,3 +127,8 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 	}
 	return 0;
 }
+DWORD WINAPI TimeWorkerThread(LPVOID arg)
+{
+
+	return 0;
+}

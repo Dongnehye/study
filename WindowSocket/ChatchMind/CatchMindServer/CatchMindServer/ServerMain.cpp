@@ -158,7 +158,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & le
 	case PACKET_INDEX_SEND_LOGIN:
 	{
 		PACKET_LOGIN packet;
-		memcpy(&packet, pUser->buf, pUser->len);
+		memcpy(&packet, pUser->buf, header.wLen);
 
 		if (CheckLogin(packet.id, packet.pw))
 		{
@@ -170,7 +170,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & le
 	break;
 	default:
 	{
-		Lobby->ProcessPacket(sock, pUser, header.wIndex);
+		Lobby->ProcessPacket(sock, pUser, header.wLen,header.wIndex);
 	}
 	break;
 	}

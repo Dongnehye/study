@@ -14,7 +14,7 @@ class CatchMineMain
 	SOCKET MySock;
 	int MyIndex;
 
-	char RecvBuf[BUFSIZE];
+	char RecvBuf[1024];
 	int RecvLen;
 
 	HWND mCheatEdit;
@@ -49,6 +49,8 @@ public:
 	void MouseLClick(LPARAM lParam);
 	void MouseLMOVE(LPARAM lParam);
 	void MouseLClickUP(LPARAM lParam);
+	void MouseRClick(LPARAM lParam);
+	void MouseRClickUP(LPARAM lParam);
 	void WindowsCommand(WPARAM wParam);
 	void ProcessSocketMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	bool ProcessPacket(char* szBuf, int & len);

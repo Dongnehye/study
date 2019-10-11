@@ -27,6 +27,7 @@ enum PACKET_INDEX
 	PACKET_INDEX_SEND_ROOM_ALLUSER,
 	PACKET_INDEX_SEND_ROOM_USER,
 	PACKET_INDEX_SEND_DRAW_LINE,
+	PACKET_INDEX_SEND_DRAW_CLEAR,
 };
 enum CHARACTER_INDEX
 {
@@ -35,6 +36,7 @@ enum CHARACTER_INDEX
 struct DRAWLINE
 {
 	int color;
+	int PenWitdh;
 	int x0, y0;
 	int x1, y1;
 };
@@ -100,6 +102,7 @@ struct PACKET_ROOM_USER
 struct PACKET_SEND_CHEAT
 {
 	PACKET_HEADER header;
+	int index;
 	int RoomIndex;
 	int StrLen;
 	char Buf[LONG_BUFSIZE];

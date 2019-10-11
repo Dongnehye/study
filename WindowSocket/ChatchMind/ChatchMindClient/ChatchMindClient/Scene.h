@@ -26,6 +26,8 @@ public:
 
 	virtual void MouseMove(LPARAM lParam);
 	virtual void MouseLClickUp(LPARAM lParam);
+	virtual void MouseRClick(LPARAM lParam);
+	virtual void MouseRClickUp(LPARAM lParam);
 
 	Scene * SceneChange(Scene * PreviousScene, HWND hWnd);
 };

@@ -2,78 +2,7 @@
 #include <iostream>
 using namespace std;
 
-bool RoomScene::DrawingEscapeSketchbook(POINT MousePoint)
-{
-	if (PtInRect(&Sketchbook, MousePoint))
-		return false;
 
-	return true;
-}
-
-void RoomScene::InitPenButton(HDC hdc)
-{
-	for (int i = 0; i < PEN_STYLE_END; ++i)
-	{
-		PenColorButton[i] = new Button(hdc, 343 + i * 40, 577, 40, 19);
-	}
-}
-
-void RoomScene::DeletePenButton()
-{
-	for (int i = 0; i < PEN_STYLE_END; ++i)
-	{
-		delete PenColorButton[i];
-	}
-}
-
-void RoomScene::PenButton(POINT MousePoint)
-{
-	for (int i = 0; i < PEN_STYLE_END; ++i)
-	{
-		if (PenColorButton[i]->ButtonPress(MousePoint))
-		{
-			SelectPen(i);
-		}
-	}
-}
-
-void RoomScene::SelectPen(int Index)
-{
-	switch (Index)
-	{
-	case PEN_STYLE_BLACK:
-		PenColor = RGB(0, 0, 0);
-		break;
-	case PEN_STYLE_RED:
-		PenColor = RGB(255, 0, 0);
-		break;
-	case PEN_STYLE_BLUE:
-		PenColor = RGB(0,0, 255);
-		break;
-	case PEN_STYLE_GREEN:
-		PenColor = RGB(0, 255, 0);
-		break;
-	case PEN_STYLE_YELLOW:
-		PenColor = RGB(255, 255, 0);
-		break;
-	case PEN_STYLE_WHITE:
-		PenColor = RGB(255, 255, 255);
-		break;
-	case PEN_STYLE_ERASE:
-		PenColor = RGB(255, 255, 255);
-		break;
-	}
-}
-
-void RoomScene::SendLine(DRAWLINE Line)
-{
-	PACKET_SEND_DRAW_LINE packet;
-	packet.header.wIndex = PACKET_INDEX_SEND_DRAW_LINE;
-	packet.header.wLen = sizeof(packet);
-	packet.data = Line;
-	packet.Index = MyIndex;
-	send(sock, (const char*)&packet, packet.header.wLen, 0);
-}
 
 void RoomScene::SendRequestUserData()
 {
@@ -85,6 +14,78 @@ void RoomScene::SendRequestUserData()
 
 void RoomScene::SendCheat()
 {
+	if (Cheatstr[0] != '\0')
+	{
+		PACKET_SEND_CHEAT packet;
+		packet.header.wIndex = PACKET_INDEX_SEND_CHEAT;
+		packet.RoomIndex = 0;
+		packet.index = MyIndex;
+		packet.StrLen = strlen(Cheatstr);
+		strcpy(packet.Buf, Cheatstr);
+		packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(Cheatstr);
+		send(sock, (const char*)&packet, packet.header.wLen, 0);
+	}
+	SetWindowText(CheatEdit, '\0');
+}
+
+void RoomScene::DrawCheat(HDC hdc)
+{
+	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+	{
+		if (!iter->second->IsCheatCooldownOver())
+		{
+			TextOut(hdc, iter->second->GetPosition().x, iter->second->GetPosition().y, iter->second->GetCheat(), strlen(iter->second->GetCheat()));
+		}
+	}
+
+}
+
+void RoomScene::SetUserPosition(int index)
+{
+	switch (index)
+	{
+	case 0:
+	{
+		MapUser[index]->SetPosition(50,155);
+	}
+	break;
+	case 1:
+	{
+		MapUser[index]->SetPosition(1015,155);
+	}
+	break;
+	case 2:
+	{
+		MapUser[index]->SetPosition(50,155 + 130 * 1);
+	}
+	break;
+	case 3:
+	{
+		MapUser[index]->SetPosition(1015, 155 + 130 * 1);
+	}
+	break;
+	case 4:
+	{
+		MapUser[index]->SetPosition(50, 155 + 130 * 2);
+	}
+	break;
+	case 5:
+	{
+		MapUser[index]->SetPosition(1015, 155 + 130 * 2);
+	}
+	break;
+	case 6:
+	{
+		MapUser[index]->SetPosition(50, 155 + 130 * 3);
+	}
+	break;
+	case 7:
+	{
+		MapUser[index]->SetPosition(1015, 155 + 130 * 3);
+	}
+	break;
+	}
+
 }
 
 void RoomScene::ExitGame()
@@ -95,6 +96,14 @@ void RoomScene::ExitGame()
 	packet.Index = MyIndex;
 
 	send(sock, (const char *)&packet, packet.header.wLen, 0);
+
+	MySketchbook->ClearSketchbook();
+}
+
+void RoomScene::RecvCheat(int index, char * str)
+{
+	MapUser[index]->SetCheat(str);
+	MapUser[index]->SetCooldownCheat(3);
 }
 
 RoomScene::RoomScene()
@@ -108,20 +117,19 @@ RoomScene::RoomScene(HWND hWnd, SOCKET _sock)
 	sock = _sock;
 	Bitmap * mBackground = new Bitmap(hdc, "..\\Resource\\GameBackground.bmp");
 
+	LeftCheat = new Bitmap(hdc, "..\\Resource\\LCheatMessage.bmp");
+	RightCheat = new Bitmap(hdc, "..\\Resource\\RCheatMessage.bmp");
 	ExitButton = new Button(hdc, 1042, 38, 100, 36);
-	InitPenButton(hdc);
-	PenColor = RGB(255, 0, 0);
 
-	Sketchbook = { 319, 187, 961, 550 };
+	MySketchbook = new Sketchbook(hdc, sock);
 
 	Background = mBackground;
-	Drawing = false;
 	ReleaseDC(hWnd, hdc);
 }
 
 RoomScene::~RoomScene()
 {
-	DeletePenButton();
+
 }
 
 void RoomScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
@@ -133,11 +141,13 @@ void RoomScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
 		PACKET_SEND_ENTER_ROOM_RES packet;
 		memcpy(&packet, szBuf, len);
 		MyIndex = packet.MyIndex;
+		MySketchbook->SetMyIndex(MyIndex);
 		for (int i = 0; i < packet.UserSize; ++i)
 		{
 			User * pNew = new User(packet.data[i].index, packet.data[i].id);
 			MapUser.insert(make_pair(packet.data[i].index, pNew));
 			cout << pNew->Getid() << endl;
+			SetUserPosition(packet.data[i].index);
 		}
 	}
 	break;
@@ -148,6 +158,7 @@ void RoomScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
 
 		User * pNew = new User(packet.data.index, packet.data.id);
 		MapUser.insert(make_pair(packet.data.index, pNew));
+		SetUserPosition(packet.data.index);
 	}
 	break;
 	case PACKET_INDEX_SEND_OTHER_EXIT_ROOM:
@@ -166,31 +177,52 @@ void RoomScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
 		
 		if (packet.Index != MyIndex)
 		{
-			VecLine.push_back(packet.data);
+			MySketchbook->VecLinePushBack(packet.data);
 		}
 	}
 	break;
+	case PACKET_INDEX_SEND_DRAW_CLEAR:
+	{
+		MySketchbook->ClearSketchbook();
 	}
+	break;
+	case PACKET_INDEX_SEND_CHEAT:
+	{
+		PACKET_SEND_CHEAT packet;
+		memcpy(&packet, szBuf, len);
+		packet.Buf[packet.StrLen] = '\0';
+
+		RecvCheat(packet.index, packet.Buf);
+	}
+	break;
+	}
+
 }
 
 void RoomScene::Update(float ElapseTime)
 {
+	static float Time = 0.0f;
+	GetWindowText(CheatEdit, Cheatstr, 128);
+	Time += ElapseTime;
+	if(Time > 1)
+	{
+		for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+		{
+			if (!iter->second->IsCheatCooldownOver())
+			{
+				iter->second->DecreaseCooldownCheat();
+			}
+		}
+		Time = 0;
+	}
 }
 
 void RoomScene::Draw(HDC hdc)
 {
 	Background->BufferDraw(hdc, 0, 0);
 
-	for (auto iter = VecLine.begin(); iter != VecLine.end(); ++iter)
-	{
-		hPen = CreatePen(PS_SOLID, 3, iter->color);
-
-		hOldPen = (HPEN)SelectObject(hdc, hPen);
-		MoveToEx(hdc, iter->x0, iter->y0, NULL);
-		LineTo(hdc, iter->x1, iter->y1);
-		SelectObject(hdc, hOldPen);
-		DeleteObject(hPen);
-	}
+	MySketchbook->Draw(hdc);
+	DrawCheat(hdc);
 }
 
 void RoomScene::MouseLClick(LPARAM lParam)
@@ -199,47 +231,40 @@ void RoomScene::MouseLClick(LPARAM lParam)
 	MousePoint.x = LOWORD(lParam);
 	MousePoint.y = HIWORD(lParam);
 
-	if (!DrawingEscapeSketchbook(MousePoint))
-	{
-		x0 = MousePoint.x;
-		y0 = MousePoint.y;
-		Drawing = true;
-	}
+	MySketchbook->MouseLClick(MousePoint);
+
 	if (ExitButton->ButtonPress(MousePoint))
 	{
 		ExitGame();
 	}
-	PenButton(MousePoint);
+}
+
+void RoomScene::MouseRClick(LPARAM lParam)
+{
+	POINT MousePoint;
+	MousePoint.x = LOWORD(lParam);
+	MousePoint.y = HIWORD(lParam);
+	
+	MySketchbook->MouseRClick(MousePoint);
 }
 
 void RoomScene::MouseMove(LPARAM lParam)
 {
-	if (Drawing)
-	{
-		DRAWLINE line;
-		line.color = PenColor;
-		line.x0 = x0;
-		line.y0 = y0;
+	POINT MousePoint;
+	MousePoint.x = LOWORD(lParam);
+	MousePoint.y = HIWORD(lParam);
 
-		x1 = LOWORD(lParam);
-		y1 = HIWORD(lParam);
-
-		line.x1 = x1;
-		line.y1 = y1;
-		POINT pt{ x1, y1 };
-		if (!DrawingEscapeSketchbook(pt))
-		{
-			VecLine.push_back(line);
-			SendLine(line);
-			x0 = x1;
-			y0 = y1;
-		}
-	}
+	MySketchbook->MouseMove(MousePoint);
 }
 
 void RoomScene::MouseLClickUp(LPARAM lParam)
 {
-	Drawing = false;
+	MySketchbook->MouseClickUp();
+}
+
+void RoomScene::MouseRClickUp(LPARAM lParam)
+{
+	MySketchbook->MouseClickUp();
 }
 
 void RoomScene::WindowsCommand(WPARAM wParam)

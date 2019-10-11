@@ -23,6 +23,12 @@ void Scene::MouseMove(LPARAM lParam)
 void Scene::MouseLClickUp(LPARAM lParam)
 {
 }
+void Scene::MouseRClick(LPARAM lParam)
+{
+}
+void Scene::MouseRClickUp(LPARAM lParam)
+{
+}
 Scene* Scene::SceneChange(Scene * PreviousScene, HWND hWnd)
 {
 	if (PreviousScene != nullptr)
