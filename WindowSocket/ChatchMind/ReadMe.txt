@@ -48,4 +48,5 @@ size 215, 115
 4 5
 6 7
 
-
+시간동기화
+http://lab.gamecodi.com/board/zboard.php?id=GAMECODILAB_QnA_etc&page=22&sn1=&divpage=1&sn=off&ss=on&sc=on&select_arrange=headnum&desc=asc&no=904
