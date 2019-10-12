@@ -9,12 +9,30 @@
 
 #define CHEAT_EDIT 4
 
-
 class RoomScene :
 	public Scene
 {
 	int MyIndex;
 	std::map<int, User*> MapUser;
+
+	Bitmap * BitmapGameStart;
+	bool SendCheatLock;
+	bool GameStart;
+	int GameTurn;
+	void GameTurnSwtich();
+	void DrawGameTurn(HDC hdc);
+
+	int Time;
+	int PrevTime;
+	int NowTime;
+	void SyncTime(int Time);
+	void ResetTime();
+	void IncreaseTime();
+
+	Bitmap * BitmapGameRound;
+	Bitmap * BitmapGameResult;
+	int FirstIndex;
+	int SecondIndex;
 
 	Sketchbook * MySketchbook;
 
@@ -23,8 +41,10 @@ class RoomScene :
 	POINT CheatEditPos{ 622,710 };
 	SIZE CHEATEditSize{ 277,28 };
 
+	void ButtonPress(POINT MousePoint);
 	Button * ExitButton;
 	void ExitGame();
+
 
 	Bitmap * LeftCheat;
 	Bitmap * RightCheat;
@@ -41,7 +61,11 @@ public:
 	RoomScene(HWND hWnd,SOCKET _sock);
 	virtual ~RoomScene();
 
+	void SetGameTurn(int Turn);
+
 	virtual void ProcessPacket(char * szBuf, int len, DWORD PacketIndex);
+
+	virtual void OperateInput(int InputKey);
 	virtual void Update(float ElapseTime);
 	virtual void Draw(HDC hdc);
 
@@ -53,6 +77,4 @@ public:
 	virtual void WindowsCommand(WPARAM wParam);
 	virtual void SceneStart(HWND hWnd);
 	virtual void SceneEnd(HWND hWnd);
-
-	virtual void OperateInput(int InputKey);
 };

@@ -16,12 +16,22 @@ Sketchbook::Sketchbook(HDC hdc, SOCKET _sock)
 	sock = _sock;
 
 	SketchbookRect = { 319, 187, 961, 550 };
-	Drawing = false;
+	MoveDrawing = false;
+	DrawLock = false;
+	SendLock = false;
 }
 
 Sketchbook::~Sketchbook()
 {
 	DeletePenButton();
+}
+void Sketchbook::SetDrawLock(bool Lock)
+{
+	DrawLock = Lock;
+}
+void Sketchbook::SetSendLock(bool Lock)
+{
+	SendLock = Lock;
 }
 void Sketchbook::Draw(HDC hdc)
 {
@@ -45,7 +55,10 @@ void Sketchbook::MouseLClick(POINT MousePoint)
 	PenButton(MousePoint);
 
 	if (ClearButton->ButtonPress(MousePoint))
+	{
+		ClearSketchbook();
 		SendClear();
+	}
 }
 void Sketchbook::MouseRClick(POINT MousePoint)
 {
@@ -55,7 +68,7 @@ void Sketchbook::MouseRClick(POINT MousePoint)
 }
 void Sketchbook::MouseMove(POINT MousePoint)
 {
-	if (Drawing)
+	if (MoveDrawing)
 	{
 		DRAWLINE line;
 		line.color = PenColor;
@@ -80,7 +93,7 @@ void Sketchbook::MouseMove(POINT MousePoint)
 }
 void Sketchbook::MouseClickUp()
 {
-	Drawing = false;
+	MoveDrawing = false;
 }
 
 bool Sketchbook::DrawingEscapeSketchbook(POINT MousePoint)
@@ -93,23 +106,26 @@ bool Sketchbook::DrawingEscapeSketchbook(POINT MousePoint)
 
 void Sketchbook::VecAddLine(POINT MousePoint, int _PenWidth)
 {
-	PenWidth = _PenWidth;
-	if (!DrawingEscapeSketchbook(MousePoint))
+	if (!DrawLock)
 	{
-		x0 = MousePoint.x;
-		y0 = MousePoint.y;
-		Drawing = true;
+		PenWidth = _PenWidth;
+		if (!DrawingEscapeSketchbook(MousePoint))
+		{
+			x0 = MousePoint.x;
+			y0 = MousePoint.y;
+			MoveDrawing = true;
 
-		POINT pt{ x1, y1 };
-		DRAWLINE line;
-		line.color = PenColor;
-		line.PenWitdh = PenWidth;
-		line.x0 = x0;
-		line.y0 = y0;
-		line.x1 = x0;
-		line.y1 = y0;
-		VecLine.push_back(line);
-		SendLine(line);
+			POINT pt{ x1, y1 };
+			DRAWLINE line;
+			line.color = PenColor;
+			line.PenWitdh = PenWidth;
+			line.x0 = x0;
+			line.y0 = y0;
+			line.x1 = x0;
+			line.y1 = y0;
+			VecLine.push_back(line);
+			SendLine(line);
+		}
 	}
 }
 
@@ -190,19 +206,25 @@ void Sketchbook::SelectPen(int Index)
 
 void Sketchbook::SendLine(DRAWLINE Line)
 {
-	PACKET_SEND_DRAW_LINE packet;
-	packet.header.wIndex = PACKET_INDEX_SEND_DRAW_LINE;
-	packet.header.wLen = sizeof(packet);
-	packet.data = Line;
-	packet.Index = Myindex;
-	send(sock, (const char*)&packet, packet.header.wLen, 0);
+	if (!SendLock)
+	{
+		PACKET_SEND_DRAW_LINE packet;
+		packet.header.wIndex = PACKET_INDEX_SEND_DRAW_LINE;
+		packet.header.wLen = sizeof(packet);
+		packet.data = Line;
+		packet.Index = Myindex;
+		send(sock, (const char*)&packet, packet.header.wLen, 0);
+	}
 }
 
 void Sketchbook::SendClear()
 {
-	PACKET_USER_REQUEST packet;
-	packet.header.wIndex = PACKET_INDEX_SEND_DRAW_CLEAR;
-	packet.header.wLen = sizeof(packet);
+	if (!SendLock)
+	{
+		PACKET_USER_REQUEST packet;
+		packet.header.wIndex = PACKET_INDEX_SEND_DRAW_CLEAR;
+		packet.header.wLen = sizeof(packet);
 
-	send(sock, (const char*)&packet, packet.header.wLen, 0);
+		send(sock, (const char*)&packet, packet.header.wLen, 0);
+	}
 }

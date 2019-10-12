@@ -187,3 +187,8 @@ void ServerMain::EraseSocket(SOCKET sock)
 	delete MapUser[sock];
 	MapUser.erase(sock);
 }
+
+void ServerMain::IncreaseTime()
+{
+	Lobby->IncreaseTime();
+}

@@ -1,5 +1,5 @@
 ﻿  RoomScene.cpp
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\roomscene.cpp(25): warning C4267: '=': 'size_t'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-c:\users\administrator\documents\repo\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\roomscene.cpp(24): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+d:\neople\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\roomscene.cpp(27): warning C4267: '=': 'size_t'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+d:\neople\study\windowsocket\chatchmind\chatchmindclient\chatchmindclient\roomscene.cpp(26): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(133): note: 'strcpy' 선언을 참조하십시오.
-  ChatchMindClient.vcxproj -> C:\Users\Administrator\Documents\repo\study\WindowSocket\ChatchMind\ChatchMindClient\Debug\ChatchMindClient.exe
+  ChatchMindClient.vcxproj -> D:\Neople\study\WindowSocket\ChatchMind\ChatchMindClient\Debug\ChatchMindClient.exe

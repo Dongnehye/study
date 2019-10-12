@@ -16,14 +16,17 @@ void RoomScene::SendCheat()
 {
 	if (Cheatstr[0] != '\0')
 	{
-		PACKET_SEND_CHEAT packet;
-		packet.header.wIndex = PACKET_INDEX_SEND_CHEAT;
-		packet.RoomIndex = 0;
-		packet.index = MyIndex;
-		packet.StrLen = strlen(Cheatstr);
-		strcpy(packet.Buf, Cheatstr);
-		packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(Cheatstr);
-		send(sock, (const char*)&packet, packet.header.wLen, 0);
+		if (!SendCheatLock)
+		{
+			PACKET_SEND_CHEAT packet;
+			packet.header.wIndex = PACKET_INDEX_SEND_CHEAT;
+			packet.RoomIndex = 0;
+			packet.index = MyIndex;
+			packet.StrLen = strlen(Cheatstr);
+			strcpy(packet.Buf, Cheatstr);
+			packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(Cheatstr);
+			send(sock, (const char*)&packet, packet.header.wLen, 0);
+		}
 	}
 	SetWindowText(CheatEdit, '\0');
 }
@@ -88,6 +91,141 @@ void RoomScene::SetUserPosition(int index)
 
 }
 
+void RoomScene::GameTurnSwtich()
+{
+	switch (GameTurn)
+	{
+	case GAME_TURN_READY:
+	{
+		MySketchbook->SetDrawLock(false);
+		MySketchbook->SetSendLock(true);
+	}
+	break;
+	case GAME_TURN_START:
+	{
+		MySketchbook->ClearSketchbook();
+		MySketchbook->SetDrawLock(true);
+		MySketchbook->SetSendLock(true);
+	}
+	break;
+	case GAME_TURN_WAIT:
+	{
+		MySketchbook->SetDrawLock(true);
+		MySketchbook->SetSendLock(true);
+	}
+	break;
+	case GAME_TURN_ORDER_USER:
+	{
+		MySketchbook->SetDrawLock(true);
+		MySketchbook->SetSendLock(true);
+	}
+	break;
+	case GAME_TURN_DRAW:
+	{
+		SendCheatLock = true;
+		MySketchbook->SetDrawLock(false);
+		MySketchbook->SetSendLock(false);
+	}
+	break;
+	case GAME_TURN_RESULT:
+	{
+		SendCheatLock = false;
+		MySketchbook->SetDrawLock(true);
+		MySketchbook->SetSendLock(true);
+	}
+	break;
+	case GAME_TURN_GAMEOVER:
+	{
+		MySketchbook->SetDrawLock(true);
+		MySketchbook->SetSendLock(true);
+	}
+	break;
+	default:
+		break;
+	};		
+}
+
+void RoomScene::DrawGameTurn(HDC hdc)
+{
+	switch (GameTurn)
+	{
+	case GAME_TURN_READY:
+	{
+		TextOut(hdc, 525, 117, "현재 대기중입니다. 3명 이상이 되면 시작합니다.", strlen("현재 대기중입니다. 3명 이상이 되면 시작합니다."));
+	}
+	break;
+	case GAME_TURN_START:
+	{
+		BitmapGameStart->BufferDraw(hdc, 476, 248);
+	}
+	break;
+	case GAME_TURN_ORDER_USER:
+	{
+		BitmapGameRound->BufferDraw(hdc, 392, 265);
+		TextOut(hdc, 462, 291, MapUser[FirstIndex]->Getid() , strlen(MapUser[FirstIndex]->Getid()));
+		TextOut(hdc, 462, 331, MapUser[SecondIndex]->Getid(), strlen(MapUser[SecondIndex]->Getid()));
+	}
+	break;
+	case GAME_TURN_WAIT:
+	{
+		//cout << NowTime - PrevTime << endl;
+	}
+	break;
+	case GAME_TURN_DRAW:
+	{
+		//cout << NowTime - PrevTime << endl;
+	}
+	break;
+	case GAME_TURN_RESULT:
+	{
+		BitmapGameResult->BufferDraw(hdc, 476, 248);
+	}
+	break;
+	case GAME_TURN_GAMEOVER:
+	{
+
+	}
+	break;
+	default:
+	break;
+	};
+}
+
+void RoomScene::SyncTime(int _Time)
+{
+	Time = _Time;
+	if (PrevTime == 0)
+		PrevTime = Time;
+	else
+		NowTime = Time;
+	if (NowTime == 0)
+		NowTime = Time;
+	cout <<"sync : " << NowTime << endl;
+}
+
+void RoomScene::ResetTime()
+{
+	Time = NULL;
+	PrevTime = NULL;
+	NowTime = NULL;
+}
+
+void RoomScene::IncreaseTime()
+{
+	NowTime += 1;
+	cout << NowTime << endl;
+}
+
+void RoomScene::ButtonPress(POINT MousePoint)
+{
+	MySketchbook->MouseLClick(MousePoint);
+
+	if (ExitButton->ButtonPress(MousePoint) && !GameStart)
+	{
+		ExitGame();
+	}
+}
+
 void RoomScene::ExitGame()
 {
 	PACKET_SEND_EXIT_ROOM packet;
@@ -115,21 +253,43 @@ RoomScene::RoomScene(HWND hWnd, SOCKET _sock)
 {
 	HDC hdc = GetDC(hWnd);
 	sock = _sock;
+	SendCheatLock = false;
+	GameStart = false;
+	GameTurn = GAME_TURN_READY;
+	FirstIndex = NULL;
+	SecondIndex = NULL;
+
+	Time = NULL;
+	PrevTime = NULL;
+	NowTime = NULL;
+
 	Bitmap * mBackground = new Bitmap(hdc, "..\\Resource\\GameBackground.bmp");
+
+	BitmapGameStart = new Bitmap(hdc, "..\\Resource\\GameStart.bmp");
+	BitmapGameRound = new Bitmap(hdc, "..\\Resource\\Round.bmp");
+	BitmapGameResult = new Bitmap(hdc, "..\\Resource\\Result.bmp");
 
 	LeftCheat = new Bitmap(hdc, "..\\Resource\\LCheatMessage.bmp");
 	RightCheat = new Bitmap(hdc, "..\\Resource\\RCheatMessage.bmp");
 	ExitButton = new Button(hdc, 1042, 38, 100, 36);
 
 	MySketchbook = new Sketchbook(hdc, sock);
-
+	GameTurnSwtich();
 	Background = mBackground;
 	ReleaseDC(hWnd, hdc);
 }
 
 RoomScene::~RoomScene()
 {
+	delete BitmapGameStart;
+	delete LeftCheat;
+	delete RightCheat;
+	delete MySketchbook;
+}
 
+void RoomScene::SetGameTurn(int Turn)
+{
+	GameTurn = Turn;
 }
 
 void RoomScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
@@ -195,16 +355,36 @@ void RoomScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
 		RecvCheat(packet.index, packet.Buf);
 	}
 	break;
+	case PACKET_INDEX_SEND_ROOM_GAME_TURN:
+	{
+		PACKET_SEND_GAME_TURN packet;
+		memcpy(&packet, szBuf, len);
+
+		FirstIndex = packet.FirstUserIndex;
+		SecondIndex = packet.SecondUserIndex;
+		
+		SetGameTurn(packet.GameTurn);
+		GameTurnSwtich();
+	}
+	break;
+	case PACKET_INDEX_SEND_ROOM_TIME_SYNC:
+	{
+		PACKET_SEND_TIME_SYNC packet;
+		memcpy(&packet, szBuf, len);
+
+		SyncTime(Time);
+	}
+	break;
 	}
 
 }
 
 void RoomScene::Update(float ElapseTime)
 {
-	static float Time = 0.0f;
+	static float UpdateTime = 0.0f;
 	GetWindowText(CheatEdit, Cheatstr, 128);
-	Time += ElapseTime;
-	if(Time > 1)
+	UpdateTime += ElapseTime;
+	if(UpdateTime > 1)
 	{
 		for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
 		{
@@ -213,7 +393,10 @@ void RoomScene::Update(float ElapseTime)
 				iter->second->DecreaseCooldownCheat();
 			}
 		}
-		Time = 0;
+		if(GameTurn == GAME_TURN_DRAW || GameTurn == GAME_TURN_WAIT)
+			IncreaseTime();
+
+		UpdateTime = 0;
 	}
 }
 
@@ -223,6 +406,8 @@ void RoomScene::Draw(HDC hdc)
 
 	MySketchbook->Draw(hdc);
 	DrawCheat(hdc);
+
+	DrawGameTurn(hdc);
 }
 
 void RoomScene::MouseLClick(LPARAM lParam)
@@ -231,12 +416,7 @@ void RoomScene::MouseLClick(LPARAM lParam)
 	MousePoint.x = LOWORD(lParam);
 	MousePoint.y = HIWORD(lParam);
 
-	MySketchbook->MouseLClick(MousePoint);
-
-	if (ExitButton->ButtonPress(MousePoint))
-	{
-		ExitGame();
-	}
+	ButtonPress(MousePoint);
 }
 
 void RoomScene::MouseRClick(LPARAM lParam)

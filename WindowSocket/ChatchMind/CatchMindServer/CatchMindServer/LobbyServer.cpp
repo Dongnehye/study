@@ -46,23 +46,30 @@ void LobbyServer::SendCheat(SOCKET sock, char * Buf, int len)
 	string StrCheat;
 	PACKET_SEND_CHEAT packet;
 	memcpy(&packet, Buf, len);
-	packet.Buf[packet.StrLen] = '\0';
-	StrCheat = " : ";
-	StrCheat += packet.Buf;
-	StrCheat.insert(0, MapUser[sock]->id);
-
 	packet.RoomIndex = MapUser[sock]->RoomIndex;
 	packet.index = MapUser[sock]->MyIndexRoom;
-	packet.StrLen = strlen(StrCheat.c_str());
-	strcpy(packet.Buf, StrCheat.c_str());
-	packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(StrCheat.c_str());
 
-	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+	if (packet.RoomIndex == LOBBYINDEX)
 	{
-		if (iter->second->RoomIndex == packet.RoomIndex)
+		packet.Buf[packet.StrLen] = '\0';
+		StrCheat = " : ";
+		StrCheat += packet.Buf;
+		StrCheat.insert(0, MapUser[sock]->id);
+		packet.StrLen = strlen(StrCheat.c_str());
+		strcpy(packet.Buf, StrCheat.c_str());
+		packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(StrCheat.c_str());
+		
+		for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
 		{
-			send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+			if (iter->second->RoomIndex == LOBBYINDEX)
+			{
+				send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+			}
 		}
+	}
+	else
+	{
+		MapRoom[packet.RoomIndex]->SendCheat(sock,packet);
 	}
 }
 
@@ -163,9 +170,7 @@ void LobbyServer::CheckRoomReady(SOCKET sock, char * Buf, int len)
 
 void LobbyServer::DisconnectPlayer(SOCKET sock)
 {
-	/*MapRoom[MapUser[sock]->RoomIndex]->DisconnectPlayer(sock);
-	MapRoom[MapUser[sock]->RoomIndex]->UserSIze -= 1;*/
-	MapRoom[MapUser[sock]->RoomIndex]->ExitUser(sock, MapUser[sock]);
+	MapRoom[MapUser[sock]->RoomIndex]->DisConnectUser(sock);
 	MapUser.erase(sock);
 }
 
@@ -237,5 +242,13 @@ void LobbyServer::ProcessPacket(SOCKET sock, User * pUser, int Len, DWORD Packet
 		RoomDrawClear(sock);
 	}
 	break;
+	}
+}
+
+void LobbyServer::IncreaseTime()
+{
+	for (auto iter = MapRoom.begin(); iter != MapRoom.end(); ++iter)
+	{
+		iter->second->IncreaseTime();
 	}
 }

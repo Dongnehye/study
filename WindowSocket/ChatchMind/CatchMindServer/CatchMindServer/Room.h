@@ -13,11 +13,35 @@ public:
 	int index;
 	char RoomName[SHORT_BUFSIZE];
 	char HostId[SHORT_BUFSIZE];
+
+	int CurrnetTurnUser;
+	int GameTurn;
+
+	bool TimeSync;
+	int Time;
+	int PrevTime;
+	int NowTime;
 	
+	bool AllUserReady;
 	bool IsStart;
 	map<int, SOCKET> UserOrder;
 	map<SOCKET, User*> MapUser;
 	vector<DRAWLINE> VecLine;
+
+	void GameReady();
+	bool CheckAllReady();
+	bool CheckRound();
+	bool CheckDrawReady();
+	bool CheckDrawTimeOut();
+
+	void SendSyncTime();
+	void SendGameTurn(int Turn);
+	void InitGameState();
+	void SendCheat(SOCKET sock, PACKET_SEND_CHEAT &packet);
+
+	bool CheckAnswer(char * Cheat);
+
+	void GameReset();
 	Room();
 public:
 	Room(int index);
@@ -25,6 +49,7 @@ public:
 
 	bool AddUser(SOCKET sock, User * pUser);
 	bool ExitUser(SOCKET sock, User * pUser);
+	void DisConnectUser(SOCKET sock);
 
 	void AddLine(int x0, int y0,int x1, int y1, int Color);
 	void EchoLine(SOCKET sock, DRAWLINE Line);
@@ -32,4 +57,6 @@ public:
 
 	void SendUserData(SOCKET sock);
 	void AllSendUserData(SOCKET sock);
+
+	void IncreaseTime();
 };

@@ -24,13 +24,16 @@ class Sketchbook
 
 	std::vector<DRAWLINE> VecLine;
 
+	bool DrawLock;
+	bool SendLock;
+
 	RECT SketchbookRect;
 	HPEN hPen, hOldPen;
 	int x0, y0;
 	int x1, y1;
 	int PenColor;
 	int PenWidth;
-	bool Drawing;
+	bool MoveDrawing;
 
 	bool DrawingEscapeSketchbook(POINT MousePoint);
 	void VecAddLine(POINT MousePoint, int PenWidth);
@@ -45,6 +48,9 @@ class Sketchbook
 public:
 	Sketchbook(HDC hdc,SOCKET sock);
 	virtual ~Sketchbook();
+
+	void SetDrawLock(bool Lock);
+	void SetSendLock(bool Lock);
 
 	void Draw(HDC hdc);
 	void MouseLClick(POINT MousePoint);

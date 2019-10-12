@@ -20,6 +20,8 @@ class ServerMain
 	bool CheckLogin(const char * Id, const char * pw);
 	void SendLogin(SOCKET sock, bool _IsLogin);
 
+
+
 public:
 	void err_display(int errcode);
 	void err_display(const char * szMsg);
@@ -33,5 +35,6 @@ public:
 	bool ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & len);
 
 	void EraseSocket(SOCKET sock);
-};
 
+	void IncreaseTime();
+};

@@ -40,4 +40,6 @@ public:
 	void RoomDrawClear(SOCKET sock);
 
 	void ProcessPacket(SOCKET sock, User * pUser,int Len,DWORD PacketIndex);
+
+	void IncreaseTime();
 };

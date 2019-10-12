@@ -30,6 +30,7 @@ void CatchMineMain::OperateInput()
 void CatchMineMain::Render()
 {
 	HDC hdc = GetDC(mhWnd);
+	SetBkMode(hMemDC[0], TRANSPARENT);
 
 	BitBlt(hMemDC[0], 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, hMemDC[1], 0, 0, SRCCOPY);
 
@@ -91,6 +92,8 @@ CatchMineMain::CatchMineMain(HWND hWnd, SOCKET sock)
 		, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
 	hOld[1] = (HBITMAP)SelectObject(hMemDC[1], hBitmap[1]);
 
+	MouseBufferx[0] = '\0';
+	MouseBuffery[0] = '\0';
 
 	InitScene();
 	ReleaseDC(hWnd, hdc);
@@ -185,7 +188,6 @@ bool CatchMineMain::ProcessPacket(char * szBuf, int & len)
 		memcpy(&RecvBuf[RecvLen], szBuf, len);
 		RecvLen += len;
 		len = 0;
-		cout << RecvLen << endl;
 	}
 	if (RecvLen < sizeof(PACKET_HEADER))
 		return false;
@@ -251,5 +253,4 @@ void CatchMineMain::Updata()
 
 	OperateInput();
 	Render();
-
 }

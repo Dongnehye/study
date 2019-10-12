@@ -10,7 +10,7 @@
 #include "User.h"
 
 DWORD WINAPI WorkerThread(LPVOID arg);
-
+DWORD WINAPI TimeWorkerThread(LPVOID arg);
 ServerMain * Server;
 
 
@@ -49,7 +49,14 @@ int main(int argc, char * args[])
 	for (int i = 0; i < (int)si.dwNumberOfProcessors * 2; i++)
 	//for (int i = 0; i < 2; i++)
 	{
-		hThread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)WorkerThread, hcp, 0, NULL);
+		if (i != (int)si.dwNumberOfProcessors * 2 - 1)
+		{
+			hThread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)WorkerThread, hcp, 0, NULL);
+		}
+		else
+		{
+			hThread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)TimeWorkerThread, 0, 0, NULL);
+		}
 		if (hThread == NULL)
 			return 1;
 		CloseHandle(hThread);
@@ -89,9 +96,9 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 					&temp1, FALSE, &temp2);
 				err_display("WSAGetOverlappedResult()");
 			}
-			closesocket(client_sock);
-			printf("[TCP 서버] 클라이언트 종료 : IP 주소 = %s, 포트 번호 = %d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));		
 			Server->EraseSocket(client_sock);
+			printf("[TCP 서버] 클라이언트 종료 : IP 주소 = %s, 포트 번호 = %d\n", inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));		
+			closesocket(client_sock);
 			continue;
 		}
 		ZeroMemory(&ptr->overlapped, sizeof(ptr->overlapped));
@@ -129,6 +136,12 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 }
 DWORD WINAPI TimeWorkerThread(LPVOID arg)
 {
-
+	while (1)
+	{
+		static int i = 0;
+		i++;
+		Server->IncreaseTime();
+		Sleep(1000);
+	}
 	return 0;
 }
