@@ -16,7 +16,6 @@ void CatchMineMain::InitScene()
 	CurrentScene = nullptr;
 
 	SceneChange(SCENE_INDEX_LOGIN);
-	//SceneChange(SCENE_INDEX_ROOM);
 }
 
 void CatchMineMain::OperateInput()

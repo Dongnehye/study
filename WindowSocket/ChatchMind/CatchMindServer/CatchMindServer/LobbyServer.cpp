@@ -3,21 +3,26 @@
 
 using namespace std;
 
-#define LOBBYROOMINDEX 0
-
 void LobbyServer::RoomInit()
 {
-	Room * pNew = new Room(gRoomIndex);
+	Room * pNew = new Room(gRoomIndex, "ÇÑ¼ö");
 	MapRoom.insert(make_pair(gRoomIndex, pNew));
 	gRoomIndex++;
 }
 
 void LobbyServer::CreateRoom(SOCKET sock)
 {
-	Room * pNew = new Room(gRoomIndex);
+	Room * pNew = new Room(gRoomIndex, MapUser[sock]->id);
 	MapRoom.insert(make_pair(gRoomIndex,pNew));
-	MapRoom[gRoomIndex]->AddUser(sock, MapUser[sock]);
+	pNew->AddUser(sock, MapUser[sock]);
 	gRoomIndex++;
+
+	PACKET_SEND_ENTER_ROOM packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_ENTER_ROOM;
+	packet.header.wLen = sizeof(packet);
+	MapUser[sock]->RoomIndex = pNew->index;
+	packet.RoomIndex = pNew->index;
+	send(sock,(const char *)&packet, packet.header.wLen, 0);
 }
 
 LobbyServer::LobbyServer()
@@ -170,7 +175,10 @@ void LobbyServer::CheckRoomReady(SOCKET sock, char * Buf, int len)
 
 void LobbyServer::DisconnectPlayer(SOCKET sock)
 {
-	MapRoom[MapUser[sock]->RoomIndex]->DisConnectUser(sock);
+	if (MapUser[sock]->RoomIndex != LOBBYINDEX)
+	{
+		MapRoom[MapUser[sock]->RoomIndex]->DisConnectUser(sock);
+	}
 	MapUser.erase(sock);
 }
 
@@ -240,6 +248,11 @@ void LobbyServer::ProcessPacket(SOCKET sock, User * pUser, int Len, DWORD Packet
 	case PACKET_INDEX_SEND_DRAW_CLEAR:
 	{
 		RoomDrawClear(sock);
+	}
+	break;
+	case PACKET_INDEX_SEND_CREATE_ROOM:
+	{
+		CreateRoom(sock);
 	}
 	break;
 	}

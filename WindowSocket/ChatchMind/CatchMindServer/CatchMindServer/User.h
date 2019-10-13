@@ -19,6 +19,8 @@ public:
 
 	int Score;
 
+	bool IsLogin;
+
 	User();
 	virtual ~User();
 };

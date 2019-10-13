@@ -271,10 +271,10 @@ Room::Room()
 }
 
 
-Room::Room(int _index)
+Room::Room(int _index, const char * id)
 {
 	index = _index;
-	strcpy(RoomName, "한수");
+	strcpy(RoomName, id);
 	strcpy(HostId, "기본");
 
 	if (!LoadAnswerWord())
@@ -351,7 +351,6 @@ bool Room::ExitUser(SOCKET sock, User * pUser)
 
 void Room::DisConnectUser(SOCKET sock)
 {
-
 	PACKET_SEND_EXIT_ROOM packet;
 	packet.header.wIndex = PACKET_INDEX_SEND_EXIT_ROOM;
 	packet.header.wLen = sizeof(packet);

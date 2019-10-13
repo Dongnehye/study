@@ -9,6 +9,7 @@ User::User()
 	CharacterIndex = 0;
 	MyIndexRoom = NULL;
 	Score = NULL;
+	IsLogin = false;
 }
 
 

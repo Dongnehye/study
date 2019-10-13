@@ -55,7 +55,7 @@ public:
 	void GameReset();
 	Room();
 public:
-	Room(int index);
+	Room(int index, const char * id);
 	virtual ~Room();
 
 	bool AddUser(SOCKET sock, User * pUser);

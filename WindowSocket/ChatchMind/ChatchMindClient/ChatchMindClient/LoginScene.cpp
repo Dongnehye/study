@@ -2,8 +2,8 @@
 
 void LoginScene::SendLogin()
 {
-	/*if (Id == nullptr || Pw == nullptr)
-		return;*/
+	if (Idstr[0] == '\0' || Pwstr[0] == '\0')
+		return;
 
 	PACKET_LOGIN packet;
 	packet.header.wIndex = PACKET_INDEX_SEND_LOGIN;
@@ -22,8 +22,8 @@ LoginScene::LoginScene(HWND hWnd, SOCKET _sock)
 	Pwstr[SHORT_BUFSIZE] = '\0';
 
 	Bitmap * LoginScreen = new Bitmap(hdc, "..\\Resource\\back_ground.bmp");
-	POINT pos{ 800,520 };
-	SIZE Size{ 160,155 };
+	POINT pos{ 719 ,680 };
+	SIZE Size{ 75,59 };
 	LoginButton = new Button(hdc, pos, Size, "");
 
 	Background = LoginScreen;

@@ -14,10 +14,10 @@ class LoginScene :
 	HWND IdEdit;
 	HWND PwEdit;
 
-	POINT IdEditPos{ 465 , 520 };
-	POINT PwEditPos{ 465 ,597 };
-	SIZE IdEditSize{ 301,60 };
-	SIZE PWEditSize{ 301,60 };
+	POINT IdEditPos{ 548 ,679 };
+	POINT PwEditPos{ 548 ,711 };
+	SIZE IdEditSize{ 169,29 };
+	SIZE PWEditSize{ 169,29 };
 
 	Button * LoginButton;
 

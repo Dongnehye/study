@@ -109,7 +109,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 
 		while (true)
 		{
-			cout << this_thread::get_id() << endl;
+			cout << "¾²·¹µå ID :" << this_thread::get_id() << endl;
 			if (Server->ProcessPacket(client_sock,pUser,ptr->buf, cbTranferred))
 			{
 				break;

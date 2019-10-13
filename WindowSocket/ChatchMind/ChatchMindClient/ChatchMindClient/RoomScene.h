@@ -29,6 +29,7 @@ class RoomScene :
 	void GameTurnSwtich();
 	void DrawGameTurn(HDC hdc);
 
+	std::string StrTime;
 	int Time;
 	int PrevTime;
 	int NowTime;
@@ -60,6 +61,7 @@ class RoomScene :
 	void SendRequestUserData();
 	void SendCheat();
 
+	void DrawUser(HDC hdc);
 	void DrawCheat(HDC hdc);
 	void DrawLeaderBoard(HDC hdc);
 

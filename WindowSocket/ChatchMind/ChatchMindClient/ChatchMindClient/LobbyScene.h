@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "PACKET_HEADER.h"
+#include "Common.h"
 #include "User.h"
 #include "Button.h"
 #include <map>
@@ -30,12 +31,15 @@ class LobbyScene :
 	POINT PlayerListPos{ 920,170 };
 	POINT RoomListPos{ 200,150 };
 
+	Button * CreateRoomButton;
+	
 	void RecvCheat(char * str);
 
 	void SendCheat();
 	void SendRequestLobbyData();
 	void SendRequestUserData();
-	void SendRoomEnter(int RoomIndex);
+	void SendEnterRoom(int RoomIndex);
+	void SendCreateRoom();
 
 	LobbyScene();
 public:

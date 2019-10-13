@@ -47,12 +47,21 @@ void LobbyScene::SendRequestUserData()
 	send(sock, (const char *)&packet, packet.header.wLen, 0);
 }
 
-void LobbyScene::SendRoomEnter(int RoomIndex)
+void LobbyScene::SendEnterRoom(int RoomIndex)
 {
 	PACKET_SEND_ENTER_ROOM packet;
 	packet.header.wIndex = PACKET_INDEX_SEND_ENTER_ROOM;
 	packet.header.wLen = sizeof(packet);
 	packet.RoomIndex = RoomIndex;
+
+	send(sock, (const char*)&packet, sizeof(packet), 0);
+}
+
+void LobbyScene::SendCreateRoom()
+{
+	PACKET_SEND_ENTER_ROOM packet;
+	packet.header.wIndex = PACKET_INDEX_SEND_CREATE_ROOM;
+	packet.header.wLen = sizeof(packet);
 
 	send(sock, (const char*)&packet, sizeof(packet), 0);
 }
@@ -73,6 +82,8 @@ LobbyScene::LobbyScene(HWND hWnd, SOCKET _sock)
 
 	Bitmap * LobbyScreen = new Bitmap(hdc, "..\\Resource\\LobbyBackground.bmp");
 
+	CreateRoomButton = new Button(hdc, 392, 39, 88, 37);
+
 	Background = LobbyScreen;
 
 	ReleaseDC(hWnd, hdc);
@@ -91,13 +102,9 @@ void LobbyScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
 		PACKET_SEND_CHEAT packet;
 		memcpy(&packet, szBuf, len);
 		packet.Buf[packet.StrLen] = '\0';
-		if (packet.RoomIndex == 0)
+		if (packet.RoomIndex == LOBBYROOMINDEX)
 		{
 			RecvCheat(packet.Buf);
-		}
-		else
-		{
-			//GameTable->RecvCheat(packet.Buf);
 		}
 	}
 	break;
@@ -175,7 +182,14 @@ void LobbyScene::Draw(HDC hdc)
 
 void LobbyScene::MouseLClick(LPARAM lParam)
 {
+	POINT MousePoint;
+	MousePoint.x = LOWORD(lParam);
+	MousePoint.y = HIWORD(lParam);
 
+	if (CreateRoomButton->ButtonPress(MousePoint))
+	{
+		SendCreateRoom();
+	}
 }
 
 void LobbyScene::WindowsCommand(WPARAM wParam)
@@ -185,7 +199,7 @@ void LobbyScene::WindowsCommand(WPARAM wParam)
 		switch (HIWORD(wParam)) {
 		case LBN_DBLCLK:
 			int ListIndex = SendMessage(hList, LB_GETCURSEL, 0, 0);
-			SendRoomEnter(ListBoxRoomIndex[ListIndex]);
+			SendEnterRoom(ListBoxRoomIndex[ListIndex]);
 			break;
 		}
 	}
@@ -209,13 +223,13 @@ void LobbyScene::SceneEnd(HWND hWnd)
 {
 	Cheat.clear();
 
-	//for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); ++iter)
-	//{
-	//	delete iter->second;
-	//}
-	//RoomInfo.clear();
+	for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); ++iter)
+	{
+		delete iter->second;
+	}
+	RoomInfo.clear();
 
-	//ListBoxRoomIndex.clear();
+	ListBoxRoomIndex.clear();
 
 	for (auto iter = UserInfo.begin(); iter != UserInfo.end(); ++iter)
 	{

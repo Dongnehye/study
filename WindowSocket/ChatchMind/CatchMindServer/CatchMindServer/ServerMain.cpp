@@ -165,6 +165,7 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & le
 			SendLogin(sock, true);
 			strcpy(MapUser[sock]->id, packet.id);
 			Lobby->AddUser(sock, pUser);
+			pUser->IsLogin = true;
 		}
 	}
 	break;
@@ -183,7 +184,10 @@ bool ServerMain::ProcessPacket(SOCKET sock, User * pUser, char * Buf, DWORD & le
 
 void ServerMain::EraseSocket(SOCKET sock)
 {
-	Lobby->DisconnectPlayer(sock);
+	if (MapUser[sock]->IsLogin)
+	{
+		Lobby->DisconnectPlayer(sock);
+	}
 	delete MapUser[sock];
 	MapUser.erase(sock);
 }

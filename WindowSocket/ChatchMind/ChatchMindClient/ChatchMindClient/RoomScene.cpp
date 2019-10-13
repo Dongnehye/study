@@ -3,8 +3,6 @@
 #include <fstream>
 using namespace std;
 
-
-
 void RoomScene::SendRequestUserData()
 {
 	PACKET_USER_REQUEST packet;
@@ -25,11 +23,23 @@ void RoomScene::SendCheat()
 			packet.index = MyIndex;
 			packet.StrLen = strlen(Cheatstr);
 			strcpy(packet.Buf, Cheatstr);
-			packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + sizeof(int) + sizeof(char) * strlen(Cheatstr);
+			packet.header.wLen = sizeof(packet.header) + sizeof(int) + sizeof(int) + 
+				sizeof(int) + sizeof(char) * strlen(Cheatstr);
 			send(sock, (const char*)&packet, packet.header.wLen, 0);
 		}
 	}
 	SetWindowText(CheatEdit, '\0');
+}
+
+void RoomScene::DrawUser(HDC hdc)
+{
+	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+	{
+		TextOut(hdc, iter->second->GetPosition().x + 38, iter->second->GetPosition().y + 30, 
+			iter->second->Getid(), strlen(iter->second->Getid()));
+
+	}
+
 }
 
 void RoomScene::DrawCheat(HDC hdc)
@@ -38,20 +48,19 @@ void RoomScene::DrawCheat(HDC hdc)
 	{
 		if (!iter->second->IsCheatCooldownOver())
 		{
-			TextOut(hdc, iter->second->GetPosition().x, iter->second->GetPosition().y, iter->second->GetCheat(), strlen(iter->second->GetCheat()));
+			TextOut(hdc, iter->second->GetPosition().x, iter->second->GetPosition().y, 
+				iter->second->GetCheat(), strlen(iter->second->GetCheat()));
 		}
 	}
-
 }
 
 void RoomScene::DrawLeaderBoard(HDC hdc)
 {
-	BitmapGameOverResult->BufferDraw(hdc, 492, 185);
+	BitmapGameOverResult->BufferDraw(hdc, LEADERBOARD_NOTICE_X, LEADERBOARD_NOTICE_Y);
 	int i = 0;
 	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter, ++i)
 	{
-		TextOut(hdc, 576, 275 + i * 30, iter->second->Getid() ,strlen(iter->second->Getid()));
-		//TextOut(hdc, 700, 275 + i * 30, , );
+		TextOut(hdc, LEADERBOARD_USER_X, LEADERBOARD_USER_Y + i * 30, iter->second->Getid() ,strlen(iter->second->Getid()));
 	}
 }
 
@@ -170,6 +179,7 @@ void RoomScene::GameTurnSwtich()
 	break;
 	case GAME_TURN_ORDER_USER:
 	{
+		ResetTime();
 		MySketchbook->SetDrawLock(true);
 		MySketchbook->SetSendLock(true);
 	}
@@ -207,53 +217,62 @@ void RoomScene::DrawGameTurn(HDC hdc)
 	{
 	case GAME_TURN_READY:
 	{
-		TextOut(hdc, 525, 117, "현재 대기중입니다. 3명 이상이 되면 시작합니다.", strlen("현재 대기중입니다. 3명 이상이 되면 시작합니다."));
+		TextOut(hdc, NOTICE_X, NOTICE_Y, "현재 대기중입니다. 3명 이상이 되면 시작합니다.", 
+			strlen("현재 대기중입니다. 3명 이상이 되면 시작합니다."));
 	}
 	break;
 	case GAME_TURN_START:
 	{
-		BitmapGameStart->BufferDraw(hdc, 476, 248);
+		BitmapGameStart->BufferDraw(hdc, GAMESTART_NOTICE_X, GAMESTART_NOTICE_Y);
 	}
 	break;
 	case GAME_TURN_ORDER_USER:
 	{
-		BitmapGameRound->BufferDraw(hdc, 392, 265);
-		TextOut(hdc, 462, 291, MapUser[FirstIndex]->Getid() , strlen(MapUser[FirstIndex]->Getid()));
+		BitmapGameRound->BufferDraw(hdc, GAMEROUND_NOTICE_X, GAMEROUND_NOTICE_Y);
+		TextOut(hdc, GAMEROUND_USER_X, GAMEROUND_FIRST_USER_Y, 
+			MapUser[FirstIndex]->Getid() , strlen(MapUser[FirstIndex]->Getid()));
 		if (SecondIndex < PlayingUserSize)
 		{
-			TextOut(hdc, 462, 331, MapUser[SecondIndex]->Getid(), strlen(MapUser[SecondIndex]->Getid()));
+			TextOut(hdc, GAMEROUND_USER_X, GAMEROUND_SECOND_USER_Y, 
+				MapUser[SecondIndex]->Getid(), strlen(MapUser[SecondIndex]->Getid()));
 		}
 		else
 		{
-			TextOut(hdc, 462, 331,"마지막" , strlen("마지막"));
+			TextOut(hdc, GAMEROUND_USER_X, GAMEROUND_SECOND_USER_Y,"마지막" , strlen("마지막"));
 		}
 	}
 	break;
 	case GAME_TURN_WAIT:
 	{
+		TextOut(hdc, TIME_NOTICE_X, TIME_NOTICE_Y, StrTime.c_str(), StrTime.length());
 		cout << DRAW_TIMEOUT - NowTime << endl;
 	}
 	break;
 	case GAME_TURN_DRAW:
 	{
-		BitmapAnswer->BufferDraw(hdc, 293, 95);
-		TextOut(hdc, 373, 105, VecAnswerWord[AnswerIndex].c_str(), VecAnswerWord[AnswerIndex].length());
+		BitmapAnswer->BufferDraw(hdc, ANSWER_NOTICE_X, ANSWER_NOTICE_Y);
+		TextOut(hdc, ANSWER_NOTICE_STR_X, ANSWER_NOTICE_STR_Y, 
+			VecAnswerWord[AnswerIndex].c_str(), VecAnswerWord[AnswerIndex].length());
+		TextOut(hdc, TIME_NOTICE_X, TIME_NOTICE_Y, StrTime.c_str(), StrTime.length());
 		cout << DRAW_TIMEOUT - NowTime << endl;
 	}
 	break;
 	case GAME_TURN_RESULT:
 	{
-		BitmapGameResult->BufferDraw(hdc, 383, 273);
-		TextOut(hdc, 545, 295, MapUser[FirstIndex]->Getid(), strlen(MapUser[FirstIndex]->Getid()));
-		if (SecondIndex < PlayingUserSize)
+		BitmapGameResult->BufferDraw(hdc, RESULT_NOTICE_X, RESULT_NOTICE_Y);
+		TextOut(hdc, RESULT_USER_X, RESULT_FIRST_USER_Y, 
+			MapUser[FirstIndex]->Getid(), strlen(MapUser[FirstIndex]->Getid()));
+		if (SecondIndex < PLAYING_USER_END)
 		{
-			TextOut(hdc, 545, 335, MapUser[SecondIndex]->Getid(), strlen(MapUser[SecondIndex]->Getid()));
+			TextOut(hdc, RESULT_USER_X, RESULT_SECOND_USER_Y, 
+				MapUser[SecondIndex]->Getid(), strlen(MapUser[SecondIndex]->Getid()));
 		}
 	}
 	break;
 	case GAME_TURN_GAMEOVER:
 	{
-		TextOut(hdc, 525, 117, "현재 대기중입니다. 3명 이상이 되면 시작합니다.", strlen("현재 대기중입니다. 3명 이상이 되면 시작합니다."));
+		TextOut(hdc, 525, 117, "현재 대기중입니다. 3명 이상이 되면 시작합니다.", 
+			strlen("현재 대기중입니다. 3명 이상이 되면 시작합니다."));
 		DrawLeaderBoard(hdc);
 	}
 	break;
@@ -272,6 +291,7 @@ void RoomScene::SyncTime(int _Time)
 	if (NowTime == 0)
 		NowTime = Time;
 	cout <<"sync : " << NowTime << endl;
+	StrTime = to_string(DRAW_TIMEOUT - NowTime);
 }
 
 void RoomScene::ResetTime()
@@ -284,6 +304,7 @@ void RoomScene::ResetTime()
 void RoomScene::IncreaseTime()
 {
 	NowTime += 1;
+	StrTime = to_string(DRAW_TIMEOUT - NowTime);
 }
 
 void RoomScene::ButtonPress(POINT MousePoint)
@@ -485,6 +506,7 @@ void RoomScene::Draw(HDC hdc)
 
 	MySketchbook->Draw(hdc);
 	DrawCheat(hdc);
+	DrawUser(hdc);
 
 	DrawGameTurn(hdc);
 }
