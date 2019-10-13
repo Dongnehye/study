@@ -6,7 +6,6 @@
 #include <map>
 #include <list>
 
-#define CHEAT_EDIT 3
 #define ID_LISTBOX 100
 
 class LobbyScene :

@@ -49,6 +49,16 @@ char * User::Getid()
 	return id;
 }
 
+void User::IncreaseScore()
+{
+	Score += 1;
+}
+
+void User::ResetScore()
+{
+	Score = NULL;
+}
+
 void User::SetCheat(char * _cheat)
 {
 	strcpy(Cheat, _cheat);

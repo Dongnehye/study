@@ -140,7 +140,8 @@ DWORD WINAPI TimeWorkerThread(LPVOID arg)
 	{
 		static int i = 0;
 		i++;
-		Server->IncreaseTime();
+		if(Server != NULL)
+			Server->IncreaseTime();
 		Sleep(1000);
 	}
 	return 0;

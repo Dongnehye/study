@@ -8,6 +8,7 @@ User::User()
 	RoomIndex = NULL;
 	CharacterIndex = 0;
 	MyIndexRoom = NULL;
+	Score = NULL;
 }
 
 

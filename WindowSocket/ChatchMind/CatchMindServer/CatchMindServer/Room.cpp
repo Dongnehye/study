@@ -1,7 +1,70 @@
 #include "Room.h"
 #include <iostream>
+#include <fstream>
+#include <random>
 
-#define HALFTIME 45
+bool Room::LoadAnswerWord()
+{
+	ifstream in("WordDataBase.txt");
+
+	string Word;
+	if (!in.is_open())
+	{
+		return false;
+	}
+	else
+	{
+		while (in)
+		{
+			in >> Word;
+			VecAnswerWord.push_back(Word);
+		}
+		return true;
+	}
+	return false;
+}
+
+int Room::RandAnswer()
+{
+	int min = 1;
+	random_device rn;
+	mt19937_64 rnd(rn());
+
+	uniform_int_distribution<int> range(min, VecAnswerWord.size() - 1);
+
+	return range(rnd);
+}
+
+void Room::SetPalyingUser()
+{
+	PlayingUserSize = MapUser.size();
+	if (PlayingUserSize > ROOM_PLAYER_SIZE)
+	{
+		PlayingUserSize = ROOM_PLAYER_SIZE;
+	}
+}
+
+bool Room::CheckAnswerCheat(char * Buf)
+{
+	if (strcmp(VecAnswerWord[AnswerIndex].c_str(), Buf) == 0)
+	{
+		SendGameTurn(GAME_TURN_RESULT);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Room::NextCurrentUser()
+{
+	CurrnetTurnUser++;
+	if (CurrnetTurnUser < PlayingUserSize)
+		GameTurn = GAME_TURN_START;
+	else
+		GameTurn = GAME_TURN_GAMEOVER;
+}
 
 void Room::GameReady()
 {
@@ -11,7 +74,7 @@ void Room::GameReady()
 	PrevTime = Time;
 }
 
-bool Room::CheckAllReady()
+bool Room::CheckTimeAllReady()
 {
 	if (MapUser.size() >= 3 && AllUserReady)
 	{
@@ -28,7 +91,7 @@ bool Room::CheckAllReady()
 	return false;
 }
 
-bool Room::CheckRound()
+bool Room::CheckTimeRound()
 {
 	NowTime = Time;
 	if (NowTime - PrevTime == 3)
@@ -38,7 +101,7 @@ bool Room::CheckRound()
 	return false;
 }
 
-bool Room::CheckDrawReady()
+bool Room::CheckTimeDrawReady()
 {
 	NowTime = Time;
 	if (NowTime - PrevTime == 3)
@@ -51,7 +114,17 @@ bool Room::CheckDrawReady()
 bool Room::CheckDrawTimeOut()
 {
 	NowTime = Time;
-	if (NowTime - PrevTime == 90)
+	if (NowTime - PrevTime == DRAW_TIMEOUT)
+	{
+		return true;
+	}
+	return false;
+}
+
+bool Room::CheckTimeGameOver()
+{
+	NowTime = Time;
+	if (NowTime - PrevTime == 5)
 	{
 		return true;
 	}
@@ -68,9 +141,12 @@ void Room::SendGameTurn(int Turn)
 	{
 	case GAME_TURN_START:
 	{
+		SetPalyingUser();
+		GameTurn = GAME_TURN_START;
+		IsStart = true;
 		packet.GameTurn = Turn;
-		packet.FirstUserIndex = 0;
-		packet.SecondUserIndex = 0;
+		packet.FirstIndex = 0;
+		packet.SecondIndex = PlayingUserSize;
 		for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
 		{
 			send(iter->first, (const char*)&packet, packet.header.wLen, 0);
@@ -79,28 +155,32 @@ void Room::SendGameTurn(int Turn)
 	break;
 	case GAME_TURN_ORDER_USER:
 	{
-		packet.FirstUserIndex = CurrnetTurnUser;
-		packet.SecondUserIndex = CurrnetTurnUser + 1;
+		GameTurn = GAME_TURN_ORDER_USER;
+		packet.FirstIndex = CurrnetTurnUser;
+		packet.SecondIndex = CurrnetTurnUser + 1;
 		packet.GameTurn = GAME_TURN_ORDER_USER;
 		for (auto iter = UserOrder.begin(); iter != UserOrder.end(); ++iter)
 		{
 			send(iter->second, (const char*)&packet, packet.header.wLen, 0);
 		}
+		ClearLine();
 	}
 	break;
 	case GAME_TURN_DRAW:
 	{
-		packet.FirstUserIndex = CurrnetTurnUser++;
-		packet.SecondUserIndex = NULL;
-
+		GameTurn = GAME_TURN_DRAW;
+		packet.FirstIndex = CurrnetTurnUser;
+		AnswerIndex = RandAnswer();
 		for (auto iter = UserOrder.begin(); iter != UserOrder.end(); ++iter)
 		{
-			if (iter->first == packet.FirstUserIndex)
+			if (iter->first == packet.FirstIndex)
 			{
+				packet.SecondIndex = AnswerIndex;
 				packet.GameTurn = GAME_TURN_DRAW;
 			}
 			else
 			{
+				packet.SecondIndex = NULL;
 				packet.GameTurn = GAME_TURN_WAIT;
 			}
 			send(iter->second, (const char*)&packet, packet.header.wLen, 0);
@@ -109,16 +189,34 @@ void Room::SendGameTurn(int Turn)
 	break;
 	case GAME_TURN_RESULT:
 	{
-
+		GameTurn = GAME_TURN_RESULT;
+		PrevTime = Time;
+		for (auto iter = UserOrder.begin(); iter != UserOrder.end(); ++iter)
+		{
+			packet.FirstIndex = CurrnetTurnUser;
+			packet.SecondIndex = AnswerUserIndex;
+			packet.GameTurn = GAME_TURN_RESULT;	
+			send(iter->second, (const char*)&packet, packet.header.wLen, 0);
+		}
+		AnswerUserIndex = PLAYING_USER_END;
+		NextCurrentUser();
 	}
 	break;
 	case GAME_TURN_GAMEOVER:
 	{
-
+		PrevTime = Time;
+		for (auto iter = UserOrder.begin(); iter != UserOrder.end(); ++iter)
+		{
+			packet.FirstIndex = NULL;
+			packet.SecondIndex = NULL;
+			packet.GameTurn = GAME_TURN_GAMEOVER;
+			send(iter->second, (const char*)&packet, packet.header.wLen, 0);
+		}
+		GameReset();
 	}
 	break;
 	}
-
+	PrevTime = Time;
 }
 
 void Room::SendSyncTime()
@@ -135,9 +233,35 @@ void Room::SendSyncTime()
 
 void Room::SendCheat(SOCKET sock, PACKET_SEND_CHEAT & packet)
 {
+	packet.Buf[packet.StrLen] = '\0';
+
+	if (CheckAnswerCheat(packet.Buf))
+	{
+		AnswerUserIndex = MapUser[sock]->MyIndexRoom;
+		MapUser[sock]->Score += 1;
+	}
 	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
 	{
 		send(iter->first, (const char*)&packet, packet.header.wLen, 0);
+	}
+}
+
+void Room::GameReset()
+{
+	IsStart = false;
+	AnswerIndex = NULL;
+	AnswerUserIndex = PLAYING_USER_END;
+	PlayingUserSize = NULL;
+	CurrnetTurnUser = 0;
+	GameTurn = GAME_TURN_READY;
+	TimeSync = false;
+	Time = NULL;
+	PrevTime = NULL;
+	NowTime = NULL;
+
+	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+	{
+		iter->second->Score = NULL;
 	}
 }
 
@@ -152,17 +276,25 @@ Room::Room(int _index)
 	index = _index;
 	strcpy(RoomName, "한수");
 	strcpy(HostId, "기본");
+
+	if (!LoadAnswerWord())
+		cout << index << " : 방 단어 로드 에러()" << endl;
+
+	AnswerIndex = NULL;
+	AnswerUserIndex = PLAYING_USER_END;
+
 	IsStart = false;
 
 	AllUserReady = false;
 
+	PlayingUserSize = NULL;
 	CurrnetTurnUser = 0;
 	GameTurn = GAME_TURN_WAIT;
 
 	TimeSync = false;
-	Time = 0;
-	PrevTime = 0;
-	NowTime = 0;
+	Time = NULL;
+	PrevTime = NULL;
+	NowTime = NULL;
 }
 
 Room::~Room()
@@ -247,7 +379,6 @@ void Room::AddLine(int x0, int y0, int x1, int y1, int Color)
 	Line.y1 = y1;
 	Line.color = Color;
 	VecLine.push_back(Line);
-	cout << VecLine.size() << endl;
 }
 
 void Room::EchoLine(SOCKET sock, DRAWLINE Line)
@@ -265,7 +396,7 @@ void Room::EchoLine(SOCKET sock, DRAWLINE Line)
 	}
 }
 
-void Room::ClearLine(SOCKET sock)
+void Room::ClearLine()
 {
 	VecLine.clear();
 	
@@ -324,34 +455,31 @@ void Room::AllSendUserData(SOCKET sock)
 void Room::IncreaseTime()
 {
 	Time++;
-	if (CheckAllReady() && GameTurn == GAME_TURN_READY)
+	if (CheckTimeAllReady() && GameTurn == GAME_TURN_READY)
 	{
-		GameTurn = GAME_TURN_START;
 		SendGameTurn(GAME_TURN_START);
-		PrevTime = Time;
 	}
-	if (CheckRound() && GameTurn == GAME_TURN_START)
+	if (CheckTimeRound() && GameTurn == GAME_TURN_START)
 	{
-		GameTurn = GAME_TURN_ORDER_USER;
 		SendGameTurn(GAME_TURN_ORDER_USER);
-		PrevTime = Time;
 	}
-	if (CheckDrawReady() && GameTurn == GAME_TURN_ORDER_USER)
+	if (CheckTimeDrawReady() && GameTurn == GAME_TURN_ORDER_USER)
 	{
-		GameTurn = GAME_TURN_DRAW;
 		SendGameTurn(GAME_TURN_DRAW);
 		TimeSync = true;
-		PrevTime = Time;
 	}
-	if (CheckDrawTimeOut() && GameTurn == GAME_TURN_DRAW)
+	if ((CheckDrawTimeOut() && GameTurn == GAME_TURN_DRAW))
 	{
-		GameTurn = GAME_TURN_RESULT;
 		SendGameTurn(GAME_TURN_RESULT);
-		PrevTime = Time;
+	}	
+	if ((CheckTimeGameOver() && GameTurn == GAME_TURN_GAMEOVER))
+	{
+		SendGameTurn(GAME_TURN_GAMEOVER);
 	}
 	if (TimeSync || (NowTime - PrevTime == HALFTIME && GameTurn == GAME_TURN_DRAW))
 	{
 		SendSyncTime();
 		TimeSync = false;
 	}
+
 }

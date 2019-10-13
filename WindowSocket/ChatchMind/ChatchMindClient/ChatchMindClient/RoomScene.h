@@ -6,18 +6,25 @@
 #include "PACKET_HEADER.h"
 #include <map>
 #include <vector>
-
-#define CHEAT_EDIT 4
+#include <string>
 
 class RoomScene :
 	public Scene
 {
 	int MyIndex;
 	std::map<int, User*> MapUser;
+	int PlayingUserSize;
+
+	Bitmap * BitmapAnswer;
+	std::vector<std::string> VecAnswerWord;
+	bool LoadAnswerWord();
+	int AnswerIndex;
 
 	Bitmap * BitmapGameStart;
 	bool SendCheatLock;
 	bool GameStart;
+	void GameReset();
+
 	int GameTurn;
 	void GameTurnSwtich();
 	void DrawGameTurn(HDC hdc);
@@ -31,6 +38,7 @@ class RoomScene :
 
 	Bitmap * BitmapGameRound;
 	Bitmap * BitmapGameResult;
+	Bitmap * BitmapGameOverResult;
 	int FirstIndex;
 	int SecondIndex;
 
@@ -45,14 +53,15 @@ class RoomScene :
 	Button * ExitButton;
 	void ExitGame();
 
-
 	Bitmap * LeftCheat;
 	Bitmap * RightCheat;
 	void RecvCheat(int index, char * str);
 
 	void SendRequestUserData();
 	void SendCheat();
+
 	void DrawCheat(HDC hdc);
+	void DrawLeaderBoard(HDC hdc);
 
 	void SetUserPosition(int index);
 

@@ -193,7 +193,7 @@ void LobbyServer::RoomDrawLine(SOCKET sock, char * Buf, int len)
 void LobbyServer::RoomDrawClear(SOCKET sock)
 {
 	Room * pRoom = MapRoom[MapUser[sock]->RoomIndex];
-	pRoom->ClearLine(sock);
+	pRoom->ClearLine();
 
 }
 

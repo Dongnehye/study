@@ -4,6 +4,7 @@
 #include "PACKET_HEADER.h"
 #include <map>
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -11,10 +12,22 @@ class Room
 {
 public:
 	int index;
+
 	char RoomName[SHORT_BUFSIZE];
 	char HostId[SHORT_BUFSIZE];
 
+	void SetPalyingUser();
+	int PlayingUserSize;
+
+	bool CheckAnswerCheat(char * Buf);
+	vector<string> VecAnswerWord;
+	bool LoadAnswerWord();
+	int AnswerIndex;
+	int AnswerUserIndex;
+	int RandAnswer();
+
 	int CurrnetTurnUser;
+	void NextCurrentUser();
 	int GameTurn;
 
 	bool TimeSync;
@@ -29,17 +42,15 @@ public:
 	vector<DRAWLINE> VecLine;
 
 	void GameReady();
-	bool CheckAllReady();
-	bool CheckRound();
-	bool CheckDrawReady();
+	bool CheckTimeAllReady();
+	bool CheckTimeRound();
+	bool CheckTimeDrawReady();
 	bool CheckDrawTimeOut();
+	bool CheckTimeGameOver();
 
 	void SendSyncTime();
 	void SendGameTurn(int Turn);
-	void InitGameState();
 	void SendCheat(SOCKET sock, PACKET_SEND_CHEAT &packet);
-
-	bool CheckAnswer(char * Cheat);
 
 	void GameReset();
 	Room();
@@ -53,7 +64,7 @@ public:
 
 	void AddLine(int x0, int y0,int x1, int y1, int Color);
 	void EchoLine(SOCKET sock, DRAWLINE Line);
-	void ClearLine(SOCKET sock);
+	void ClearLine();
 
 	void SendUserData(SOCKET sock);
 	void AllSendUserData(SOCKET sock);

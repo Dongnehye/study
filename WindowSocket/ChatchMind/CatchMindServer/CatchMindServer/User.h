@@ -17,7 +17,8 @@ public:
 	int CharacterIndex;
 	char id[SHORT_BUFSIZE];
 
+	int Score;
+
 	User();
 	virtual ~User();
-
 };

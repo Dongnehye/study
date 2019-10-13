@@ -1,5 +1,6 @@
 #include "RoomScene.h"
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 
@@ -41,6 +42,17 @@ void RoomScene::DrawCheat(HDC hdc)
 		}
 	}
 
+}
+
+void RoomScene::DrawLeaderBoard(HDC hdc)
+{
+	BitmapGameOverResult->BufferDraw(hdc, 492, 185);
+	int i = 0;
+	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter, ++i)
+	{
+		TextOut(hdc, 576, 275 + i * 30, iter->second->Getid() ,strlen(iter->second->Getid()));
+		//TextOut(hdc, 700, 275 + i * 30, , );
+	}
 }
 
 void RoomScene::SetUserPosition(int index)
@@ -91,6 +103,47 @@ void RoomScene::SetUserPosition(int index)
 
 }
 
+bool RoomScene::LoadAnswerWord()
+{
+	ifstream in("WordDataBase.txt");
+
+	string Word;
+	if (!in.is_open())
+	{
+		return false;
+	}
+	else
+	{
+		while (in)
+		{
+			in >> Word;
+			VecAnswerWord.push_back(Word);
+		}
+		return true;
+	}
+	return false;
+}
+
+void RoomScene::GameReset()
+{
+	SendCheatLock = false;
+	GameStart = false;
+	PlayingUserSize = NULL;
+
+	FirstIndex = NULL;
+	SecondIndex = NULL;
+
+	Time = NULL;
+	PrevTime = NULL;
+	NowTime = NULL;
+
+	AnswerIndex = NULL;
+	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+	{
+		iter->second->ResetScore();
+	}
+}
+
 void RoomScene::GameTurnSwtich()
 {
 	switch (GameTurn)
@@ -103,6 +156,7 @@ void RoomScene::GameTurnSwtich()
 	break;
 	case GAME_TURN_START:
 	{
+		PlayingUserSize = SecondIndex;
 		MySketchbook->ClearSketchbook();
 		MySketchbook->SetDrawLock(true);
 		MySketchbook->SetSendLock(true);
@@ -122,6 +176,7 @@ void RoomScene::GameTurnSwtich()
 	break;
 	case GAME_TURN_DRAW:
 	{
+		AnswerIndex = SecondIndex;
 		SendCheatLock = true;
 		MySketchbook->SetDrawLock(false);
 		MySketchbook->SetSendLock(false);
@@ -136,6 +191,7 @@ void RoomScene::GameTurnSwtich()
 	break;
 	case GAME_TURN_GAMEOVER:
 	{
+		GameReset();
 		MySketchbook->SetDrawLock(true);
 		MySketchbook->SetSendLock(true);
 	}
@@ -163,27 +219,42 @@ void RoomScene::DrawGameTurn(HDC hdc)
 	{
 		BitmapGameRound->BufferDraw(hdc, 392, 265);
 		TextOut(hdc, 462, 291, MapUser[FirstIndex]->Getid() , strlen(MapUser[FirstIndex]->Getid()));
-		TextOut(hdc, 462, 331, MapUser[SecondIndex]->Getid(), strlen(MapUser[SecondIndex]->Getid()));
+		if (SecondIndex < PlayingUserSize)
+		{
+			TextOut(hdc, 462, 331, MapUser[SecondIndex]->Getid(), strlen(MapUser[SecondIndex]->Getid()));
+		}
+		else
+		{
+			TextOut(hdc, 462, 331,"마지막" , strlen("마지막"));
+		}
 	}
 	break;
 	case GAME_TURN_WAIT:
 	{
-		//cout << NowTime - PrevTime << endl;
+		cout << DRAW_TIMEOUT - NowTime << endl;
 	}
 	break;
 	case GAME_TURN_DRAW:
 	{
-		//cout << NowTime - PrevTime << endl;
+		BitmapAnswer->BufferDraw(hdc, 293, 95);
+		TextOut(hdc, 373, 105, VecAnswerWord[AnswerIndex].c_str(), VecAnswerWord[AnswerIndex].length());
+		cout << DRAW_TIMEOUT - NowTime << endl;
 	}
 	break;
 	case GAME_TURN_RESULT:
 	{
-		BitmapGameResult->BufferDraw(hdc, 476, 248);
+		BitmapGameResult->BufferDraw(hdc, 383, 273);
+		TextOut(hdc, 545, 295, MapUser[FirstIndex]->Getid(), strlen(MapUser[FirstIndex]->Getid()));
+		if (SecondIndex < PlayingUserSize)
+		{
+			TextOut(hdc, 545, 335, MapUser[SecondIndex]->Getid(), strlen(MapUser[SecondIndex]->Getid()));
+		}
 	}
 	break;
 	case GAME_TURN_GAMEOVER:
 	{
-
+		TextOut(hdc, 525, 117, "현재 대기중입니다. 3명 이상이 되면 시작합니다.", strlen("현재 대기중입니다. 3명 이상이 되면 시작합니다."));
+		DrawLeaderBoard(hdc);
 	}
 	break;
 	default:
@@ -213,7 +284,6 @@ void RoomScene::ResetTime()
 void RoomScene::IncreaseTime()
 {
 	NowTime += 1;
-	cout << NowTime << endl;
 }
 
 void RoomScene::ButtonPress(POINT MousePoint)
@@ -256,6 +326,8 @@ RoomScene::RoomScene(HWND hWnd, SOCKET _sock)
 	SendCheatLock = false;
 	GameStart = false;
 	GameTurn = GAME_TURN_READY;
+	PlayingUserSize = NULL;
+
 	FirstIndex = NULL;
 	SecondIndex = NULL;
 
@@ -268,6 +340,8 @@ RoomScene::RoomScene(HWND hWnd, SOCKET _sock)
 	BitmapGameStart = new Bitmap(hdc, "..\\Resource\\GameStart.bmp");
 	BitmapGameRound = new Bitmap(hdc, "..\\Resource\\Round.bmp");
 	BitmapGameResult = new Bitmap(hdc, "..\\Resource\\Result.bmp");
+	BitmapGameOverResult = new Bitmap(hdc, "..\\Resource\\GameOverResult.bmp");
+	BitmapAnswer = new Bitmap(hdc, "..\\Resource\\Answer.bmp");
 
 	LeftCheat = new Bitmap(hdc, "..\\Resource\\LCheatMessage.bmp");
 	RightCheat = new Bitmap(hdc, "..\\Resource\\RCheatMessage.bmp");
@@ -276,6 +350,11 @@ RoomScene::RoomScene(HWND hWnd, SOCKET _sock)
 	MySketchbook = new Sketchbook(hdc, sock);
 	GameTurnSwtich();
 	Background = mBackground;
+
+	if (!LoadAnswerWord())
+		cout << "단어 로드 에러" << endl;
+	AnswerIndex = NULL;
+
 	ReleaseDC(hWnd, hdc);
 }
 
@@ -360,9 +439,9 @@ void RoomScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
 		PACKET_SEND_GAME_TURN packet;
 		memcpy(&packet, szBuf, len);
 
-		FirstIndex = packet.FirstUserIndex;
-		SecondIndex = packet.SecondUserIndex;
-		
+		FirstIndex = packet.FirstIndex;
+		SecondIndex = packet.SecondIndex;
+
 		SetGameTurn(packet.GameTurn);
 		GameTurnSwtich();
 	}

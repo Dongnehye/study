@@ -26,6 +26,8 @@ public:
 	void Reset();
 	char * Getid();
 
+	void IncreaseScore();
+	void ResetScore();
 	void SetCheat(char * cheat);
 	char * GetCheat();
 	void SetCooldownCheat(int count);

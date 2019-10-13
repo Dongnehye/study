@@ -2,6 +2,8 @@
 #include "Common.h"
 #include "Button.h"
 
+#define CHEAT_EDIT 3
+
 class Scene
 {
 protected:

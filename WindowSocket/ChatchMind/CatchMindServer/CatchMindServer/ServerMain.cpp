@@ -5,7 +5,7 @@
 
 bool ServerMain::CheckLogin(const char * Id, const char * pw)
 {
-	ifstream in("DataBase.txt");
+	ifstream in("UserDataBase.txt");
 	string StrId;
 	string StrPw;
 
@@ -190,5 +190,6 @@ void ServerMain::EraseSocket(SOCKET sock)
 
 void ServerMain::IncreaseTime()
 {
-	Lobby->IncreaseTime();
+	if (Lobby != NULL)
+		Lobby->IncreaseTime();
 }
