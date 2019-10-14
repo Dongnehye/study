@@ -32,9 +32,10 @@ class LobbyScene :
 	POINT RoomListPos{ 200,150 };
 
 	Button * CreateRoomButton;
-	
-	void RecvCheat(char * str);
+	Button * RefreshRoomButton;
+	void ClearRoom();
 
+	void RecvCheat(char * str);
 	void SendCheat();
 	void SendRequestLobbyData();
 	void SendRequestUserData();

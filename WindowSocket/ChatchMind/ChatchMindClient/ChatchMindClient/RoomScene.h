@@ -16,6 +16,7 @@ class RoomScene :
 	int PlayingUserSize;
 
 	Bitmap * BitmapAnswer;
+	Bitmap * BitmapAnswerCheck;
 	std::vector<std::string> VecAnswerWord;
 	bool LoadAnswerWord();
 	int AnswerIndex;
@@ -45,6 +46,7 @@ class RoomScene :
 
 	Sketchbook * MySketchbook;
 
+	Bitmap * BitmapCheat;
 	HWND CheatEdit;
 	char Cheatstr[BUFSIZE];
 	POINT CheatEditPos{ 622,710 };
@@ -54,8 +56,6 @@ class RoomScene :
 	Button * ExitButton;
 	void ExitGame();
 
-	Bitmap * LeftCheat;
-	Bitmap * RightCheat;
 	void RecvCheat(int index, char * str);
 
 	void SendRequestUserData();

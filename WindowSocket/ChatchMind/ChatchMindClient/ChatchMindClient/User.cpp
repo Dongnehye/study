@@ -69,6 +69,11 @@ char * User::GetCheat()
 	return Cheat;
 }
 
+int User::GetScore()
+{
+	return Score;
+}
+
 void User::SetCooldownCheat(int count)
 {
 	CooldownCheat = count;

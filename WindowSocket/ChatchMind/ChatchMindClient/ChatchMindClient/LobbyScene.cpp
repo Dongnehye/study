@@ -4,6 +4,18 @@
 
 using namespace std;
 
+void LobbyScene::ClearRoom()
+{
+	SendMessage(hList, LB_RESETCONTENT, 0, 0);
+
+	for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); ++iter)
+	{
+		delete iter->second;
+	}
+	RoomInfo.clear();
+	ListBoxRoomIndex.clear();
+}
+
 void LobbyScene::RecvCheat(char * str)
 {
 	if (Cheat.size() == 10)
@@ -83,7 +95,7 @@ LobbyScene::LobbyScene(HWND hWnd, SOCKET _sock)
 	Bitmap * LobbyScreen = new Bitmap(hdc, "..\\Resource\\LobbyBackground.bmp");
 
 	CreateRoomButton = new Button(hdc, 392, 39, 88, 37);
-
+	RefreshRoomButton = new Button(hdc, 283, 39, 88, 37);
 	Background = LobbyScreen;
 
 	ReleaseDC(hWnd, hdc);
@@ -91,6 +103,22 @@ LobbyScene::LobbyScene(HWND hWnd, SOCKET _sock)
 
 LobbyScene::~LobbyScene()
 {
+	for (auto iter = UserInfo.begin(); iter != UserInfo.end(); ++iter)
+	{
+		delete iter->second;
+	}
+	UserInfo.clear();
+	for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); ++iter)
+	{
+		delete iter->second;
+	}
+	RoomInfo.clear();
+	ListBoxRoomIndex.clear();
+
+	delete CreateRoomButton;
+	delete RefreshRoomButton;
+
+
 }
 
 void LobbyScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
@@ -110,6 +138,8 @@ void LobbyScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)
 	break;
 	case PACKET_INDEX_SEND_LOBBY:
 	{
+		ClearRoom();
+
 		PACKET_LOBBY_REFRESH packet;
 		memcpy(&packet, szBuf, len);                                                
 		
@@ -190,6 +220,10 @@ void LobbyScene::MouseLClick(LPARAM lParam)
 	{
 		SendCreateRoom();
 	}
+	if (RefreshRoomButton->ButtonPress(MousePoint))
+	{
+		SendRequestLobbyData();
+	}
 }
 
 void LobbyScene::WindowsCommand(WPARAM wParam)
@@ -223,13 +257,7 @@ void LobbyScene::SceneEnd(HWND hWnd)
 {
 	Cheat.clear();
 
-	for (auto iter = RoomInfo.begin(); iter != RoomInfo.end(); ++iter)
-	{
-		delete iter->second;
-	}
-	RoomInfo.clear();
-
-	ListBoxRoomIndex.clear();
+	ClearRoom();
 
 	for (auto iter = UserInfo.begin(); iter != UserInfo.end(); ++iter)
 	{

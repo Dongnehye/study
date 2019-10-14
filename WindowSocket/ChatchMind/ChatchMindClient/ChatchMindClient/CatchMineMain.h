@@ -8,6 +8,13 @@
 #include "LobbyScene.h"
 #include "RoomScene.h"
 
+enum HDC_BITMAP
+{
+	HDC_BITMAP_PAINT,
+	HDC_BITMAP_BACK,
+	HDC_BITMAP_END
+};
+
 class CatchMineMain
 {
 	HWND mhWnd;

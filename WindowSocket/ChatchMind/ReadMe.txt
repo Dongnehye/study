@@ -44,9 +44,17 @@ http://lab.gamecodi.com/board/zboard.php?id=GAMECODILAB_QnA_etc&page=22&sn1=&div
 
 게임 끝
 
-내일 할거/
-
-
 방만들기
 
-회원가입
+내일 할거/
+
+채팅 이쁘게 
+
+화면 불필요한거 제거
+
+배틀시티
+
+crtdbg
+
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetBreakAlloc(181);

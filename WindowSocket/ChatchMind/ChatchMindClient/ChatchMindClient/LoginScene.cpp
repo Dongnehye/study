@@ -36,6 +36,9 @@ LoginScene::LoginScene()
 
 LoginScene::~LoginScene()
 {
+	DestroyWindow(IdEdit);
+	DestroyWindow(PwEdit);
+	delete LoginButton;
 }
 
 void LoginScene::ProcessPacket(char * szBuf, int len, DWORD PacketIndex)

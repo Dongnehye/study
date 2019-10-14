@@ -1,10 +1,11 @@
+#ifdef _DEBUG
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
 #pragma comment(lib, "msimg32.lib")
 #include "WinSocketMain.h"
 #include "PACKET_HEADER.h"
 #include "Common.h"
 #include "CatchMineMain.h"
-
 using namespace std;
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

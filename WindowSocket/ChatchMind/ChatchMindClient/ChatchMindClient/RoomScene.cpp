@@ -37,6 +37,8 @@ void RoomScene::DrawUser(HDC hdc)
 	{
 		TextOut(hdc, iter->second->GetPosition().x + 38, iter->second->GetPosition().y + 30, 
 			iter->second->Getid(), strlen(iter->second->Getid()));
+		TextOut(hdc, iter->second->GetPosition().x + 38, iter->second->GetPosition().y + 87,
+			to_string(iter->second->GetScore()).c_str(), to_string(iter->second->GetScore()).length());
 
 	}
 
@@ -48,8 +50,12 @@ void RoomScene::DrawCheat(HDC hdc)
 	{
 		if (!iter->second->IsCheatCooldownOver())
 		{
+			int Strlen = strlen(iter->second->GetCheat());
+			SIZE Size{ BitmapCheat->GetSize().cx + (Strlen * 8), BitmapCheat->GetSize().cy};
+
+			BitmapCheat->BufferDraw(hdc,iter->second->GetPosition().x - 3, iter->second->GetPosition().y, Size);
 			TextOut(hdc, iter->second->GetPosition().x, iter->second->GetPosition().y, 
-				iter->second->GetCheat(), strlen(iter->second->GetCheat()));
+				iter->second->GetCheat(), Strlen);
 		}
 	}
 }
@@ -61,6 +67,8 @@ void RoomScene::DrawLeaderBoard(HDC hdc)
 	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter, ++i)
 	{
 		TextOut(hdc, LEADERBOARD_USER_X, LEADERBOARD_USER_Y + i * 30, iter->second->Getid() ,strlen(iter->second->Getid()));
+		TextOut(hdc, LEADERBOARD_USER_X + 159, LEADERBOARD_USER_Y + i * 30,
+			to_string(iter->second->GetScore()).c_str(), to_string(iter->second->GetScore()).length());
 	}
 }
 
@@ -159,6 +167,7 @@ void RoomScene::GameTurnSwtich()
 	{
 	case GAME_TURN_READY:
 	{
+		GameReset();
 		MySketchbook->SetDrawLock(false);
 		MySketchbook->SetSendLock(true);
 	}
@@ -173,6 +182,7 @@ void RoomScene::GameTurnSwtich()
 	break;
 	case GAME_TURN_WAIT:
 	{
+		AnswerIndex = SecondIndex;
 		MySketchbook->SetDrawLock(true);
 		MySketchbook->SetSendLock(true);
 	}
@@ -194,6 +204,7 @@ void RoomScene::GameTurnSwtich()
 	break;
 	case GAME_TURN_RESULT:
 	{
+		MapUser[SecondIndex]->IncreaseScore();
 		SendCheatLock = false;
 		MySketchbook->SetDrawLock(true);
 		MySketchbook->SetSendLock(true);
@@ -201,7 +212,6 @@ void RoomScene::GameTurnSwtich()
 	break;
 	case GAME_TURN_GAMEOVER:
 	{
-		GameReset();
 		MySketchbook->SetDrawLock(true);
 		MySketchbook->SetSendLock(true);
 	}
@@ -260,6 +270,10 @@ void RoomScene::DrawGameTurn(HDC hdc)
 	case GAME_TURN_RESULT:
 	{
 		BitmapGameResult->BufferDraw(hdc, RESULT_NOTICE_X, RESULT_NOTICE_Y);
+		BitmapAnswerCheck->BufferDraw(hdc, ANSWER_NOTICE_X, ANSWER_NOTICE_Y);
+
+		TextOut(hdc, ANSWER_NOTICE_STR_X, ANSWER_NOTICE_STR_Y,
+			VecAnswerWord[AnswerIndex].c_str(), VecAnswerWord[AnswerIndex].length());
 		TextOut(hdc, RESULT_USER_X, RESULT_FIRST_USER_Y, 
 			MapUser[FirstIndex]->Getid(), strlen(MapUser[FirstIndex]->Getid()));
 		if (SecondIndex < PLAYING_USER_END)
@@ -363,9 +377,9 @@ RoomScene::RoomScene(HWND hWnd, SOCKET _sock)
 	BitmapGameResult = new Bitmap(hdc, "..\\Resource\\Result.bmp");
 	BitmapGameOverResult = new Bitmap(hdc, "..\\Resource\\GameOverResult.bmp");
 	BitmapAnswer = new Bitmap(hdc, "..\\Resource\\Answer.bmp");
+	BitmapAnswerCheck = new Bitmap(hdc, "..\\Resource\\AnswerCheck.bmp");
+	BitmapCheat = new Bitmap(hdc, "..\\Resource\\Cheat.bmp");
 
-	LeftCheat = new Bitmap(hdc, "..\\Resource\\LCheatMessage.bmp");
-	RightCheat = new Bitmap(hdc, "..\\Resource\\RCheatMessage.bmp");
 	ExitButton = new Button(hdc, 1042, 38, 100, 36);
 
 	MySketchbook = new Sketchbook(hdc, sock);
@@ -381,10 +395,20 @@ RoomScene::RoomScene(HWND hWnd, SOCKET _sock)
 
 RoomScene::~RoomScene()
 {
+	delete ExitButton;
+	delete BitmapCheat;
+	delete BitmapGameRound;
+	delete BitmapGameResult;
+	delete BitmapGameOverResult;
+	delete BitmapAnswer;
+	delete BitmapAnswerCheck;
 	delete BitmapGameStart;
-	delete LeftCheat;
-	delete RightCheat;
 	delete MySketchbook;
+	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
+	{
+		delete iter->second;
+	}
+	MapUser.clear();
 }
 
 void RoomScene::SetGameTurn(int Turn)

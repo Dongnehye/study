@@ -48,7 +48,6 @@ bool Room::CheckAnswerCheat(char * Buf)
 {
 	if (strcmp(VecAnswerWord[AnswerIndex].c_str(), Buf) == 0)
 	{
-		SendGameTurn(GAME_TURN_RESULT);
 		return true;
 	}
 	else
@@ -171,16 +170,15 @@ void Room::SendGameTurn(int Turn)
 		GameTurn = GAME_TURN_DRAW;
 		packet.FirstIndex = CurrnetTurnUser;
 		AnswerIndex = RandAnswer();
+		packet.SecondIndex = AnswerIndex;
 		for (auto iter = UserOrder.begin(); iter != UserOrder.end(); ++iter)
 		{
 			if (iter->first == packet.FirstIndex)
 			{
-				packet.SecondIndex = AnswerIndex;
 				packet.GameTurn = GAME_TURN_DRAW;
 			}
 			else
 			{
-				packet.SecondIndex = NULL;
 				packet.GameTurn = GAME_TURN_WAIT;
 			}
 			send(iter->second, (const char*)&packet, packet.header.wLen, 0);
@@ -239,6 +237,7 @@ void Room::SendCheat(SOCKET sock, PACKET_SEND_CHEAT & packet)
 	{
 		AnswerUserIndex = MapUser[sock]->MyIndexRoom;
 		MapUser[sock]->Score += 1;
+		SendGameTurn(GAME_TURN_RESULT);
 	}
 	for (auto iter = MapUser.begin(); iter != MapUser.end(); ++iter)
 	{

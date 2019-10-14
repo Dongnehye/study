@@ -24,6 +24,7 @@ Sketchbook::Sketchbook(HDC hdc, SOCKET _sock)
 Sketchbook::~Sketchbook()
 {
 	DeletePenButton();
+	DeleteObject(hPen);
 }
 void Sketchbook::SetDrawLock(bool Lock)
 {
@@ -163,6 +164,7 @@ void Sketchbook::DeletePenButton()
 	{
 		delete PenColorButton[i];
 	}
+	delete ClearButton;
 }
 
 void Sketchbook::PenButton(POINT MousePoint)

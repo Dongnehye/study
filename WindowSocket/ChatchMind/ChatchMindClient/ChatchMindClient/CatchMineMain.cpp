@@ -29,16 +29,16 @@ void CatchMineMain::OperateInput()
 void CatchMineMain::Render()
 {
 	HDC hdc = GetDC(mhWnd);
-	SetBkMode(hMemDC[0], TRANSPARENT);
+	SetBkMode(hMemDC[HDC_BITMAP_PAINT], TRANSPARENT);
 
-	BitBlt(hMemDC[0], 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, hMemDC[1], 0, 0, SRCCOPY);
+	BitBlt(hMemDC[HDC_BITMAP_PAINT], 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, hMemDC[HDC_BITMAP_BACK], 0, 0, SRCCOPY);
 
-	CurrentScene->Draw(hMemDC[0]);
+	CurrentScene->Draw(hMemDC[HDC_BITMAP_PAINT]);
 
 	//Debug
-	DebugRender(hMemDC[0]);
+	DebugRender(hMemDC[HDC_BITMAP_PAINT]);
 
-	BitBlt(hdc, 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, hMemDC[0], 0, 0, SRCCOPY);
+	BitBlt(hdc, 0, 0, SCREEN_WIDTH, SCREEN_WIDTH, hMemDC[HDC_BITMAP_PAINT], 0, 0, SRCCOPY);
 
 	ReleaseDC(mhWnd, hdc);
 
@@ -82,14 +82,14 @@ CatchMineMain::CatchMineMain(HWND hWnd, SOCKET sock)
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
 
-	hMemDC[0] = CreateCompatibleDC(hdc);
-	hBitmap[0] = CreateCompatibleBitmap(hdc, SCREEN_WIDTH, SCREEN_HEIGHT);
-	hOld[0] = (HBITMAP)SelectObject(hMemDC[0], hBitmap[0]);
+	hMemDC[HDC_BITMAP_PAINT] = CreateCompatibleDC(hdc);
+	hBitmap[HDC_BITMAP_PAINT] = CreateCompatibleBitmap(hdc, SCREEN_WIDTH, SCREEN_HEIGHT);
+	hOld[HDC_BITMAP_PAINT] = (HBITMAP)SelectObject(hMemDC[HDC_BITMAP_PAINT], hBitmap[HDC_BITMAP_PAINT]);
 
-	hMemDC[1] = CreateCompatibleDC(hMemDC[0]);
-	hBitmap[1] = (HBITMAP)LoadImage(NULL, "..\\Resource\\back_black.bmp", IMAGE_BITMAP, 0, 0
+	hMemDC[HDC_BITMAP_BACK] = CreateCompatibleDC(hMemDC[HDC_BITMAP_PAINT]);
+	hBitmap[HDC_BITMAP_BACK] = (HBITMAP)LoadImage(NULL, "..\\Resource\\back_black.bmp", IMAGE_BITMAP, 0, 0
 		, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
-	hOld[1] = (HBITMAP)SelectObject(hMemDC[1], hBitmap[1]);
+	hOld[1] = (HBITMAP)SelectObject(hMemDC[HDC_BITMAP_BACK], hBitmap[HDC_BITMAP_BACK]);
 
 	MouseBufferx[0] = '\0';
 	MouseBuffery[0] = '\0';
@@ -100,6 +100,18 @@ CatchMineMain::CatchMineMain(HWND hWnd, SOCKET sock)
 
 CatchMineMain::~CatchMineMain()
 {
+	for (int i = 0; i < SCENE_INDEX_END; ++i)
+	{
+		delete ArrScene[i];
+	}
+	CurrentScene = nullptr;
+
+	DestroyWindow(mCheatEdit);
+
+	for (int i = 0; i < HDC_BITMAP_END; ++i)
+	{
+		DeleteObject(hBitmap[i]);
+	}
 }
 
 void CatchMineMain::MouseLClick(LPARAM lParam)

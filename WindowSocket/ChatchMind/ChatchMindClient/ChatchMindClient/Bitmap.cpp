@@ -29,6 +29,10 @@ void Bitmap::BufferDraw(HDC hdc, int x, int y, SIZE _szie)
 {
 	TransparentBlt(hdc, x, y, _szie.cx, _szie.cy, m_hMemDC, 0, 0, size.cx, size.cy, RGB(255, 0, 255));
 }
+void Bitmap::BufferDraw(HDC hdc, int x, int y, int sizeX, int sizeY)
+{
+	TransparentBlt(hdc, x, y, sizeX, sizeY, m_hMemDC, 0, 0, size.cx, size.cy, RGB(255, 0, 255));
+}
 void Bitmap::CutBufferDraw(HDC hdc, int x, int y, POINT Pos, SIZE _szie)
 {
 	TransparentBlt(hdc, x, y, _szie.cx, _szie.cy, m_hMemDC, Pos.x, Pos.y, _szie.cx, _szie.cy, RGB(255, 0, 255));

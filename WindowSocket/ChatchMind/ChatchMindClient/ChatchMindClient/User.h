@@ -30,6 +30,7 @@ public:
 	void ResetScore();
 	void SetCheat(char * cheat);
 	char * GetCheat();
+	int GetScore();
 	void SetCooldownCheat(int count);
 	bool IsCheatCooldownOver();
 	void DecreaseCooldownCheat();
