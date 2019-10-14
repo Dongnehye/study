@@ -11,12 +11,17 @@ Actor::Actor()
 
 Actor::~Actor()
 {
+	if (Model != nullptr)
+		delete Model;
 }
 void Actor::Update(float fElapseTime)
 {
 }
 void Actor::Draw(HDC hdc)
 {
-	Model->BufferDraw(hdc, x, y, TileSize);
-	FrameRect(hdc, &Collision,NULL);
+	if (Model != nullptr)
+	{
+		Model->BufferDraw(hdc, x, y, TileSize);
+	}
+	//FrameRect(hdc, &Collision,NULL);
 }

@@ -27,7 +27,7 @@ EnemyTank::EnemyTank(HWND hWnd ,POINT pt)
 	HDC hdc = GetDC(hWnd);
 	Arrow = RIGHT;
 	PreArrow = Arrow;
-	speed = TANKSPEED;
+	speed = ENEMY_TANK_SPEED;
 	x = pt.x * TILE_SIZE;
 	y = pt.y * TILE_SIZE;
 
@@ -74,14 +74,13 @@ void EnemyTank::Update(float fElapseTime,HWND hWnd, std::vector<Bullet*> &VecBul
 	}
 	else
 	{
-		Tank::Update(fElapseTime, VecBullet, VecTank);
-
 		RandomArrow(fElapseTime);
 
 		Fire(hWnd, VecBullet);
-		MoveAnimation();
-		Move(fElapseTime);
 
+		Move(fElapseTime, VecTank);
+		Tank::Update(fElapseTime, VecBullet, VecTank);
+		MoveAnimation();
 		Collision = { (int)x, (int)y,(int)x + TileSize.cx, (int)y + TileSize.cy };
 	}
 }

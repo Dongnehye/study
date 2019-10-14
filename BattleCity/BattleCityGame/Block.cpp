@@ -12,6 +12,10 @@ Block::Block()
 Block::~Block()
 {
 	delete BlackTile;
+	for (int i = 0; i < BLOCKCHANGE_END; ++i)
+	{
+		delete BlockBrick[i];
+	}
 }
 
 void Block::SetCollision()

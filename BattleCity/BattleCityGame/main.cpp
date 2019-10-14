@@ -1,16 +1,20 @@
+//#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #pragma comment(lib, "msimg32.lib")
-#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #include "Common.h"
 #include "MainGame.h"
 #include <Windows.h>
+#include <crtdbg.h>
+
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
 HWND hWnd;
-LPCTSTR lpszClass = TEXT("Hello World!!");
+LPCTSTR lpszClass = TEXT("BattleCity");
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetBreakAlloc(181);
 	MSG Message;
 	WNDCLASS WndClass;
 	g_hInst = hInstance;
@@ -28,7 +32,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	RegisterClass(&WndClass);
 
 	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, CW_USEDEFAULT, CW_USEDEFAULT,
-		RESOLUSITION_WIDTH, RESOLUSITION_HEIGHT, NULL, (HMENU)NULL, hInstance, NULL);
+		435, 456, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 
 	MainGame * maingame = new MainGame(hWnd);

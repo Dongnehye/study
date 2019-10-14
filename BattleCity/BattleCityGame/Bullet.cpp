@@ -43,13 +43,14 @@ Bullet::Bullet(HWND hWnd, int _Arrow,float _x,float _y ,bool _IsPlayer)
 
 Bullet::~Bullet()
 {
-	delete BulletNormal[UP];
-	delete BulletNormal[DOWN];
-	delete BulletNormal[LEFT];
-	delete BulletNormal[RIGHT];
-	delete BulletBoom[BOOM00];
-	delete BulletBoom[BOOM01];
-	delete BulletBoom[BOOM02];
+	for (int i = 0; i < ARROWEND; ++i)
+	{
+		delete BulletNormal[i];
+	}
+	for (int i = 0; i < BOOMEND; ++i)
+	{
+		delete BulletBoom[i];
+	}
 }
 void Bullet::CheckBulletCollision(std::vector<Bullet*>& VecBullet)
 {

@@ -126,6 +126,8 @@ Tile::Tile(HWND hWnd,POINT pt,int _BlockStyle, int _ChangeIndex, Bitmap * _Bitma
 
 Tile::~Tile()
 {
+	if (Model != nullptr)
+		delete Model;
 }
 void Tile::SetBlockStyle(int _BlockStyle,int _ChangeIndex)
 {

@@ -12,7 +12,12 @@ enum BOOMANIMATION
 	TANKBOOM04,
 	TANKBOOMEND
 };
-
+enum RUNANIMATION
+{
+	RUNANIMATION_1,
+	RUNANIMATION_2,
+	RUNANIMATION_END
+};
 
 class Tank :
 	public Actor
@@ -32,10 +37,10 @@ protected:
 	int FireColdown;
 	float Second;
 	bool IsPlayer;
-	Bitmap * Up[2];
-	Bitmap * Down[2];
-	Bitmap * Left[2];
-	Bitmap * Right[2];
+	Bitmap * Up[RUNANIMATION_END];
+	Bitmap * Down[RUNANIMATION_END];
+	Bitmap * Left[RUNANIMATION_END];
+	Bitmap * Right[RUNANIMATION_END];
 
 	Bitmap * TankBoom[TANKBOOMEND];
 
@@ -50,13 +55,14 @@ public:
 	Tank();
 	virtual ~Tank();
 
-	void Move(float fElapseTime);
+	void Move(float fElapseTime, std::vector<Tank*> &VecTank);
 	void MoveAnimation();
 
 	void AddPositionX(float _x);
 
 	void AddPositionY(float _y);
 	bool GetTankDIe();
+	bool GetIsPlayer();
 	virtual void Fire(HWND hWnd, std::vector<Bullet*> &VecBullet);
 	virtual void Update(float fElapseTime, std::vector<Bullet*> &VecBullet,std::vector<Tank*> &VecTank);
 	virtual void Update(float fElapseTime, HWND hWnd, std::vector<Bullet*> &VecBullet, std::vector<Tank*> &VecTank);

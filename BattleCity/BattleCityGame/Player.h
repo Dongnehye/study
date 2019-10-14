@@ -6,12 +6,14 @@ class Player :
 {
 	int Life;
 	bool Idle;
+	bool PlayerDie;
 
 	void Revival();
 	virtual void TankDieBoom();
 	Player();
 public:
 	Player(HDC hdc);
+	virtual ~Player();
 
 	void SetIdle(bool _Idle);
 
@@ -21,6 +23,6 @@ public:
 	void SetArrow(int Arrow);
 	bool GameOver();
 
-	virtual ~Player();
+
 	virtual void Update(float fElapseTime, std::vector<Bullet*> &VecBullet, std::vector<Tank*> &VecTank);
 };

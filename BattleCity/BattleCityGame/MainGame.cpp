@@ -11,6 +11,11 @@
 #include <iostream>
 #include <string>
 
+#define POSITION_LEFT 5
+#define POSITION_MIDDLE 0 
+#define POSITION_RIGHT 12
+
+
 void MainGame::SetTile(int _BlockStyle, int ChangeIndex, POINT pt)
 {
 	Bitmap * pBitmap;
@@ -55,6 +60,8 @@ void MainGame::SetTile(int _BlockStyle, int ChangeIndex, POINT pt)
 
 void MainGame::ResourceLoad(HDC hdc)
 {
+	GameOver = new Bitmap(hdc, "BattleCity\\GameOver.bmp");
+
 	BlockWater = new Bitmap(hdc, "BattleCity\\block07.bmp");
 
 	BlockForest = new Bitmap(hdc, "BattleCity\\block06.bmp");
@@ -110,7 +117,7 @@ void MainGame::LoadMap()
 
 void MainGame::SpawnEnemy(float fElapseTime)
 {
-	if (EnemyNumber <= 0 || VecTank.size() > 4)
+	if (EnemyNumber <= 0 || VecTank.size() > SPAWN_MAX_ENEMY)
 	{
 		return;
 	}
@@ -122,18 +129,18 @@ void MainGame::SpawnEnemy(float fElapseTime)
 		POINT pt;
 		if (SpawnPoint == SPAWN_MIDDLE)
 		{
-			pt.x = 5;
+			pt.x = POSITION_LEFT;
 			SpawnPoint = SPAWN_RIGHT;
 		}
 		else if (SpawnPoint == SPAWN_LEFT)
 		{
-			pt.x = 0;
+			pt.x = POSITION_MIDDLE;
 			SpawnPoint = SPAWN_MIDDLE;
 
 		}
 		else if (SpawnPoint == SPAWN_RIGHT)
 		{
-			pt.x = 12;
+			pt.x = POSITION_RIGHT;
 			SpawnPoint = SPAWN_LEFT;
 		}
 
@@ -141,6 +148,80 @@ void MainGame::SpawnEnemy(float fElapseTime)
 		Tank * pNew = new EnemyTank(mhWnd, pt);
 		VecTank.push_back(pNew);
 		SpawnEnemyCount = 0;
+	}
+}
+
+void MainGame::UpdateActor(float fElapseTime)
+{
+	if (!player->GameOver())
+	{
+		player->Update(m_fElapseTime, VecBullet, VecTank);
+	}
+	else
+	{
+		bGameOver = true;
+	}
+
+	for (auto iter = VecTank.begin(); iter != VecTank.end();)
+	{
+		(*iter)->Update(m_fElapseTime, mhWnd, VecBullet, VecTank);
+		if (!(*iter)->GetIsPlayer())
+		{
+			if ((*iter)->GetTankDIe())
+			{
+				iter = VecTank.erase(iter);
+			}
+			else
+			{
+				++iter;
+			}
+		}
+		else
+		{
+			++iter;
+		}
+	}
+
+	for (auto iter = VecBullet.begin(); iter != VecBullet.end();)
+	{
+		(*iter)->Update(m_fElapseTime, VecBullet);
+		if ((*iter)->TimeOverBullet())
+		{
+			iter = VecBullet.erase(iter);
+		}
+		else
+		{
+			++iter;
+		}
+	}
+	for (auto iter = VecFrontTile.begin(); iter != VecFrontTile.end(); ++iter)
+	{
+		(*iter)->Update(VecTank, VecBullet);
+	}
+}
+
+void MainGame::DrawActor(HDC hdc)
+{
+	for (auto iter = VecFrontTile.begin(); iter != VecFrontTile.end(); ++iter)
+	{
+		(*iter)->Draw(hMemDC[0]);
+	}
+	for (auto iter = VecBullet.begin(); iter != VecBullet.end(); ++iter)
+	{
+		(*iter)->Draw(hMemDC[0]);
+	}
+	for (auto iter = VecTank.begin(); iter != VecTank.end(); ++iter)
+	{
+		(*iter)->Draw(hMemDC[0]);
+	}
+
+	for (auto iter = VecBackTile.begin(); iter != VecBackTile.end(); ++iter)
+	{
+		(*iter)->Draw(hMemDC[0]);
+	}
+	if (bGameOver)
+	{
+		GameOver->BufferDraw(hdc, 100, 100);
 	}
 }
 
@@ -160,14 +241,14 @@ MainGame::MainGame(HWND hWnd)
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
 
-	hMemDC[0] = CreateCompatibleDC(hdc);
-	hBitmap[0] = CreateCompatibleBitmap(hdc, 640, 480);
-	hOld[0] = (HBITMAP)SelectObject(hMemDC[0], hBitmap[0]);
+	hMemDC[HDC_BITMAP_PAINT] = CreateCompatibleDC(hdc);
+	hBitmap[HDC_BITMAP_PAINT] = CreateCompatibleBitmap(hdc, 640, 480);
+	hOld[HDC_BITMAP_PAINT] = (HBITMAP)SelectObject(hMemDC[0], hBitmap[0]);
 
-	hMemDC[1] = CreateCompatibleDC(hMemDC[0]);
-	hBitmap[1] = (HBITMAP)LoadImage(NULL, "BattleCity\\back_black.bmp", IMAGE_BITMAP, 0, 0
+	hMemDC[HDC_BITMAP_BACK] = CreateCompatibleDC(hMemDC[HDC_BITMAP_PAINT]);
+	hBitmap[HDC_BITMAP_BACK] = (HBITMAP)LoadImage(NULL, "BattleCity\\back_black.bmp", IMAGE_BITMAP, 0, 0
 		, LR_CREATEDIBSECTION | LR_DEFAULTSIZE | LR_LOADFROMFILE);
-	hOld[1] = (HBITMAP)SelectObject(hMemDC[1], hBitmap[1]);
+	hOld[1] = (HBITMAP)SelectObject(hMemDC[HDC_BITMAP_BACK], hBitmap[HDC_BITMAP_BACK]);
 
 	ResourceLoad(hdc);
 
@@ -177,6 +258,7 @@ MainGame::MainGame(HWND hWnd)
 	EnemyNumber = 20;
 	SpawnEnemyCount = 0;
 	SpawnPoint = SPAWN_MIDDLE;
+	bGameOver = false;
 
 	player = new Player(hdc);
 	VecTank.push_back(player);
@@ -217,27 +299,26 @@ MainGame::~MainGame()
 
 void MainGame::OperateInput()
 {
-	int speed = 100;
 	player->SetIdle(false);
 	if (GetKeyState(VK_LEFT) & 0x8000)
 	{
 		player->SetArrow(LEFT);
-		player->Move(m_fElapseTime);
+		player->Move(m_fElapseTime, VecTank);
 	}
 	else if (GetKeyState(VK_UP) & 0x8000)
 	{
 		player->SetArrow(UP);
-		player->Move(m_fElapseTime);
+		player->Move(m_fElapseTime, VecTank);
 	}
 	else if (GetKeyState(VK_RIGHT) & 0x8000)
 	{
 		player->SetArrow(RIGHT);
-		player->Move(m_fElapseTime);
+		player->Move(m_fElapseTime, VecTank);
 	}
 	else if (GetKeyState(VK_DOWN) & 0x8000)
 	{
 		player->SetArrow(DOWN);
-		player->Move(m_fElapseTime);
+		player->Move(m_fElapseTime, VecTank);
 	}
 	else
 		player->SetIdle(true);
@@ -255,44 +336,10 @@ void MainGame::Update()
 	m_fElapseTime = sec.count();
 	m_LastTime = std::chrono::system_clock::now();
 
-	player->Update(m_fElapseTime,VecBullet, VecTank);
-
 	SpawnEnemy(m_fElapseTime);
 
-	for (auto iter = VecTank.begin(); iter != VecTank.end();)
-	{
-		(*iter)->Update(m_fElapseTime,mhWnd,VecBullet,VecTank);
-		if ((*iter)->GetTankDIe())
-		{
-			iter = VecTank.erase(iter);
-		}
-		else
-		{
-			++iter;
-		}
-	}
-
-	for (auto iter = VecBullet.begin(); iter != VecBullet.end();)
-	{
-		(*iter)->Update(m_fElapseTime,VecBullet);
-		if ((*iter)->TimeOverBullet())
-		{
-			iter = VecBullet.erase(iter);
-		}
-		else
-		{
-			++iter;
-		}
-	}
-	for (auto iter = VecFrontTile.begin(); iter != VecFrontTile.end(); ++iter)
-	{
-		(*iter)->Update(VecTank, VecBullet);
-	}
-
-	if (player->GameOver())
-	{
-
-	}
+	UpdateActor(m_fElapseTime);
+	
 	OperateInput();
 	Render();
 }
@@ -301,27 +348,11 @@ void MainGame::Render()
 {
 	HDC hdc = GetDC(mhWnd);
 
-	BitBlt(hMemDC[0], 0, 0, STAGE_SIZE, STAGE_SIZE, hMemDC[1], 0, 0, SRCCOPY);
+	BitBlt(hMemDC[HDC_BITMAP_PAINT], 0, 0, STAGE_SIZE, STAGE_SIZE, hMemDC[HDC_BITMAP_BACK], 0, 0, SRCCOPY);
 
-	for (auto iter = VecFrontTile.begin(); iter != VecFrontTile.end(); ++iter)
-	{
-		(*iter)->Draw(hMemDC[0]);
-	}
-	for (auto iter = VecBullet.begin(); iter != VecBullet.end(); ++iter)
-	{
-		(*iter)->Draw(hMemDC[0]);
-	}
-	for (auto iter = VecTank.begin(); iter != VecTank.end(); ++iter)
-	{
-		(*iter)->Draw(hMemDC[0]);
-	}
+	DrawActor(hMemDC[HDC_BITMAP_PAINT]);
 
-	for (auto iter = VecBackTile.begin(); iter != VecBackTile.end(); ++iter)
-	{
-		(*iter)->Draw(hMemDC[0]);
-	}
-
-	BitBlt(hdc, 0, 0, STAGE_SIZE, STAGE_SIZE, hMemDC[0], 0, 0, SRCCOPY);
+	BitBlt(hdc, 0, 0, STAGE_SIZE, STAGE_SIZE, hMemDC[HDC_BITMAP_PAINT], 0, 0, SRCCOPY);
 
 	ReleaseDC(mhWnd, hdc);
 }

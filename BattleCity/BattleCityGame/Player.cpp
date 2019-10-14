@@ -4,24 +4,30 @@
 void Player::Revival()
 {
 	Idle = false;
-	IsBoom = false;
-	IsBoomEnd = false;
 	IsTankDie = false;
 	Model = Up[0];
 }
 void Player::TankDieBoom()
 {
-	x = PLAYERPOSX * TILE_SIZE;
-	y = PLAYERPOSY * TILE_SIZE;
+	x = PLAYER_POS_X * TILE_SIZE;
+	y = PLAYER_POS_Y * TILE_SIZE;
 
 	TileSize.cx = TILE_SIZE;
 	TileSize.cy = TILE_SIZE;
 
 	FireColdown = 0;
 	Second = 0;
-
 	BoomAnimCount = 0;
+
 	--Life;
+
+	Model = nullptr;
+	if (!GameOver())
+	{
+		Revival();
+	}
+	IsBoom = false;
+	IsBoomEnd = false;
 }
 
 Player::Player()
@@ -34,14 +40,14 @@ Player::Player(HDC hdc)
 {
 	Arrow = UP;
 	PreArrow = Arrow;
-	speed = TANKSPEED;
-	x = PLAYERPOSX * TILE_SIZE;
-	y = PLAYERPOSY * TILE_SIZE;
+	speed = PLAYER_TANK_SPEED;
+	x = PLAYER_POS_X * TILE_SIZE;
+	y = PLAYER_POS_Y * TILE_SIZE;
 	Model = nullptr;
 	Idle = false;
 	IsPlayer = true;
 
-	Life = PLAYERLIFE;
+	Life = PLAYER_LIFE;
 
 	Up[0] = new Bitmap(hdc, "BattleCity\\tank_up_00.bmp");
 	Up[1] = new Bitmap(hdc, "BattleCity\\tank_up_01.bmp");
@@ -89,12 +95,9 @@ void Player::SetArrow(int _Arrow)
 
 bool Player::GameOver()
 {
-	if (Life < 0)
+	if (Life <= 0)
 		return true;
-	else if (IsBoomEnd)
-	{
-		Revival();
-	}
+
 	return false;
 }
 
@@ -115,12 +118,15 @@ void Player::Update(float fElapseTime, std::vector<Bullet*> &VecBullet, std::vec
 	}
 	else
 	{
-		Tank::Update(fElapseTime, VecBullet, VecTank);
-
-		if (!Idle)
+		if (!IsTankDie)
 		{
-			MoveAnimation();
+			Tank::Update(fElapseTime, VecBullet, VecTank);
+
+			if (!Idle)
+			{
+				MoveAnimation();
+			}
+			Collision = { (int)x, (int)y,(int)x + TileSize.cx, (int)y + TileSize.cy };
 		}
-		Collision = { (int)x, (int)y,(int)x + TileSize.cx, (int)y + TileSize.cy };
 	}
 }

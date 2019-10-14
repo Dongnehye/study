@@ -1,5 +1,8 @@
 #pragma once
 #include "Tile.h"
+
+#define BlockBlick 5
+
 class Block :
 	public Tile
 {
@@ -21,7 +24,7 @@ protected:
 
 	// 여러갈래로 부서지는거.
 
-	Bitmap * BlockBrick[5];
+	Bitmap * BlockBrick[BLOCKCHANGE_END];
 
 	void SetCollision();
 

@@ -31,35 +31,34 @@ void Tank::IntersectRcetTank(Tank * tank)
 	{
 		int InterW = rcInter.right - rcInter.left;
 		int InterH = rcInter.bottom - rcInter.top;
-
 		if (InterW > InterH)
 		{
 			if (rcInter.top == Collision.top)
 			{
 				Collision.top -= InterH;
 				Collision.bottom -= InterH;
-				AddPositionY((float)InterH);
+				AddPositionY((float)-InterH);
 
 			}
 			else if (rcInter.bottom == Collision.bottom)
 			{
 				Collision.top += InterH;
 				Collision.bottom += InterH;
-				AddPositionY((float)-InterH);
+				AddPositionY((float)InterH);
 			}
 		}
 		else
 		{
 			if (rcInter.left == Collision.left)
 			{
-				Collision.left -= InterW;
-				Collision.right -= InterW;
+				Collision.left += InterW;
+				Collision.right += InterW;
 				AddPositionX((float)InterW);
 			}
 			else if (rcInter.right == Collision.right)
 			{
-				Collision.left += InterW;
-				Collision.right += InterW;
+				Collision.left -= InterW;
+				Collision.right -= InterW;
 				AddPositionX((float)-InterW);
 			}
 		}
@@ -129,6 +128,7 @@ void Tank::BoomAnimation(float ElapseTime)
 	if (BoomAnimCount > 1.8f)
 	{
 		IsBoomEnd = true;
+		IsTankDie = true;
 	}
 	else if (BoomAnimCount > 1.5f)
 	{
@@ -169,14 +169,14 @@ Tank::Tank()
 
 Tank::~Tank()
 {
-	delete Up[0];
-	delete Up[1];
-	delete Down[0];
-	delete Down[1];
-	delete Left[0];
-	delete Left[1];
-	delete Right[0];
-	delete Right[1];
+	delete Up[RUNANIMATION_1];
+	delete Up[RUNANIMATION_2];
+	delete Down[RUNANIMATION_1];
+	delete Down[RUNANIMATION_2];
+	delete Left[RUNANIMATION_1];
+	delete Left[RUNANIMATION_2];
+	delete Right[RUNANIMATION_1];
+	delete Right[RUNANIMATION_2];
 	Model = nullptr;
 
 	for (int i = 0; i < TANKBOOMEND; ++i)
@@ -208,8 +208,6 @@ void Tank::Update(float fElapseTime, std::vector<Bullet*> &VecBullet, std::vecto
 		Second = 0;
 	
 	}
-
-	CheckTankCollision(VecTank);
 	CheckBulletCollision(VecBullet);
 }
 
@@ -243,31 +241,28 @@ void Tank::MoveAnimation()
 
 }
 
-void Tank::Move(float fElapseTime)
+void Tank::Move(float fElapseTime, std::vector<Tank*> &VecTank)
 {
-	if (Arrow == UP)
-		AddPositionY(-(speed * fElapseTime));
-	else if (Arrow == DOWN)
-		AddPositionY(speed * fElapseTime);
-	else if (Arrow == LEFT)
-		AddPositionX(-(speed * fElapseTime));
-	else if (Arrow == RIGHT)
-		AddPositionX(speed * fElapseTime);
+	if (!IsBoom && !IsTankDie)
+	{
+		if (Arrow == UP)
+			AddPositionY(-(speed * fElapseTime));
+		else if (Arrow == DOWN)
+			AddPositionY(speed * fElapseTime);
+		else if (Arrow == LEFT)
+			AddPositionX(-(speed * fElapseTime));
+		else if (Arrow == RIGHT)
+			AddPositionX(speed * fElapseTime);
+		CheckTankCollision(VecTank);
+	}
 }
 
 void Tank::AddPositionX(float _x)
 {
-	if (IsBoom)
-	{
-		return;
-	}
-
 	if (PreArrow == UP || PreArrow == DOWN)
 	{
 		ApproximationTilePos(y);
 	}
-
-
 	x += _x;
 	if (x <= 0)
 		x = 0;
@@ -278,16 +273,10 @@ void Tank::AddPositionX(float _x)
 
 void Tank::AddPositionY(float _y)
 {
-	if (IsBoom)
-	{
-		return;
-	}
 	if (PreArrow == LEFT || PreArrow == RIGHT)
 	{
 		ApproximationTilePos(x);
 	}
-
-
 	y += _y;
 	if (y <= 0)
 		y = 0;
@@ -300,4 +289,9 @@ void Tank::AddPositionY(float _y)
 bool Tank::GetTankDIe()
 {
 	return IsTankDie;
+}
+
+bool Tank::GetIsPlayer()
+{
+	return IsPlayer;
 }

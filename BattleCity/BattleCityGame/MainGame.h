@@ -11,6 +11,13 @@ using namespace std;
 
 #define FPS 60
 
+enum HDC_BITMAP
+{
+	HDC_BITMAP_PAINT,
+	HDC_BITMAP_BACK,
+	HDC_END
+};
+
 class MainGame
 {
 	HWND mhWnd;
@@ -22,9 +29,12 @@ class MainGame
 	vector<Tank*> VecTank;
 	vector<Bullet*> VecBullet;
 
-	HDC hMemDC[2];
-	HBITMAP hBitmap[2];
-	HBITMAP hOld[2];
+	HDC hMemDC[HDC_END];
+	HBITMAP hBitmap[HDC_END];
+	HBITMAP hOld[HDC_END];
+
+	Bitmap * GameOver;
+	bool bGameOver;
 
 	Bitmap * BlockBrick[BLOCKCHANGE_END];
 	Bitmap * BlockSilver[BLOCKCHANGE_END];
@@ -49,6 +59,9 @@ class MainGame
 	int SpawnPoint;
 	float SpawnEnemyCount;
 	void SpawnEnemy(float fElapseTime);
+
+	void UpdateActor(float fElapseTime);
+	void DrawActor(HDC hdc);
 
 	MainGame();
 public:
