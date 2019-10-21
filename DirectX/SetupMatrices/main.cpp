@@ -1,4 +1,5 @@
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#pragma comment(lib,"winmm.lib")
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <mmsystem.h>
@@ -7,9 +8,14 @@
 
 using namespace std;
 
+#define WINDOWS_WITDH 960
+#define WINDOWS_HEIGHT 720
+
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HINSTANCE g_hInst;
 char g_szClassName[256] = "Hello World!!";
+
+HWND hWnd;
 
 struct CUSTOMVECTEX
 {
@@ -23,22 +29,32 @@ struct CUSTOMATRICES
 	float x3, y3, z3, w3;
 	float x4, y4, z4, w4;
 };
+struct PROJECTION
+{
+	float Width;
+	float Height;
+	float Near;
+	float Far;
+	float Fovy;
+
+};
 
 CUSTOMATRICES Matrices1;
 CUSTOMATRICES Matrices2;
-CUSTOMATRICES Matrices3;
+
 
 CUSTOMVECTEX Camera;
 
-CUSTOMVECTEX Vector;
 CUSTOMVECTEX Vertex[3];
+
+CUSTOMVECTEX WorldVertex[3];
 
 
 void InitVertex()
 {
-	Vertex[0] = { 150.0f , 50.0f , 1.0f,1.0f };
-	Vertex[1] = { 50.0f, 250.0f,1.0f,1.0f };
-	Vertex[2] = { 250.0f , 250.0f ,1.0f,1.0f };			
+	Vertex[0] = { 0.0f , 0.0f , 1.0f,0.0f };
+	Vertex[1] = { -150.0f, 250.0f,1.0f,0.0f };
+	Vertex[2] = { 150.0f , 250.0f ,1.0f,0.0f };
 }
 
 void Render(CUSTOMATRICES &m1)
@@ -88,10 +104,10 @@ CUSTOMVECTEX VectorMultiply(CUSTOMVECTEX &v1, CUSTOMATRICES &v2)
 {
 	CUSTOMVECTEX v3;
 
-	v3.x = (v1.x * v2.x1) + (v1.y * v2.y1) + (v1.z * v2.z1) + (v1.w * v2.w1);
-	v3.y = (v1.x * v2.x2) + (v1.y * v2.y2) + (v1.z * v2.z2) + (v1.w * v2.w2);
-	v3.z = (v1.x * v2.x3) + (v1.y * v2.y3) + (v1.z * v2.z3) + (v1.w * v2.w3);
-	v3.w = (v1.x * v2.x4) + (v1.y * v2.y4) + (v1.z * v2.z4) + (v1.w * v2.w4);
+	v3.x = (v2.x1 * v1.x) + (v2.y1 * v1.y) + (v2.z1 * v1.z) + (v2.w1 * v1.w);
+	v3.y = (v2.x2 * v1.x) + (v2.y2 * v1.y) + (v2.z2 * v1.z) + (v2.w2 * v1.w);
+	v3.z = (v2.x3 * v1.x) + (v2.y3 * v1.y) + (v2.z3 * v1.z) + (v2.w3 * v1.w);
+	v3.w = (v2.x4 * v1.x) + (v2.y4 * v1.y) + (v2.z4 * v1.z) + (v2.w4 * v1.w);
 
 	return v3;
 }
@@ -128,19 +144,14 @@ void SetupMareices()
 	Matrices2.x3 = 2;	Matrices2.y3 = 1;	Matrices2.z3 = 2;	Matrices2.w3 = 1;
 	Matrices2.x4 = 1;	Matrices2.y4 = 0;	Matrices2.z4 = 2;	Matrices2.w4 = 1;
 
-	Vector.x = 5;
-	Vector.y = 5;
-	Vector.z = 5;
-	Vector.w = 1;
-
-	Camera.x = 400;
-	Camera.y = 400;
-	Camera.z = -5;
+	Camera.x = 450;
+	Camera.y = 150;
+	Camera.z = 0;
 	Camera.w = 0;
 	
 	InitVertex();
 }
-CUSTOMATRICES RotateMareicesX(CUSTOMATRICES &m,float sec)
+CUSTOMVECTEX RotateMareicesX(CUSTOMVECTEX &m,float sec)
 {
 	CUSTOMATRICES m2;
 	m2.x1 = 1;	m2.y1 = 0;	m2.z1 = 0;	m2.w1 = 0;
@@ -148,9 +159,9 @@ CUSTOMATRICES RotateMareicesX(CUSTOMATRICES &m,float sec)
 	m2.x3 = 0;	m2.y3 = -sinf(sec);	m2.z3 = cosf(sec);	m2.w3 = 0;
 	m2.x4 = 0;	m2.y4 = 0;	m2.z4 = 0;	m2.w4 = 1;
 
-	return MatricesMultiply(m, m2);
+	return VectorMultiply(m, m2);
 }
-CUSTOMATRICES RotateMareicesY(CUSTOMATRICES &m, float sec)
+CUSTOMVECTEX RotateMareicesY(CUSTOMVECTEX &m, float sec)
 {
 	CUSTOMATRICES m2;
 	m2.x1 = cosf(sec);	m2.y1 = 0;	m2.z1 = sinf(sec);	m2.w1 = 0;
@@ -158,9 +169,9 @@ CUSTOMATRICES RotateMareicesY(CUSTOMATRICES &m, float sec)
 	m2.x3 = -sinf(sec);	m2.y3 = 0;	m2.z3 = cosf(sec);	m2.w3 = 0;
 	m2.x4 = 0;	m2.y4 = 0;	m2.z4 = 0;	m2.w4 = 1;
 
-	return MatricesMultiply(m, m2);
+	return VectorMultiply(m, m2);
 }
-CUSTOMATRICES RotateMareicesZ(CUSTOMATRICES &m, float sec)
+CUSTOMVECTEX RotateMareicesZ(CUSTOMVECTEX &m, float sec)
 {
 	CUSTOMATRICES m2;
 	m2.x1 = cosf(sec);	m2.y1 = sinf(sec);	m2.z1 = 0;	m2.w1 = 0;
@@ -168,7 +179,7 @@ CUSTOMATRICES RotateMareicesZ(CUSTOMATRICES &m, float sec)
 	m2.x3 = 0;	m2.y3 = 0;	m2.z3 = 1;	m2.w3 = 0;
 	m2.x4 = 0;	m2.y4 = 0;	m2.z4 = 0;	m2.w4 = 1;
 
-	return MatricesMultiply(m, m2);
+	return VectorMultiply(m, m2);
 }
 CUSTOMATRICES ScaleMareices(CUSTOMATRICES &m,int x,int y, int z)
 {
@@ -183,44 +194,87 @@ CUSTOMATRICES ScaleMareices(CUSTOMATRICES &m,int x,int y, int z)
 
 void SetRender()
 {
-
 	CUSTOMATRICES MapView = {
 		1,0,0,0,
 		0,1,0,0,
 		0,0,1,0,
 		0,0,0,1
 	};
-
 	for (int i = 0; i < 3; ++i)
 	{
-		Vertex[i] = VectorMultiply(Vertex[i], MapView);
+		WorldVertex[i].x = Vertex[i].x;
+		WorldVertex[i].y = Vertex[i].y;
 	}
 
 	for (int i = 0; i < 3; ++i)
 	{
-		Vertex[i].x += Camera.x;
-		Vertex[i].y += Camera.y;
+		WorldVertex[i] = VectorMultiply(WorldVertex[i], MapView);
 	}
 
+	for (int i = 0; i < 3; ++i)
+	{
+		WorldVertex[i].x += Camera.x;
+		WorldVertex[i].y += Camera.y;
+	}
+	PROJECTION Proj;
+	Proj.Width = (float)WINDOWS_WITDH;
+	Proj.Height = (float)WINDOWS_HEIGHT;
+	Proj.Near = 1.f;
+	Proj.Far = 1000.f;
+	Proj.Fovy = D3DX_PI / 4.f;
 
+	float Aspect = Proj.Width / Proj.Height;
+	float h = 1 / tanf(Proj.Fovy / 2.f);
+	float w = h / Aspect;
 
+	float a = Proj.Far / (Proj.Far - Proj.Near);
+	float b = -Proj.Near * a;
+
+	CUSTOMATRICES Projection = {
+		w,0,0,0,
+		0,h,0,0,
+		0,0,a,1,
+		0,0,b,0
+	};
+
+	for (int i = 0; i < 3; ++i)
+	{
+		WorldVertex[i] = VectorMultiply(WorldVertex[i], Projection);
+	}
 
 }
 void Render(HDC hdc)
 {
+	SetRender();
+
 	for (int i = 0; i < 3; ++i)
 	{
-		MoveToEx(hdc, Vertex[i].x, Vertex[i].y, NULL);
+		MoveToEx(hdc, WorldVertex[i].x, WorldVertex[i].y, NULL);
 		if (i != 2)
-			LineTo(hdc, Vertex[i + 1].x, Vertex[i + 1].y);
+			LineTo(hdc, WorldVertex[i + 1].x, WorldVertex[i + 1].y);
 		else
-			LineTo(hdc, Vertex[0].x, Vertex[0].y);
+			LineTo(hdc, WorldVertex[0].x, WorldVertex[0].y);
 	}
+}
+void Update()
+{
+	static float StartTime = (float)timeGetTime() * 0.001f;
+
+	float NowTime = (float)timeGetTime() * 0.001f;
+
+	if (NowTime - StartTime >= 0.01f)
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			Vertex[i] = RotateMareicesY(Vertex[i], 1 * (NowTime - StartTime));
+		}
+		InvalidateRect(hWnd, NULL, TRUE);
+	}
+	StartTime = NowTime;
 }
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nCmdShow)
 {
-	HWND hWnd;
 	MSG Message;
 	WNDCLASS WndClass;
 	g_hInst = hInstance;
@@ -238,14 +292,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	RegisterClass(&WndClass);
 
 	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
+		WINDOWS_WITDH, WINDOWS_HEIGHT, NULL, (HMENU)NULL, hInstance, NULL);
 
 
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
 	SetupMareices();
-
+	SetRender();
 	ZeroMemory(&Message, sizeof(Message));
 	while (Message.message != WM_QUIT)
 	{
@@ -256,8 +310,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		}
 		else
 		{
-			//Render();
-			InvalidateRect(hWnd, NULL, FALSE);
+			Update();
 		}
 
 	}
@@ -273,21 +326,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	PAINTSTRUCT ps;
 	switch (iMessage)
 	{
-	case WM_KEYDOWN:
-		switch (wParam)
-		{
-		case VK_UP:
-			//Matrices3 = MatricesMultiply(Matrices1, Matrices2);
-			//Matrices3 = RotateMareicesX(Matrices1, 3.0f);
-			Render(Matrices3);
-			break;
-		default:
-			break;
-		}
-		return 0;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-
+		Render(hdc);
 		EndPaint(hWnd, &ps);
 		return 0;
 	case WM_DESTROY:
