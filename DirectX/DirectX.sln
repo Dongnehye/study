@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "06_Mesh", "06_Mesh\06_Mesh.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "07_IndexBuffer", "07_IndexBuffer\07_IndexBuffer.vcxproj", "{AD75218E-8CC8-4133-A437-4A6EE466CCA9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SetupMatrices", "SetupMatrices\SetupMatrices.vcxproj", "{AC9F2B76-FF26-4000-BAA9-9CC040CCEE35}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -81,6 +83,14 @@ Global
 		{AD75218E-8CC8-4133-A437-4A6EE466CCA9}.Release|x64.Build.0 = Release|x64
 		{AD75218E-8CC8-4133-A437-4A6EE466CCA9}.Release|x86.ActiveCfg = Release|Win32
 		{AD75218E-8CC8-4133-A437-4A6EE466CCA9}.Release|x86.Build.0 = Release|Win32
+		{AC9F2B76-FF26-4000-BAA9-9CC040CCEE35}.Debug|x64.ActiveCfg = Debug|x64
+		{AC9F2B76-FF26-4000-BAA9-9CC040CCEE35}.Debug|x64.Build.0 = Debug|x64
+		{AC9F2B76-FF26-4000-BAA9-9CC040CCEE35}.Debug|x86.ActiveCfg = Debug|Win32
+		{AC9F2B76-FF26-4000-BAA9-9CC040CCEE35}.Debug|x86.Build.0 = Debug|Win32
+		{AC9F2B76-FF26-4000-BAA9-9CC040CCEE35}.Release|x64.ActiveCfg = Release|x64
+		{AC9F2B76-FF26-4000-BAA9-9CC040CCEE35}.Release|x64.Build.0 = Release|x64
+		{AC9F2B76-FF26-4000-BAA9-9CC040CCEE35}.Release|x86.ActiveCfg = Release|Win32
+		{AC9F2B76-FF26-4000-BAA9-9CC040CCEE35}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
