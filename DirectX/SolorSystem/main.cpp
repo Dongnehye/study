@@ -15,6 +15,12 @@ D3DXMATRIXA16	g_matRChild;
 
 D3DXMATRIXA16	g_matTMChild2;
 D3DXMATRIXA16	g_matRChild2;
+
+D3DXMATRIXA16	g_matTMChild3;
+D3DXMATRIXA16	g_matRChild3;
+D3DXMATRIXA16	g_mat1RChild1;
+D3DXMATRIXA16	g_mat1RChild2;
+D3DXMATRIXA16	g_mat1RChild3;
 #define D3DFVF_CUSTOMVERTEX		(D3DFVF_XYZ | D3DFVF_DIFFUSE)
 
 struct  MYINDEX
@@ -24,10 +30,12 @@ struct  MYINDEX
 
 D3DXVECTOR3 g_aniPos[2];
 D3DXQUATERNION g_aniRot[2];
+D3DXQUATERNION g_aniRot1[2];
 
 Planet * Sun;
 Planet * Earth;
 Planet * Moon;
+Planet * Mars;
 
 HRESULT InitD3D(HWND hWnd)
 {
@@ -106,25 +114,45 @@ HRESULT InitIB()
 	return S_OK;
 }
 
+void SetupPlanet()
+{
+	Sun = new Planet(nullptr, 90.0f,0.f);
+	Earth = new Planet(Sun, 90.0f, 7.f);
+	Moon = new Planet(Earth, 90.0f, 3.f);
+	Mars = new Planet(Sun, 15.0f, 13.f);
+}
+
 void InitAnimation()
 {
 	g_aniPos[0] = D3DXVECTOR3(0, 0, 0);
 	g_aniPos[1] = D3DXVECTOR3(5, 5, 5);
 
-	FLOAT Yaw = D3DX_PI * 90.0f / 180.0f;
+	FLOAT Yaw = 0;
 	FLOAT Pitch = 0;
 	FLOAT Roll = 0;
 	D3DXQuaternionRotationYawPitchRoll(&g_aniRot[0], Yaw, Pitch, Roll);
 
-	Yaw = 0;
+	Yaw = D3DX_PI * 90.0f / 180.0f;
 	Pitch = 0;
 	Roll = 0;
 
 	D3DXQuaternionRotationYawPitchRoll(&g_aniRot[1], Yaw, Pitch, Roll);
+	
+	Yaw = 0;
+	Pitch = 0;
+	Roll = 0;
+	D3DXQuaternionRotationYawPitchRoll(&g_aniRot1[0], Yaw, Pitch, Roll);
 
-	Sun->InitAnimation(5, 5, 5);
-	Earth->InitAnimation(5, 5, 5);
-	Moon->InitAnimation(5, 5, 5);
+	Yaw = D3DX_PI * 15.0f / 180.0f;
+	Pitch = 0;
+	Roll = 0;
+
+	D3DXQuaternionRotationYawPitchRoll(&g_aniRot1[1], Yaw, Pitch, Roll);
+
+	Sun->InitAnimation();
+	Earth->InitAnimation();
+	Moon->InitAnimation();
+	Mars->InitAnimation();
 }
 
 HRESULT InitGeometry()
@@ -166,25 +194,39 @@ float Linear(float v0, float v1, float t)
 VOID Animate()
 {
 	static float t = 0;
-	D3DXQUATERNION quat;
+	//D3DXQUATERNION quat;
 
-	// 선형 보간.
-	D3DXVECTOR3 v;
-	D3DXVec3Lerp(&v, &g_aniPos[0], &g_aniPos[1], t); 
-	D3DXMatrixTranslation(&g_matTMParent, 0, 0, 0);
+	//// 선형 보간.
+	//D3DXVECTOR3 v;
+	//D3DXVec3Lerp(&v, &g_aniPos[0], &g_aniPos[1], t); 
+	//D3DXMatrixTranslation(&g_matTMParent, 0, 0, 0);
 
-	D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], t);
-	D3DXMatrixRotationQuaternion(&g_matRParent, &quat);
+	//D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], t);
+	//D3DXMatrixRotationQuaternion(&g_matRParent, &quat);
 
-	t += 0.005f;
+	Sun->Animate(t);
+	Earth->Animate(t);
+	Moon->Animate(t);
+	Mars->Animate(t);
 
-	D3DXMatrixRotationY(&g_matRChild, GetTickCount() / 500.0f);
-	D3DXMatrixTranslation(&g_matTMChild, 3, 0, 0);	
-	
-	D3DXMatrixRotationY(&g_matRChild2, GetTickCount() / 500.0f);
-	D3DXMatrixTranslation(&g_matTMChild2, 3, 0, 0);	
-	
+	t += 0.01f;
 
+	//D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], t);
+	//D3DXMatrixRotationQuaternion(&g_matRChild, &quat);
+	//D3DXMatrixRotationQuaternion(&g_mat1RChild1, &quat);
+	////D3DXMatrixRotationY(&g_matRChild, GetTickCount() / 500.0f);
+	//D3DXMatrixTranslation(&g_matTMChild, 7, 0, 0);	
+	//
+	////D3DXMatrixRotationY(&g_matRChild2, GetTickCount() / 500.0f);
+	//D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], t);
+	//D3DXMatrixRotationQuaternion(&g_matRChild2, &quat);
+	//D3DXMatrixRotationQuaternion(&g_mat1RChild2, &quat);
+	//D3DXMatrixTranslation(&g_matTMChild2, 3, 0, 0);		
+	//
+	//D3DXQuaternionSlerp(&quat, &g_aniRot1[0], &g_aniRot1[1], t);
+	//D3DXMatrixRotationQuaternion(&g_matRChild3, &quat);
+	//D3DXMatrixRotationQuaternion(&g_mat1RChild3, &quat);
+	//D3DXMatrixTranslation(&g_matTMChild3, 13, 0, 0);
 }
 
 VOID Cleanup()
@@ -214,14 +256,22 @@ VOID Render()
 
 	if (SUCCEEDED(g_pd3dDevice->BeginScene()))
 	{
-		matWorld = g_matRParent * g_matTMParent;
-		DrawMesh(&matWorld);
+		//matWorld = g_matTMParent * g_matRParent;
+		//DrawMesh(&matWorld);
+		//
+		//matWorld = g_mat1RChild1 * g_matTMChild * g_matRChild * matWorld;
+		//DrawMesh(&matWorld);
 
-		matWorld = g_matRChild * g_matTMChild * matWorld;
-		DrawMesh(&matWorld);		
-		
-		matWorld = g_matRChild2 * g_matTMChild2 * matWorld;
-		DrawMesh(&matWorld);
+		//matWorld = g_mat1RChild2 * g_matTMChild2 * g_matRChild2 * g_matTMChild * g_matRChild * g_matTMParent * g_matRParent;
+		//DrawMesh(&matWorld);		
+
+		//matWorld = g_mat1RChild3 * g_matTMChild3 * g_matRChild3 * g_matTMParent * g_matRParent;
+		//DrawMesh(&matWorld);
+
+		DrawMesh(&Sun->Render());
+		DrawMesh(&Earth->Render());
+		DrawMesh(&Moon->Render());
+		DrawMesh(&Mars->Render());
 
 		g_pd3dDevice->EndScene();
 	}
@@ -270,6 +320,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 
 	if (FAILED(InitD3D(hWnd)))
 		return -1;
+
+	SetupPlanet();
 
 	if (FAILED(InitGeometry()))
 		return -1;

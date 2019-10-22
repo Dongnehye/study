@@ -2,19 +2,32 @@
 
 Planet::Planet()
 {
-	g_aniPos[0] = D3DXVECTOR3(0, 0, 0);
-	g_aniPos[1] = D3DXVECTOR3(5, 5, 5);
 
 }
 
-Planet::Planet(Planet * _ParentPlanet, float _Cycle)
+Planet::Planet(Planet * _ParentPlanet, float _YawSec, float _x)
 {
 	ParentPlanet = _ParentPlanet;
-	Cycle = _Cycle;
+	YawSec = _YawSec;
+	x = _x;
+	D3DXMatrixIdentity(&Identity);
 }
 
 Planet::~Planet()
 {
+}
+
+void Planet::RecursionParentMatrix(Planet * Parent, D3DXMATRIXA16 &matWorld)
+{
+	if (Parent == nullptr)
+	{
+		return;
+	}
+	else
+	{
+		RecursionParentMatrix(Parent->ParentPlanet, matWorld);
+		matWorld = Parent->MatrixTrasform * Parent->MatrixRotate * matWorld;
+	}
 }
 
 D3DXMATRIXA16 Planet::Render()
@@ -22,8 +35,11 @@ D3DXMATRIXA16 Planet::Render()
 	D3DXMATRIXA16 RenderMatrix;
 
 	D3DXMATRIXA16 matWorld;
-	
-	RenderMatrix = MatrixTrasform * MatrixRotate * matWorld;
+	D3DXMatrixIdentity(&matWorld);
+
+	RecursionParentMatrix(ParentPlanet, matWorld);
+
+	RenderMatrix = MatrixRevolve * MatrixTrasform * MatrixRotate * matWorld;
 
 	return RenderMatrix;
 }
@@ -31,24 +47,19 @@ D3DXMATRIXA16 Planet::Render()
 void Planet::Animate(float Time)
 {
 	D3DXQUATERNION quat;
-
-	D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], Time * Cycle);
-	D3DXMatrixRotationQuaternion(&MatrixRotate, &quat);	
-
-	D3DXMatrixRotationY(&MatrixRotate, GetTickCount() / 500.0f);
-	D3DXMatrixTranslation(&MatrixTrasform, 3, 0, 0);
+	D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], Time);
+	D3DXMatrixRotationQuaternion(&MatrixRotate, &quat);
+	D3DXMatrixRotationQuaternion(&MatrixRevolve, &quat);
+	D3DXMatrixTranslation(&MatrixTrasform, x, 0, 0);
 }
-void Planet::InitAnimation(float x, float y, float z)
+void Planet::InitAnimation()
 {
-	g_aniPos[0] = D3DXVECTOR3(0, 0, 0);
-	g_aniPos[1] = D3DXVECTOR3(x, y, z);
-
-	FLOAT Yaw = D3DX_PI * 90.0f / 180.0f;
+	FLOAT Yaw = 0;
 	FLOAT Pitch = 0;
 	FLOAT Roll = 0;
 	D3DXQuaternionRotationYawPitchRoll(&g_aniRot[0], Yaw, Pitch, Roll);
 
-	Yaw = 0;
+	Yaw = D3DX_PI * YawSec / 180.0f;
 	Pitch = 0;
 	Roll = 0;
 
