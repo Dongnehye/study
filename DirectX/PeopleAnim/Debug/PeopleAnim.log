@@ -1,0 +1,14 @@
+﻿  People.cpp
+d:\neople\study\directx\peopleanim\people.cpp(9): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(14): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(19): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(24): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(29): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(34): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(39): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(44): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(49): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(54): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(59): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\peopleanim\people.cpp(64): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+  PeopleAnim.vcxproj -> D:\Neople\study\DirectX\Debug\PeopleAnim.exe

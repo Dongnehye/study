@@ -4,7 +4,7 @@
 
 using namespace std;
 
-class Planet
+class Joints
 {
 	D3DXVECTOR3 g_aniPos[2];
 	D3DXQUATERNION g_aniRot[2];
@@ -12,18 +12,17 @@ protected:
 	D3DXMATRIXA16	MatrixTrasform;
 	D3DXMATRIXA16	MatrixRotate;
 	D3DXMATRIXA16	MatrixRevolve;
+	D3DXMATRIXA16	MatrixScale;
 
-	D3DXMATRIXA16	Identity;
+	Joints * ParentPlanet;
 
-	Planet * ParentPlanet;
-
-	void RecursionParentMatrix(Planet *Parent, D3DXMATRIXA16 &matWorld);
+	void RecursionParentMatrix(Joints *Parent, D3DXMATRIXA16 &matWorld);
 	float x;
 	float YawSec;
-	Planet();
+	Joints();
 public:
-	Planet(Planet * ParentPlanet,float YawSec, float _x);
-	virtual ~Planet();
+	Joints(Joints * ParentPlanet,float YawSec, float _x);
+	virtual ~Joints();
 
 	 
 	D3DXMATRIXA16 Render();
