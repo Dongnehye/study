@@ -1,5 +1,1 @@
-﻿  main.cpp
-d:\neople\study\directx\06_mesh\main.cpp(64): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-d:\neople\study\directx\06_mesh\main.cpp(88): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-d:\neople\study\directx\06_mesh\main.cpp(130): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-  06_Mesh.vcxproj -> D:\Neople\study\DirectX\Debug\06_Mesh.exe
+﻿  06_Mesh.vcxproj -> C:\Users\Administrator\Documents\repo\study\DirectX\Debug\06_Mesh.exe

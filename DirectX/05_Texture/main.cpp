@@ -28,6 +28,7 @@ struct CUSTOMVECTEX
 #endif
 };
 
+
 #ifdef SHOW_HOW_TO_USE_TCI
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE)
 #else
