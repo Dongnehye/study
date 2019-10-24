@@ -309,10 +309,6 @@ VOID Animate()
 	matBillboardMatrix._31 = matView->_31;
 	matBillboardMatrix._33 = matView->_33;
 	D3DXMatrixInverse(&matBillboardMatrix, NULL, &matBillboardMatrix);
-	matBillboardMatrix._41 = 10;
-	matBillboardMatrix._42 = 0;
-	matBillboardMatrix._43 = 10;
-	g_pd3dDevice->SetTransform(D3DTS_WORLD, &matBillboardMatrix);
 
 	SetupLights();
 	ProcessInputs();
