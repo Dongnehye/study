@@ -1,0 +1,17 @@
+﻿  ZFrustum.cpp
+  main.cpp
+c:\users\administrator\documents\repo\study\directx\common\zcamera.h(32): warning C4316: 'ZCamera': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(168): warning C4244: '=': 'unsigned long'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(169): warning C4244: '=': 'unsigned long'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(170): warning C4244: '=': 'unsigned long'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(173): warning C4244: '=': 'unsigned long'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(174): warning C4244: '=': 'unsigned long'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(175): warning C4244: '=': 'unsigned long'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(284): warning C4244: '=': 'DWORD'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(285): warning C4244: '=': 'DWORD'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(286): warning C4244: '=': 'DWORD'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(296): warning C4244: '=': 'DWORD'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(297): warning C4244: '=': 'DWORD'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\administrator\documents\repo\study\directx\11_frustumculling\main.cpp(298): warning C4244: '=': 'DWORD'에서 'WORD'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다...
+  11_FrustumCulling.vcxproj -> C:\Users\Administrator\Documents\repo\study\DirectX\Debug\11_FrustumCulling.exe

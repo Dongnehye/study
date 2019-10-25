@@ -1,11 +1,11 @@
-#pragma comment(lib,"ws2_32")
+#pragma once
 #include <stdlib.h>
 #include <stdio.h>
 #include <thread>
 #include <iostream>
 #include <process.h>
-#include "Common.h"
 #include "WinSocketMain.h"
+#include "Common.h"
 #include "ServerMain.h"
 #include "User.h"
 
@@ -83,7 +83,7 @@ DWORD WINAPI WorkerThread(LPVOID arg)
 		SOCKET client_sock;
 		SOCKETINFO * ptr;
 		retval = GetQueuedCompletionStatus(hcp, &cbTranferred,
-			(LPDWORD)&client_sock, (LPOVERLAPPED*)&ptr, INFINITE);
+			(PULONG_PTR)&client_sock, (LPOVERLAPPED*)&ptr, INFINITE);
 		SOCKADDR_IN clientaddr;
 		int addrlen = sizeof(clientaddr);
 		getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);

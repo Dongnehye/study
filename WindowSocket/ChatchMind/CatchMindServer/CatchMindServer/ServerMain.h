@@ -20,8 +20,6 @@ class ServerMain
 	bool CheckLogin(const char * Id, const char * pw);
 	void SendLogin(SOCKET sock, bool _IsLogin);
 
-
-
 public:
 	void err_display(int errcode);
 	void err_display(const char * szMsg);

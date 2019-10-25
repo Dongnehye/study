@@ -1,8 +1,1 @@
-﻿  Planet.cpp
-  main.cpp
-c:\users\administrator\documents\repo\study\directx\solorsystem\main.cpp(119): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
-c:\users\administrator\documents\repo\study\directx\solorsystem\main.cpp(120): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
-c:\users\administrator\documents\repo\study\directx\solorsystem\main.cpp(121): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
-c:\users\administrator\documents\repo\study\directx\solorsystem\main.cpp(122): warning C4316: 'Joints': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
-  코드를 생성하고 있습니다...
-  SolorSystem.vcxproj -> C:\Users\Administrator\Documents\repo\study\DirectX\Debug\SolorSystem.exe
+﻿  SolorSystem.vcxproj -> C:\Users\Administrator\Documents\repo\study\DirectX\Debug\SolorSystem.exe
