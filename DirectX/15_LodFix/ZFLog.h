@@ -29,6 +29,6 @@ private:
 	static	LRESULT CALLBACK WndProcZFLog(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 
-DECLARE ZFLog*		g_pLog;
+ DECLARE ZFLog*		g_pLog;
 
 #endif // _ZFLOG_H_

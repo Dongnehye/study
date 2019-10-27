@@ -1,2 +1,6 @@
-﻿  SystemClass.cpp
-  TankGame.vcxproj -> C:\Users\Administrator\Documents\repo\study\DirectX\Debug\TankGame.exe
+﻿  GraphicsClass.cpp
+d:\neople\study\directx\tankgame\zcamera.h(32): warning C4316: 'ZCamera': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+d:\neople\study\directx\tankgame\graphicsclass.cpp(11): warning C4101: 'reuslt' :참조되지 않은 지역 변수입니다.
+d:\neople\study\directx\tankgame\graphicsclass.cpp(68): warning C4305: 'return': 'HRESULT'에서 'bool'(으)로 잘립니다.
+d:\neople\study\directx\tankgame\graphicsclass.cpp(106): warning C4316: 'D3DClass': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+  TankGame.vcxproj -> D:\Neople\study\DirectX\Debug\TankGame.exe

@@ -241,7 +241,7 @@ void ProcessMouse(void)
 
 
 	// 마우스를 윈도우의 중앙으로 초기화
-//	SetCursor( NULL );	// 마우스를 나타나지 않게 않다.
+	//	SetCursor( NULL );	// 마우스를 나타나지 않게 않다.
 	RECT	rc;
 	GetClientRect(g_hwnd, &rc);
 	pt.x = (rc.right - rc.left) / 2;
@@ -258,8 +258,10 @@ void ProcessMouse(void)
  */
 void ProcessKey(void)
 {
-	if (GetAsyncKeyState('A')) g_pCamera->MoveLocalZ(0.5f);	// 카메라 전진!
-	if (GetAsyncKeyState('Z')) g_pCamera->MoveLocalZ(-0.5f);	// 카메라 후진!
+	if (GetAsyncKeyState('W')) g_pCamera->MoveLocalZ(0.5f);	// 카메라 전진!
+	if (GetAsyncKeyState('S')) g_pCamera->MoveLocalZ(-0.5f);	// 카메라 후진!
+	if (GetAsyncKeyState('D')) g_pCamera->MoveLocalX(0.5f);	
+	if (GetAsyncKeyState('A')) g_pCamera->MoveLocalX(-0.5f);	
 }
 
 /**-----------------------------------------------------------------------------

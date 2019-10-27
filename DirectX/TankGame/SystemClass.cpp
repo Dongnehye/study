@@ -6,10 +6,8 @@ bool SystemClass::Frame()
 {
 	bool result;
 
-	if (m_Input->IsKeyDown(VK_ESCAPE))
-	{
-		return false;
-	}
+	m_Input->Frame(m_hwnd);
+
 	result = m_Graphics->Frame();
 	if (!result)
 	{
@@ -195,6 +193,10 @@ void SystemClass::Run()
 			{
 				done = true;
 			}
+			if (m_Input->IsEscapePressed())
+			{
+				done = true;
+			}
 		}
 	}
 	return;
@@ -211,7 +213,7 @@ LRESULT SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM 
 	}
 	case WM_KEYUP:
 	{
-		m_Input->KeyUp((unsigned int)lParam);
+		m_Input->KeyUp((unsigned int)wParam);
 		return 0;
 	}
 	default:

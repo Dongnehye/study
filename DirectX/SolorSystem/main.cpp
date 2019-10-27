@@ -32,10 +32,10 @@ D3DXVECTOR3 g_aniPos[2];
 D3DXQUATERNION g_aniRot[2];
 D3DXQUATERNION g_aniRot1[2];
 
-Joints * Sun;
-Joints * Earth;
-Joints * Moon;
-Joints * Mars;
+Planet * Sun;
+Planet * Earth;
+Planet * Moon;
+Planet * Mars;
 
 HRESULT InitD3D(HWND hWnd)
 {
@@ -116,10 +116,10 @@ HRESULT InitIB()
 
 void SetupPlanet()
 {
-	Sun = new Joints(nullptr, 90.0f,0.f);
-	Earth = new Joints(Sun, 90.0f, 7.f);
-	Moon = new Joints(Earth, 90.0f, 3.f);
-	Mars = new Joints(Sun, 15.0f, 13.f);
+	Sun = new Planet(nullptr, 90.0f,0.f);
+	Earth = new Planet(Sun, 90.0f, 7.f);
+	Moon = new Planet(Earth, 90.0f, 3.f);
+	Mars = new Planet(Sun, 15.0f, 13.f);
 }
 
 void InitAnimation()

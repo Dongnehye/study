@@ -19,15 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3DClass.cpp" />
+    <ClCompile Include="Dib.cpp" />
+    <ClCompile Include="GlobalFunc.cpp" />
     <ClCompile Include="GraphicsClass.cpp" />
     <ClCompile Include="InputClass.cpp" />
+    <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="SystemClass.cpp" />
     <ClCompile Include="WinMain.cpp" />
+    <ClCompile Include="ZCamera.cpp" />
+    <ClCompile Include="ZFrustum.cpp" />
+    <ClCompile Include="ZQuadTree.cpp" />
+    <ClCompile Include="ZTerrain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="D3DClass.h" />
+    <ClInclude Include="define.h" />
+    <ClInclude Include="Dib.h" />
+    <ClInclude Include="GlobalFunc.h" />
     <ClInclude Include="GraphicsClass.h" />
     <ClInclude Include="InputClass.h" />
+    <ClInclude Include="ModelClass.h" />
     <ClInclude Include="SystemClass.h" />
+    <ClInclude Include="ZCamera.h" />
+    <ClInclude Include="ZFrustum.h" />
+    <ClInclude Include="ZQuadTree.h" />
+    <ClInclude Include="ZTerrain.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -70,7 +87,7 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\DirectX32_Debug.props" />
+    <Import Project="..\DirectXTemp.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />

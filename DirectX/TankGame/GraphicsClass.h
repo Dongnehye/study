@@ -1,6 +1,10 @@
 #pragma once
 
-#include <Windows.h>
+#include "D3DClass.h"
+#include "ZCamera.h"
+#include "ZFrustum.h"
+#include "ModelClass.h"
+#include "ZTerrain.h"
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
@@ -10,8 +14,17 @@ const float SCREEN_NEAR = 0.1f;
 class GraphicsClass
 {
 private:
-	bool Render();
+	D3DClass * m_D3D;
+	ZCamera * m_Camera;
+	ZFrustum * m_Frustum;
+	
+	ModelClass * m_Model;
+	ZTerrain * m_Terrain;
 
+private:
+	bool Render();
+	void InitMatrix();
+	bool InitObject();
 public:
 	GraphicsClass();
 	GraphicsClass(const GraphicsClass&);

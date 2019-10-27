@@ -1,22 +1,22 @@
 #include "Planet.h"
 
-Joints::Joints()
+Planet::Planet()
 {
 
 }
 
-Joints::Joints(Joints * _ParentPlanet, float _YawSec, float _x)
+Planet::Planet(Planet * _ParentPlanet, float _YawSec, float _x)
 {
 	ParentPlanet = _ParentPlanet;
 	YawSec = _YawSec;
 	x = _x;
 }
 
-Joints::~Joints()
+Planet::~Planet()
 {
 }
 
-void Joints::RecursionParentMatrix(Joints * Parent, D3DXMATRIXA16 &matWorld)
+void Planet::RecursionParentMatrix(Planet * Parent, D3DXMATRIXA16 &matWorld)
 {
 	if (Parent == nullptr)
 	{
@@ -29,7 +29,7 @@ void Joints::RecursionParentMatrix(Joints * Parent, D3DXMATRIXA16 &matWorld)
 	}
 }
 
-D3DXMATRIXA16 Joints::Render()
+D3DXMATRIXA16 Planet::Render()
 {
 	D3DXMATRIXA16 RenderMatrix;
 
@@ -44,7 +44,7 @@ D3DXMATRIXA16 Joints::Render()
 	return RenderMatrix;
 }
 
-void Joints::Animate(float Time)
+void Planet::Animate(float Time)
 {
 	D3DXQUATERNION quat;
 	D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], Time);
@@ -52,7 +52,7 @@ void Joints::Animate(float Time)
 	D3DXMatrixRotationQuaternion(&MatrixRevolve, &quat);
 	D3DXMatrixTranslation(&MatrixTrasform, x, 0, 0);
 }
-void Joints::InitAnimation()
+void Planet::InitAnimation()
 {
 	FLOAT Yaw = 0;
 	FLOAT Pitch = 0;

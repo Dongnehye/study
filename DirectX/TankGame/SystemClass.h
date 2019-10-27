@@ -6,6 +6,10 @@
 #include "InputClass.h"
 #include "GraphicsClass.h"
 
+#define WINDOW_W		500
+#define WINDOW_H		500
+#define WINDOW_TITLE	"QuadTree+TriangleCrackFixed"
+
 class SystemClass
 {
 private:

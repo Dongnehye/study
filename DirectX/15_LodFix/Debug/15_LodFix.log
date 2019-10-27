@@ -1,2 +1,16 @@
-﻿  Dib.cpp
-  15_LodFix.vcxproj -> C:\Users\Administrator\Documents\repo\study\DirectX\Debug\15_LodFix.exe
+﻿  ZFLog.cpp
+d:\neople\study\directx\15_lodfix\zflog.cpp(64): warning C4996: '_strdate': This function or variable may be unsafe. Consider using _strdate_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\time.h(290): note: '_strdate' 선언을 참조하십시오.
+d:\neople\study\directx\15_lodfix\zflog.cpp(65): warning C4996: '_strtime': This function or variable may be unsafe. Consider using _strtime_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\time.h(306): note: '_strtime' 선언을 참조하십시오.
+d:\neople\study\directx\15_lodfix\zflog.cpp(66): warning C4996: 'vsprintf': This function or variable may be unsafe. Consider using vsprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1469): note: 'vsprintf' 선언을 참조하십시오.
+d:\neople\study\directx\15_lodfix\zflog.cpp(78): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: 'fopen' 선언을 참조하십시오.
+  ZFrustum.cpp
+  ZQuadTree.cpp
+  ZTerrain.cpp
+  main.cpp
+d:\neople\study\directx\15_lodfix\main.cpp(138): warning C4316: 'ZCamera': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+  코드를 생성하고 있습니다...
+  15_LodFix.vcxproj -> D:\Neople\study\DirectX\Debug\15_LodFix.exe
