@@ -41,6 +41,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "14_Lod", "14_Lod\14_Lod.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "15_LodFix", "15_LodFix\15_LodFix.vcxproj", "{920B9BA9-409F-451E-8163-E947EB2BE052}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ASEParser", "ASEParser\ASEParser.vcxproj", "{588449DC-383D-48C4-ADE0-F32955DC4CD9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -201,6 +203,14 @@ Global
 		{920B9BA9-409F-451E-8163-E947EB2BE052}.Release|x64.Build.0 = Release|x64
 		{920B9BA9-409F-451E-8163-E947EB2BE052}.Release|x86.ActiveCfg = Release|Win32
 		{920B9BA9-409F-451E-8163-E947EB2BE052}.Release|x86.Build.0 = Release|Win32
+		{588449DC-383D-48C4-ADE0-F32955DC4CD9}.Debug|x64.ActiveCfg = Debug|x64
+		{588449DC-383D-48C4-ADE0-F32955DC4CD9}.Debug|x64.Build.0 = Debug|x64
+		{588449DC-383D-48C4-ADE0-F32955DC4CD9}.Debug|x86.ActiveCfg = Debug|Win32
+		{588449DC-383D-48C4-ADE0-F32955DC4CD9}.Debug|x86.Build.0 = Debug|Win32
+		{588449DC-383D-48C4-ADE0-F32955DC4CD9}.Release|x64.ActiveCfg = Release|x64
+		{588449DC-383D-48C4-ADE0-F32955DC4CD9}.Release|x64.Build.0 = Release|x64
+		{588449DC-383D-48C4-ADE0-F32955DC4CD9}.Release|x86.ActiveCfg = Release|Win32
+		{588449DC-383D-48C4-ADE0-F32955DC4CD9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

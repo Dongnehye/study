@@ -23,7 +23,7 @@
     <ClCompile Include="Dib.cpp" />
     <ClCompile Include="GlobalFunc.cpp" />
     <ClCompile Include="GraphicsClass.cpp" />
-    <ClCompile Include="InputClass.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="ModelClass.cpp" />
     <ClCompile Include="SystemClass.cpp" />
     <ClCompile Include="WinMain.cpp" />
@@ -38,7 +38,7 @@
     <ClInclude Include="Dib.h" />
     <ClInclude Include="GlobalFunc.h" />
     <ClInclude Include="GraphicsClass.h" />
-    <ClInclude Include="InputClass.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="ModelClass.h" />
     <ClInclude Include="SystemClass.h" />
     <ClInclude Include="ZCamera.h" />

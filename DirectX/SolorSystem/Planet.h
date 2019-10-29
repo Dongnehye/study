@@ -8,6 +8,7 @@ class Planet
 {
 	D3DXVECTOR3 g_aniPos[2];
 	D3DXQUATERNION g_aniRot[2];
+
 protected:
 	D3DXMATRIXA16	MatrixTrasform;
 	D3DXMATRIXA16	MatrixRotate;

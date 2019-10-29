@@ -22,9 +22,13 @@ private:
 	ZTerrain * m_Terrain;
 
 private:
+	void Animate();
 	bool Render();
 	void InitMatrix();
 	bool InitObject();
+
+	void ModelClimbing();
+	void ModelBackCamera();
 public:
 	GraphicsClass();
 	GraphicsClass(const GraphicsClass&);

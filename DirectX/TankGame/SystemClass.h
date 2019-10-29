@@ -3,7 +3,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <windows.h>
-#include "InputClass.h"
+#include "InputManager.h"
 #include "GraphicsClass.h"
 
 #define WINDOW_W		500
@@ -22,7 +22,6 @@ private:
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;
 
-	InputClass * m_Input;
 	GraphicsClass * m_Graphics;
 
 public:

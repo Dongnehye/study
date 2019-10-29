@@ -5,9 +5,8 @@
 bool SystemClass::Frame()
 {
 	bool result;
-
-	m_Input->Frame(m_hwnd);
-
+	
+	InputManager::GetInstance()->Update();
 	result = m_Graphics->Frame();
 	if (!result)
 	{
@@ -102,7 +101,6 @@ void SystemClass::ShutdownWindows()
 
 SystemClass::SystemClass()
 {
-	m_Input = NULL;
 	m_Graphics = NULL;
 }
 
@@ -124,14 +122,7 @@ bool SystemClass::Initialize()
 	screenHeight = 0;
 
 	InitializeWindows(screenWidth, screenHeight);
-	
-	m_Input = new InputClass;
-	if (!m_Input)
-	{
-		return false;
-	}
-	m_Input->Initialize();
-
+	InputManager::GetInstance()->Init(m_hinstance, m_hwnd);
 	m_Graphics = new GraphicsClass;
 	if (!m_Graphics)
 	{
@@ -155,12 +146,6 @@ void SystemClass::Shutdown()
 		delete m_Graphics;
 		m_Graphics = 0;
 	}
-	if (m_Input)
-	{
-		delete m_Input;
-		m_Input = 0;
-	}
-
 	ShutdownWindows();
 
 	return;
@@ -193,10 +178,7 @@ void SystemClass::Run()
 			{
 				done = true;
 			}
-			if (m_Input->IsEscapePressed())
-			{
-				done = true;
-			}
+
 		}
 	}
 	return;
@@ -206,16 +188,6 @@ LRESULT SystemClass::MessageHandler(HWND hwnd, UINT umsg, WPARAM wParam, LPARAM 
 {
 	switch (umsg)
 	{
-	case WM_KEYDOWN:
-	{
-		m_Input->KeyDown((unsigned int)wParam);
-		return 0;
-	}
-	case WM_KEYUP:
-	{
-		m_Input->KeyUp((unsigned int)wParam);
-		return 0;
-	}
 	default:
 	{
 		return DefWindowProc(hwnd, umsg, wParam, lParam);

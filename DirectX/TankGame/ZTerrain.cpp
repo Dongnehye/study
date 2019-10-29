@@ -154,6 +154,13 @@ HRESULT	ZTerrain::_CreateVIB()
 /// 화면에 지형을 출력한다.
 HRESULT	ZTerrain::_Render()
 {
+	D3DXMATRIXA16 MatrixPosition;
+	D3DXMATRIXA16 MatrixScale;
+	D3DXMatrixTranslation(&MatrixPosition, 0, 0, 0);
+	D3DXMatrixScaling(&MatrixScale, 1.0f, 1.0f, 1.0f);
+	D3DXMATRIXA16 MatrixTrasform = MatrixScale * MatrixPosition;
+	m_pd3dDevice->SetTransform(D3DTS_WORLD, &MatrixTrasform);
+
 	m_pd3dDevice->SetTexture(0, m_pTex[0]);								// 0번 텍스쳐 스테이지에 텍스쳐 고정(색깔맵)
 	m_pd3dDevice->SetTexture(1, m_pTex[1]);								// 1번 텍스쳐 스테이지에 텍스쳐 고정(음영맵)
 	m_pd3dDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);	// 0번 텍스처 스테이지의 확대 필터
@@ -172,6 +179,8 @@ HRESULT	ZTerrain::_Render()
 	m_pd3dDevice->SetIndices(m_pIB);
 	m_pd3dDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, m_cxDIB * m_czDIB, 0, m_nTriangles);
 
+	
+
 	return S_OK;
 }
 
@@ -179,6 +188,8 @@ HRESULT	ZTerrain::_Render()
 HRESULT	ZTerrain::Draw(ZFrustum* pFrustum)
 {
 	LPDWORD		pI;
+
+
 
 	if (FAILED(m_pIB->Lock(0, (m_cxDIB - 1)*(m_czDIB - 1) * 2 * sizeof(TRIINDEX), (void**)&pI, 0)))
 		return E_FAIL;

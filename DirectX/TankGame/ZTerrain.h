@@ -61,7 +61,9 @@ private:
 	HRESULT		_Render();
 public:
 	/// x, z위치의 정점값을 얻어낸다.
-	TERRAINVERTEX*	GetVertex(int x, int z) { return (m_pvHeightMap + x + z * m_cxDIB); }
+	TERRAINVERTEX*	GetVertex(int x, int z) {
+		return (m_pvHeightMap + x + z * m_cxDIB); 
+	}
 
 	/// x, z위치의 높이(y)값만 얻어내다.
 	float		GetHeight(int x, int z) { return (GetVertex(x, z))->p.y; }
