@@ -6,22 +6,20 @@ LPDIRECT3D9 g_pD3D = NULL;
 LPDIRECT3DDEVICE9	g_pd3dDevice = NULL;
 LPDIRECT3DVERTEXBUFFER9 g_pVB = NULL;
 LPDIRECT3DINDEXBUFFER9 g_pIB = NULL;
+LPD3DXMESH					g_pSphere = NULL;
+LPD3DXEFFECT				g_pLightShader = NULL;
+D3DXVECTOR4					g_WorldLightPos(500.0f, 500.0f, -500.0f, 1.0f);
+D3DXVECTOR4					g_WorldCameraPos(0.0f, 900.0f, -2200.0f, 1.0f);
 
-D3DXMATRIXA16	g_matTMParent;
-D3DXMATRIXA16	g_matRParent;
+#define WIN_WIDTH			800
+#define WIN_HEIGHT			600
 
-D3DXMATRIXA16	g_matTMChild;
-D3DXMATRIXA16	g_matRChild;
-
-D3DXMATRIXA16	g_matTMChild2;
-D3DXMATRIXA16	g_matRChild2;
-
-D3DXMATRIXA16	g_matTMChild3;
-D3DXMATRIXA16	g_matRChild3;
-D3DXMATRIXA16	g_mat1RChild1;
-D3DXMATRIXA16	g_mat1RChild2;
-D3DXMATRIXA16	g_mat1RChild3;
 #define D3DFVF_CUSTOMVERTEX		(D3DFVF_XYZ | D3DFVF_DIFFUSE)
+#define PI           3.14159265f
+#define FOV          (PI/4.0f)							
+#define ASPECT_RATIO (WIN_WIDTH/(float)WIN_HEIGHT)		
+#define NEAR_PLANE   1									
+#define FAR_PLANE    10000			
 
 struct  MYINDEX
 {
@@ -37,6 +35,113 @@ Planet * Earth;
 Planet * Moon;
 Planet * Mars;
 
+void RenderScene(D3DXMATRIXA16 * MatixWolrd)
+{
+	D3DXMATRIXA16 matWorld;
+	D3DXMatrixIdentity(&matWorld);
+
+	matWorld = *MatixWolrd;
+
+	D3DXMATRIXA16 matView;
+	D3DXVECTOR3 vEyePt(g_WorldCameraPos.x, g_WorldCameraPos.y, g_WorldCameraPos.z);
+	D3DXVECTOR3 vLookatPt(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 vUpVec(0.0f, 1.0f, 0.0f);
+	D3DXMatrixLookAtLH(&matView, &vEyePt, &vLookatPt, &vUpVec);
+
+	D3DXMATRIXA16 matProj;
+
+	D3DXMatrixPerspectiveFovLH(&matProj, FOV, ASPECT_RATIO, NEAR_PLANE, FAR_PLANE);
+
+	g_pLightShader->SetMatrix("gWorldMatrix", &matWorld);
+	g_pLightShader->SetMatrix("gViewMatrix", &matView);
+	g_pLightShader->SetMatrix("gProjectionMatrix", &matProj);
+
+	g_pLightShader->SetVector("gWorldLightPosition", &g_WorldLightPos);
+	g_pLightShader->SetVector("gWorldCameraPosition", &g_WorldCameraPos);
+
+	UINT numPasses = 0;
+	g_pLightShader->Begin(&numPasses, NULL);
+
+	for (UINT i = 0; i < numPasses; i++)
+	{
+		g_pLightShader->BeginPass(i);
+
+		g_pSphere->DrawSubset(0);
+
+		g_pLightShader->EndPass();
+	}
+
+	g_pLightShader->End();
+
+
+}
+LPD3DXMESH LoadModel(const char* fileName)
+{
+	LPD3DXMESH ret = NULL;
+	if (FAILED(D3DXLoadMeshFromX(fileName, D3DXMESH_SYSTEMMEM, g_pd3dDevice,
+		NULL, NULL, NULL, NULL, &ret)))
+	{
+		OutputDebugString("모델 로딩 실패 : ");
+		OutputDebugString(fileName);
+		OutputDebugString("\n");
+	}
+
+	return ret;
+}
+
+LPDIRECT3DTEXTURE9 LoadTexture(const char* fileName)
+{
+	LPDIRECT3DTEXTURE9 ret = NULL;
+	if (FAILED(D3DXCreateTextureFromFile(g_pd3dDevice, fileName, &ret)))
+	{
+		OutputDebugString("텍스쳐 로딩 실패 : ");
+		OutputDebugString(fileName);
+		OutputDebugString("\n");
+	}
+	return ret;
+}
+LPD3DXEFFECT LoadShader(const char* fileName)
+{
+	LPD3DXEFFECT ret = NULL;
+	LPD3DXBUFFER pError = NULL;
+	DWORD dwShaderFlag = 0;
+
+#if _DEBUG
+	dwShaderFlag |= D3DXSHADER_DEBUG;
+#endif
+
+	D3DXCreateEffectFromFile(g_pd3dDevice, fileName, NULL, NULL, dwShaderFlag, NULL, &ret, &pError);
+
+	if (!ret && pError)
+	{
+		int size = pError->GetBufferSize();
+		void *ack = pError->GetBufferPointer();
+
+		if (ack)
+		{
+			char* str = new char[size];
+			sprintf(str, (const char*)ack, size);
+			OutputDebugString(str);
+			delete[] str;
+		}
+	}
+
+	return ret;
+}
+bool LoadAssets()
+{
+	//셰이더 로딩
+	g_pLightShader = LoadShader("Lighting.fx");
+	if (!g_pLightShader)
+		return false;
+
+	g_pSphere = LoadModel("sphere.x");
+	if (!g_pSphere)
+		return false;
+
+	return true;
+}
+
 HRESULT InitD3D(HWND hWnd)
 {
 	if (NULL == (g_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
@@ -44,19 +149,31 @@ HRESULT InitD3D(HWND hWnd)
 
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory(&d3dpp, sizeof(d3dpp));
-	d3dpp.Windowed = true;
+	d3dpp.Windowed = TRUE;
+	d3dpp.BackBufferWidth = WIN_WIDTH;
+	d3dpp.BackBufferHeight = WIN_HEIGHT;
+	d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8;
+	d3dpp.BackBufferCount = 1;
+	d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
+	d3dpp.MultiSampleQuality = 0;
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-	d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
-	d3dpp.EnableAutoDepthStencil = true;
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D16;
+	d3dpp.hDeviceWindow = hWnd;
+	d3dpp.EnableAutoDepthStencil = TRUE;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D24X8;
+	d3dpp.Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
+	d3dpp.FullScreen_RefreshRateInHz = 0;
+	d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
 
 	if (FAILED(g_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWnd,
 		D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &g_pd3dDevice)))
 		return E_FAIL;
 
-	g_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-	g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, true);
-	g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, false);
+	//g_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	//g_pd3dDevice->SetRenderState(D3DRS_ZENABLE, true);
+	//g_pd3dDevice->SetRenderState(D3DRS_LIGHTING, false);
+
+	if (!LoadAssets())
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -117,9 +234,9 @@ HRESULT InitIB()
 void SetupPlanet()
 {
 	Sun = new Planet(nullptr, 90.0f,0.f);
-	Earth = new Planet(Sun, 90.0f, 7.f);
-	Moon = new Planet(Earth, 90.0f, 3.f);
-	Mars = new Planet(Sun, 15.0f, 13.f);
+	Earth = new Planet(Sun, 90.0f, 450.f);
+	Moon = new Planet(Earth, 90.0f, 250.f);
+	Mars = new Planet(Sun, 40.0f, 900.f);
 }
 
 void InitAnimation()
@@ -157,11 +274,11 @@ void InitAnimation()
 
 HRESULT InitGeometry()
 {
-	if (FAILED(InitVB()))
-		return E_FAIL;
+	//if (FAILED(InitVB()))
+	//	return E_FAIL;
 
-	if (FAILED(InitIB()))
-		return E_FAIL;
+	//if (FAILED(InitIB()))
+	//	return E_FAIL;
 
 	InitAnimation();
 
@@ -210,27 +327,12 @@ VOID Animate()
 	Mars->Animate(t);
 
 	t += 0.01f;
-
-	//D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], t);
-	//D3DXMatrixRotationQuaternion(&g_matRChild, &quat);
-	//D3DXMatrixRotationQuaternion(&g_mat1RChild1, &quat);
-	////D3DXMatrixRotationY(&g_matRChild, GetTickCount() / 500.0f);
-	//D3DXMatrixTranslation(&g_matTMChild, 7, 0, 0);	
-	//
-	////D3DXMatrixRotationY(&g_matRChild2, GetTickCount() / 500.0f);
-	//D3DXQuaternionSlerp(&quat, &g_aniRot[0], &g_aniRot[1], t);
-	//D3DXMatrixRotationQuaternion(&g_matRChild2, &quat);
-	//D3DXMatrixRotationQuaternion(&g_mat1RChild2, &quat);
-	//D3DXMatrixTranslation(&g_matTMChild2, 3, 0, 0);		
-	//
-	//D3DXQuaternionSlerp(&quat, &g_aniRot1[0], &g_aniRot1[1], t);
-	//D3DXMatrixRotationQuaternion(&g_matRChild3, &quat);
-	//D3DXMatrixRotationQuaternion(&g_mat1RChild3, &quat);
-	//D3DXMatrixTranslation(&g_matTMChild3, 13, 0, 0);
 }
 
 VOID Cleanup()
 {
+	SAFE_RELEASE(g_pSphere);
+	SAFE_RELEASE(g_pLightShader);
 	SAFE_RELEASE(g_pIB);
 	SAFE_RELEASE(g_pVB);
 	SAFE_RELEASE(g_pd3dDevice);
@@ -256,22 +358,14 @@ VOID Render()
 
 	if (SUCCEEDED(g_pd3dDevice->BeginScene()))
 	{
-		//matWorld = g_matTMParent * g_matRParent;
-		//DrawMesh(&matWorld);
-		//
-		//matWorld = g_mat1RChild1 * g_matTMChild * g_matRChild * matWorld;
-		//DrawMesh(&matWorld);
-
-		//matWorld = g_mat1RChild2 * g_matTMChild2 * g_matRChild2 * g_matTMChild * g_matRChild * g_matTMParent * g_matRParent;
-		//DrawMesh(&matWorld);		
-
-		//matWorld = g_mat1RChild3 * g_matTMChild3 * g_matRChild3 * g_matTMParent * g_matRParent;
-		//DrawMesh(&matWorld);
-
-		DrawMesh(&Sun->Render());
-		DrawMesh(&Earth->Render());
-		DrawMesh(&Moon->Render());
-		DrawMesh(&Mars->Render());
+		RenderScene(&Sun->Render());
+		RenderScene(&Earth->Render());
+		RenderScene(&Moon->Render());
+		RenderScene(&Mars->Render());
+		//DrawMesh(&Sun->Render());
+		//DrawMesh(&Earth->Render());
+		//DrawMesh(&Moon->Render());
+		//DrawMesh(&Mars->Render());
 
 		g_pd3dDevice->EndScene();
 	}
@@ -316,8 +410,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	RegisterClass(&WndClass);
 
 	hWnd = CreateWindow(g_szClassName, g_szClassName, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
-
+		WIN_WIDTH, WIN_HEIGHT, NULL, (HMENU)NULL, hInstance, NULL);
+	
+		
 	if (FAILED(InitD3D(hWnd)))
 		return -1;
 
@@ -326,7 +421,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	if (FAILED(InitGeometry()))
 		return -1;
 
-	SetupCamera();
+	//SetupCamera();
 
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);

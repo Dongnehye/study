@@ -35,7 +35,7 @@ D3DXMATRIXA16 Planet::Render()
 
 	D3DXMATRIXA16 matWorld;
 	D3DXMatrixIdentity(&matWorld);
-	D3DXMatrixScaling(&MatrixScale, 0.5f, 0.5f, 0.5f);
+	D3DXMatrixScaling(&MatrixScale, 1.0f, 1.0f, 1.0f);
 
 	RecursionParentMatrix(ParentPlanet, matWorld);
 

@@ -1,1 +1,8 @@
-﻿  SolorSystem.vcxproj -> D:\Neople\study\DirectX\Debug\SolorSystem.exe
+﻿  main.cpp
+c:\users\administrator\documents\repo\study\directx\solorsystem\main.cpp(123): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1774): note: 'sprintf' 선언을 참조하십시오.
+c:\users\administrator\documents\repo\study\directx\solorsystem\main.cpp(236): warning C4316: 'Planet': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+c:\users\administrator\documents\repo\study\directx\solorsystem\main.cpp(237): warning C4316: 'Planet': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+c:\users\administrator\documents\repo\study\directx\solorsystem\main.cpp(238): warning C4316: 'Planet': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+c:\users\administrator\documents\repo\study\directx\solorsystem\main.cpp(239): warning C4316: 'Planet': 힙에 할당된 개체가 16에 맞추어져 있지 않을 수도 있습니다
+  SolorSystem.vcxproj -> C:\Users\Administrator\Documents\repo\study\DirectX\Debug\SolorSystem.exe
